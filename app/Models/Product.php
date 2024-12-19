@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
@@ -68,7 +68,8 @@ class Product extends Model
     //                 ->withTimestamps();
     // }
 
-    public function cover() {
+    public function cover()
+    {
         return $this->belongsTo(Upload::class, 'cover_id');
     }
 
