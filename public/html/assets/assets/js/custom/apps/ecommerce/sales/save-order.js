@@ -109,6 +109,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 const quantityModal = document.getElementById('quantityModal');
                 const modalQuantityInput = document.getElementById('modalQuantityInput');
                 const updateQuantityBtn = document.getElementById('updateQuantityBtn');
+                const searchInput = document.getElementById('searchInput');
+
+                 // Function to focus search input
+                function focusSearchInput() {
+                    if (!quantityModal.classList.contains('show')) {
+                        searchInput.focus();
+                    }
+                }
+
+                // Always focus search input unless modal is shown
+                document.addEventListener('click', focusSearchInput);
+
+                // When modal is shown, focus the quantity input field
+                quantityModal.addEventListener('shown.bs.modal', () => {
+                    modalQuantityInput.focus();
+                });
+
+                // When modal is hidden, return focus to the search input
+                quantityModal.addEventListener('hidden.bs.modal', () => {
+                    searchInput.focus();
+                });
+
+                // When update button is clicked, close modal and refocus search input
+                updateQuantityBtn.addEventListener('click', () => {
+                    const modal = bootstrap.Modal.getInstance(quantityModal);
+                    modal.hide(); // Close the modal
+                });
+
 
                 // Total Calculation Elements
                 const totalElement = document.querySelector('[data-kt-pos-element="total"]');
@@ -227,76 +255,99 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
 
+
             // Function to handle quantity modal
             // const handleQuantityClick = (event) => {
-            //         // Find the closest product row
-            //         selectedProductRow = event.target.closest('[data-kt-pos-element="item"]');
+            //     selectedProductRow = event.target.closest('[data-kt-pos-element="item"]');
 
-            //         // Get the current quantity from the row
-            //         const currentQuantity = selectedProductRow.querySelector('#quantityInput').value;
+            //     if (!selectedProductRow) return;
 
-            //         // Set the modal input field to the current quantity
-            //         modalQuantityInput.value = currentQuantity;
+            //     // Get current quantity
+            //     const currentQuantity = selectedProductRow.querySelector('#quantityInput').value;
 
-            //         // Show the modal
-            //         const modal = new bootstrap.Modal(quantityModal);
-            //         modal.show();
+            //     // Get product name from row
+            //     const productName = selectedProductRow.querySelector('.text-hover-primary')?.innerText || "Selected Product";
 
-            //         // Add event listener to update button in the modal
-            //         const updateQuantityBtn = document.getElementById('updateQuantityBtn');
-            //         updateQuantityBtn.addEventListener('click', () => {
-            //             // Call the update function (if defined)
-            //             updateQuantity();
+            //     // Update modal input with current quantity
+            //     modalQuantityInput.value = currentQuantity;
 
-            //             // Update the row's quantity from modal input
-            //             selectedProductRow.querySelector('#quantityInput').value = modalQuantityInput.value;
+            //     // Set product name inside modal
+            //     document.getElementById('modalProductName').innerText = productName;
 
-            //             // Dismiss the modal
-            //             modal.hide();
+            //     // Show the modal
+            //     const modal = new bootstrap.Modal(quantityModal);
+            //     modal.show();
+            // };
 
-            //             // Optional: Set focus back to the row or another element
-            //             selectedProductRow.focus();
-            //         });
-            //     };
 
-            // Function to handle quantity modal
+            // const handleQuantityClick = (event) => {
+            //     selectedProductRow = event.target.closest('[data-kt-pos-element="item"]');
+
+            //     if (!selectedProductRow) return;
+
+            //     // Get current quantity
+            //     const currentQuantity = selectedProductRow.querySelector('#quantityInput').value;
+
+            //     // Get product name from row
+            //     const productName = selectedProductRow.querySelector('.text-hover-primary')?.innerText || "Selected Product";
+
+            //     // Update modal input with current quantity
+            //     modalQuantityInput.value = currentQuantity;
+
+            //     // Set product name inside modal
+            //     document.getElementById('modalProductName').innerText = productName;
+
+            //     // Show the modal
+            //     const modal = new bootstrap.Modal(quantityModal);
+            //     modal.show();
+
+            //     // Ensure input is focused and text is fully selected
+            //     setTimeout(() => {
+            //         modalQuantityInput.focus();
+            //         modalQuantityInput.select(); // Highlights the entire value for easy change
+            //     }, 300); // Slight delay to ensure the modal is fully loaded
+            // };
+
+
             const handleQuantityClick = (event) => {
-                // Find the closest product row
                 selectedProductRow = event.target.closest('[data-kt-pos-element="item"]');
 
-                // Get the current quantity from the row
+                if (!selectedProductRow) return;
+
+                // Get current quantity
                 const currentQuantity = selectedProductRow.querySelector('#quantityInput').value;
 
-                // Set the modal input field to the current quantity
+                // Get product name from row
+                const productName = selectedProductRow.querySelector('.text-hover-primary')?.innerText || "Selected Product";
+
+                // Update modal input with current quantity
                 modalQuantityInput.value = currentQuantity;
+
+                // Set product name inside modal
+                document.getElementById('modalProductName').innerText = productName;
 
                 // Show the modal
                 const modal = new bootstrap.Modal(quantityModal);
-
-                // Listen for the modal "shown.bs.modal" event to ensure it's fully loaded
-                quantityModal.addEventListener('shown.bs.modal', () => {
-                    // Focus on the modal input field
-                    modalQuantityInput.focus();
-                });
-
                 modal.show();
 
-                // Add event listener to update button in the modal
-                const updateQuantityBtn = document.getElementById('updateQuantityBtn');
-                updateQuantityBtn.addEventListener('click', () => {
-                    // Call the update function (if defined)
-                    updateQuantity();
-
-                    // Update the row's quantity from modal input
-                    selectedProductRow.querySelector('#quantityInput').value = modalQuantityInput.value;
-
-                    // Dismiss the modal
-                    modal.hide();
-
-                    // Optional: Set focus back to the row or another element
-                    selectedProductRow.focus();
-                });
+                // Ensure input is focused and text is fully selected
+                setTimeout(() => {
+                    modalQuantityInput.focus();
+                    modalQuantityInput.select(); // Highlights the entire value for easy change
+                }, 300);
             };
+
+            // Listen for "Enter" key press inside the quantity input
+            modalQuantityInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent form submission if inside a form
+                    document.getElementById('updateQuantityBtn').click(); // Trigger the update button click
+                }
+            });
+
+            // Ensure the Update button is always enabled
+            document.getElementById('updateQuantityBtn').disabled = false;
+
 
 
 
@@ -471,12 +522,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             </td>
                             <td class="text-end pe-5 " data-order="0">
                                 <span class="badge ${product.stock < product.stock_alert ? 'badge-light-danger' : 'badge-light-success'}">
-                                    ${Number(product.stock).toFixed(2)}
+                                    ${Number(product.stock)}
                                 </span>
                             </td>
                             <td class="text-end pe-5" data-order="0">
-                                <span class="badge ${product.stock < product.stock_alert ? 'badge-light-danger' : 'badge-light-success'}">
-                                    Stock: ${Number(product.stock).toFixed(2)}
+                                <span>
+                                        ${product.categories.map(category => category.name).join(', ')}
                                 </span>
                             </td>
                             <td class="text-end pe-5" data-order="0">

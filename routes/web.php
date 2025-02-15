@@ -24,6 +24,10 @@ use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CartController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +40,9 @@ use App\Http\Controllers\PermissionController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 Auth::routes();
 
@@ -64,17 +68,17 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('customer', CustomerController::class);
     Route::resource('invoice', InvoiceController::class);
-    Route::resource('pos', PosController::class);
+
 
     Route::resource('product', ProductController::class);
     Route::delete('/deleteproduct/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+    Route::post('/upload-images', [ProductController::class, 'uploadImages'])->name('upload.images');
     //Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 
 
     Route::resource('report', ReportController::class);
     Route::resource('return', ReturnController::class);
 
-    Route::resource('sale', SaleController::class);
 
     Route::resource('store', WarehouseController::class);
     Route::delete('/deletestore/{id}', [WarehouseController::class, 'destroy'])->name('store.destroy');
@@ -106,6 +110,35 @@ Route::group(['middleware' => ['auth']], function () {
 
     //Route::resource('orders', OrderController::class);
     Route::post('/saveorders', [OrderController::class, 'store'])->name('orders.saveorders');
+
+     // Cart routes
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::post('/', [CartController::class, 'store'])->name('cart.store');
+        Route::put('/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+        Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+    });
+
+    // Wishlist routes
+    Route::prefix('wishlist')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
+        Route::post('/', [WishlistController::class, 'store'])->name('wishlist.store');
+        Route::delete('/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    });
+
+    // Compare routes
+    Route::post('/compare/{product}', [CompareController::class, 'add'])->name('compare.add');
+    Route::get('/compare', [CompareController::class, 'index'])->name('compare.index');
+    Route::delete('/compare/{product}', [CompareController::class, 'remove'])->name('compare.remove');
+
+
+        // Cart routes
+    // Route::resource('cart', CartController::class)->only([
+    //     'index', 'store', 'update', 'destroy'
+    // ]);
+
+    // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 
 
 });

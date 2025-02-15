@@ -21,6 +21,7 @@ class Category extends Model
         'meta_tag_keywords',
         'publishingDate',
         'parent_id',
+        'is_featured'
     ];
 
      /**
@@ -70,4 +71,11 @@ class Category extends Model
     {
         return $this->belongsTo(Upload::class, 'cover_id');
     }
+
+    // Add featured scope
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
 }

@@ -3,7 +3,35 @@
 // Class definition
 var KTAppEcommerceSaveProduct = function () {
 
-    // Private functions
+            // Private functions
+            document.getElementById('images').addEventListener('change', function(event) {
+                let previewContainer = document.getElementById('imagePreview');
+                previewContainer.innerHTML = ""; // Clear previous previews
+
+                Array.from(event.target.files).forEach((file, index) => {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        let wrapper = document.createElement('div');
+                        wrapper.className = "preview-wrapper";
+
+                        let img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = "preview-img";
+
+                        let removeBtn = document.createElement('button');
+                        removeBtn.className = "remove-btn";
+                        removeBtn.innerHTML = "×";
+                        removeBtn.onclick = function() {
+                            wrapper.remove();
+                        };
+
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(removeBtn);
+                        previewContainer.appendChild(wrapper);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
 
 
 
@@ -145,7 +173,7 @@ var KTAppEcommerceSaveProduct = function () {
     const initDropzone = () => {
         var myDropzone = new Dropzone("#kt_ecommerce_add_product_media", {
             url: "https://keenthemes.com/scripts/void.php", // Set the url for your upload script location
-            paramName: "file", // The name that will be used to transfer the file
+            paramName: "gallery", // The name that will be used to transfer the file
             maxFiles: 10,
             maxFilesize: 10, // MB
             addRemoveLinks: true,

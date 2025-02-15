@@ -6,7 +6,7 @@
 <!-- Mirrored from preview.keenthemes.com/metronic8/demo1/authentication/layouts/creative/sign-in.html')}} by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Jun 2023 04:07:02 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
-        <title>Login | SchoolPack</title>
+        <title>Login | LolaTete</title>
         <meta charset="utf-8"/>
 
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -88,7 +88,8 @@
 
             <!--begin::Title-->
             <h2 class="text-white fw-normal m-0">
-                <img alt="Logo" src="{{ asset('html/assets/assets/media/logos/scroll.png')}}" class="h-100px app-sidebar-logo-default"/> School Pack
+                <!-- <img alt="Logo" src="{{ asset('html/assets/assets/media/logos/scroll.png')}}" class="h-100px app-sidebar-logo-default"/> -->
+                 Login Area
             </h2>
             <!--end::Title-->
         </div>

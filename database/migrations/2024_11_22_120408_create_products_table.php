@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         // Create the product_variant table for managing product variants
-        Schema::create('product_variant', function (Blueprint $table) {
+         Schema::create('product_variant', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Foreign key to products
             $table->foreignId('variant_value_id')->constrained()->onDelete('cascade'); // Foreign key to variation values
@@ -59,6 +59,7 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
 
         Schema::create('product_category', function (Blueprint $table) {
             $table->id();
@@ -94,8 +95,10 @@ return new class extends Migration
             $table->unique(['product_id', 'unit_id']); // Prevent duplicate entries
         });
 
-        // Stocks Table
-        Schema::create('stocks', function (Blueprint $table) {
+
+
+         // Stocks Table
+         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Product reference
             $table->integer('quantity'); // Quantity change (+/-)
@@ -104,6 +107,9 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); // User reference
             $table->timestamps();
         });
+
+
+
 
     }
 

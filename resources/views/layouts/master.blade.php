@@ -313,6 +313,47 @@
             animation: fadeOut 0.5s ease-out forwards;
         }
 
+        .image-preview-container {
+            width: 100vw; /* Full viewport width */
+            max-width: 100%;
+            display: flex;
+            flex-wrap: nowrap; /* Ensures images stay in a single row */
+            overflow-x: auto;  /* Allows scrolling if images exceed container width */
+            gap: 10px; /* Space between images */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .preview-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .preview-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
         </style>
 

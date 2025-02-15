@@ -90,6 +90,16 @@ class User extends Authenticatable
             config('permission.column_names.model_morph_key'),
             PermissionRegistrar::$pivotRole
         );
-}
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function wishlistItems()
+    {
+        return $this->hasMany(WishlistItem::class);
+    }
 
 }

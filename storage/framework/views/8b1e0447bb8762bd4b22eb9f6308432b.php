@@ -9,7 +9,7 @@
 <!--end::Vendors Javascript-->
 
 <!--begin::Custom Javascript(used for this page only)-->
-    <script src="<?php echo e(asset('html/assets/assets/js/custom/apps/ecommerce/catalog/products.jss')); ?>"></script>
+    <script src="<?php echo e(asset('html/assets/assets/js/custom/apps/ecommerce/catalog/products.js')); ?>"></script>
     <script src="<?php echo e(asset('html/assets/assets/js/custom/apps/ecommerce/catalog/save-product.js')); ?>"></script>
     <script src="<?php echo e(asset('html/assets/assets/js/widgets.bundle.js')); ?>"></script>
     <script src="<?php echo e(asset('html/assets/assets/js/custom/widgets.js')); ?>"></script>

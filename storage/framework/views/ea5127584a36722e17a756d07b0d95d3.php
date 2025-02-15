@@ -69,7 +69,7 @@
 
 
         <!--begin::Content container-->
-        <div id="kt_app_content_container" class="app-container  container-xxl ">
+        <div id="kt_app_content_container" class="app-container ">
             <!--begin::Form-->
  <div id="kt_ecommerce_edit_order_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="listing.html">
 
@@ -129,12 +129,7 @@
                       <!--end::Table-->
                   </div>
 
-                                    
 
-
-                                    <!--begin::Search products-->
-                                    
-                                    <!--end::Search products-->
 
                         <!--begin::Table-->
                         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_edit_order_product_table" >
@@ -325,12 +320,15 @@
     </div>
 <!--end::Content-->
 
+
+
+
 <!-- Modal for Quantity Input -->
 <div class="modal" id="quantityModal" tabindex="-1" aria-labelledby="quantityModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="quantityModalLabel">Enter Quantity</h5>
+                <h5 class="modal-title" id="quantityModalLabel">Update Quantity for <span id="modalProductName"></span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -344,9 +342,6 @@
     </div>
 </div>
 
-
-
-<
 
     <!-- Print Receipt -->
     <div class="modal fade modal-default" id="print-receipt" aria-labelledby="print-receipt" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -450,9 +445,9 @@
         const paymentStoreUrl = '<?php echo e(route('orders.saveorders')); ?>';
         const productSearchQuery = '<?php echo e(route('products.search')); ?>';
 
-        document.addEventListener('click', () => {
-            document.getElementById('searchInput').focus();
-        });
+        // document.addEventListener('click', () => {
+        //     document.getElementById('searchInput').focus();
+        // });
 
 
 

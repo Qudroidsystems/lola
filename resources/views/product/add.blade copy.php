@@ -592,7 +592,7 @@
         </div>
         <!--end::Input group-->
 
-
+        
     </div>
     <!--end::Card header-->
 
@@ -1044,11 +1044,11 @@
         <!--end::Tab content-->
 
         <div class="d-flex justify-content-end">
-
-            <!-- <a href="products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">
+            <!--begin::Button-->
+            <a href="products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">
                 Cancel
             </a>
-          -->
+            <!--end::Button-->
 
             <!--begin::Button-->
             <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">

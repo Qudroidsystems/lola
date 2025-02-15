@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View; // Add this line
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // In boot() method
+        View::composer('frontend.master', function ($view) {
+            $cartCount = 0;
+            $cartItems = collect();
+            $cartTotal = 0;
 
+            if (auth()->check()) {
+                $cartItems = auth()->user()->cartItems()->with('product')->get();
+                $cartCount = $cartItems->sum('quantity');
+                $cartTotal = $cartItems->sum(function ($item) {
+                    return $item->quantity * $item->product->base_price;
+                });
+            }
+
+            $view->with([
+                'cartCount' => $cartCount,
+                'cartItems' => $cartItems,
+                'cartTotal' => $cartTotal
+            ]);
+        });
 
     }
 }

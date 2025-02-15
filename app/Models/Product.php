@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -30,9 +30,13 @@ class Product extends Model
         'unit_id', // Assuming unit relationship is based on unit ID
         'brand_id', // Assuming brand relationship is based on brand ID
         'warehouse_id', // Assuming warehouse relationship is based on warehouse ID
+        'is_featured',
+        'is_new',
+        'on_sale',
+        'sale_price'
     ];
 
-    protected $with = ['cover', 'tags', 'brands'];
+    protected $with = [ 'tags', 'brands'];
 
     public function categories()
     {
@@ -68,10 +72,22 @@ class Product extends Model
     //                 ->withTimestamps();
     // }
 
-    public function cover()
+    public function images()
     {
-        return $this->belongsTo(Upload::class, 'cover_id');
+        return $this->belongsToMany(Upload::class, 'product_uploads')
+                    ->withPivot('type', 'sort_order')
+                    ->orderBy('sort_order');
     }
+
+    public function galleryImages()
+    {
+        return $this->images()->wherePivot('type', 'gallery');
+    }
+
+
+    // public function cover() {
+    //     return $this->belongsTo(Upload::class, 'cover_id');
+    // }
 
     public function stocks()
     {
@@ -81,5 +97,32 @@ class Product extends Model
     public function sales()
     {
         return $this->hasMany(Sale::class);
+    }
+
+    // Scope for Featured Products
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    // Scope for New Products (latest 10 products)
+    public function scopeNewProducts($query)
+    {
+        return $query->orderBy('created_at', 'desc')->take(10);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()->avg('rating');
+    }
+
+    public function totalReviews()
+    {
+        return $this->reviews()->count();
     }
 }

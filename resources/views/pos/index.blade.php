@@ -70,7 +70,7 @@
 
 
         <!--begin::Content container-->
-        <div id="kt_app_content_container" class="app-container  container-xxl ">
+        <div id="kt_app_content_container" class="app-container ">
             <!--begin::Form-->
  <div id="kt_ecommerce_edit_order_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="listing.html">
 
@@ -130,22 +130,7 @@
                       <!--end::Table-->
                   </div>
 
-                                    {{-- <!-- Barcode Input -->
-                                    <div class="form-group">
-                                        <label for="barcodeInput">Scan Barcode:</label>
-                                        <input type="text"  class="form-control" placeholder="Scan or Enter Barcode">
-                                    </div>
 
-
-                                    <input type="text" id="productTable" style="position: absolute; opacity: 0;"> --}}
-
-
-                                    <!--begin::Search products-->
-                                    {{-- <div class="d-flex align-items-center position-relative mb-n7 ">
-                                        <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
-                                                <input type="text" data-kt-ecommerce-edit-order-filter="search" id="barcodeInput" class="form-control form-control-solid w-100 w-lg-50 ps-12" placeholder="Search Products" />
-                                    </div> --}}
-                                    <!--end::Search products-->
 
                         <!--begin::Table-->
                         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_edit_order_product_table" >
@@ -335,13 +320,35 @@
         <!--end::Content container-->
     </div>
 <!--end::Content-->
-
+{{--
 <!-- Modal for Quantity Input -->
 <div class="modal" id="quantityModal" tabindex="-1" aria-labelledby="quantityModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="quantityModalLabel">Enter Quantity</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="number" id="modalQuantityInput" class="form-control" min="1" value="1" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="updateQuantityBtn">Update</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+
+
+<!-- Modal for Quantity Input -->
+<div class="modal" id="quantityModal" tabindex="-1" aria-labelledby="quantityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quantityModalLabel">Update Quantity for <span id="modalProductName"></span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -355,9 +362,6 @@
     </div>
 </div>
 
-
-
-<
 
     <!-- Print Receipt -->
     <div class="modal fade modal-default" id="print-receipt" aria-labelledby="print-receipt" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -465,9 +469,9 @@
         const paymentStoreUrl = '{{ route('orders.saveorders') }}';
         const productSearchQuery = '{{ route('products.search') }}';
 
-        document.addEventListener('click', () => {
-            document.getElementById('searchInput').focus();
-        });
+        // document.addEventListener('click', () => {
+        //     document.getElementById('searchInput').focus();
+        // });
 
 
 
