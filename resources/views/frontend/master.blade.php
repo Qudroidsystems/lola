@@ -45,7 +45,7 @@
             <!-- Logo Area Start -->
             <div class="col-3 col-lg-1 col-xl-2 m-auto">
                 <a href="index.html" class="logo-area">
-                    <img src="{{ asset('ruby/ruby/assets/img/logo-black.png')}}" alt="Logo" class="img-fluid"/>
+                    <img src="{{ asset('ruby/ruby/assets/img/lola logo.jpg')}}" alt="Logo" class="img-fluid" width="50px" height="50px" style="border-radius: 20px"/>
                 </a>
             </div>
             <!-- Logo Area End -->
@@ -125,7 +125,7 @@
                                             <div class="cal d-flex align-items-center">
                                                 <span class="quantity">{{ $item->quantity }}</span>
                                                 <span class="multiplication">X</span>
-                                                <span class="price">${{ number_format($item->product->base_price, 2) }}</span>
+                                                <span class="price">${{ number_format($item->product->sale_price, 2) }}</span>
                                             </div>
                                         </div>
                                         <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
@@ -458,5 +458,4 @@
 <script src="{{ asset('ruby/ruby/assets/js/active.js')}}"></script>
 </body>
 
-<!-- Mirrored from htmldemo.net/ruby/ruby/index6.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 24 Dec 2024 23:52:42 GMT -->
 </html>

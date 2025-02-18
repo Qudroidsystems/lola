@@ -125,7 +125,6 @@ return new class extends Migration
         Schema::dropIfExists('product_unit');
         Schema::dropIfExists('product_variant');
         Schema::dropIfExists('sales');
-        Schema::dropIfExists('orders');
         Schema::dropIfExists('stocks');
     }
 };

@@ -127,6 +127,7 @@
         <th class="text-end min-w-100px">SKU</th>
         <th class="text-end min-w-70px">Qty</th>
         <th class="text-end min-w-100px">Price</th>
+        <th class="text-end min-w-100px">Sale Price</th>
         {{-- <th class="text-end min-w-100px">Rating</th> --}}
         <th class="text-end min-w-100px">Status</th>
         <th class="text-end min-w-70px">Actions</th>
@@ -164,6 +165,9 @@
                                 <td class="text-end pe-0">
                                     {{ $product->base_price }}
                                 </td>
+                                <td class="text-end pe-0">
+                                    {{ $product->sale_price }}
+                                </td>
                                 {{-- <td class="text-end pe-0" data-order="rating-5">
                                     <div class="rating justify-content-end">
                                                                     <div class="rating-label checked">
@@ -187,33 +191,42 @@
                                     <a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                                         Actions
                                         <i class="ki-duotone ki-down fs-5 ms-1"></i>                    </a>
-                                    <!--begin::Menu-->
-                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                        <a href="{{ route('product.edit',$product->id) }}" class="menu-link px-3">
-                            Edit
-                        </a>
-                    </div>
-                    <!--end::Menu item-->
+                                            <!--begin::Menu-->
+                                                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+                                                        <!--begin::Menu item-->
+                                                        <div class="menu-item px-3">
+                                                            <a href="{{ route('product.edit',$product->id) }}" class="menu-link px-3">
+                                                                Edit
+                                                            </a>
+                                                        </div>
+                                                        <!--end::Menu item-->
 
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
+                                                        <!--begin::Menu item-->
 
-                                    <!--begin::Menu item-->
-                                    <a
-                                        href="javascript:void(0)"
-                                        id="show-product"
-                                        data-kt-ecommerce-product-filter="delete_row"
-                                        data-url="{{ route('product.destroy', $product->id) }}"
-                                        class="btn btn-danger btn-sm">Delete
-                                    </a>
-                                    <!--end::Menu item-->
+                                                        <div class="menu-item px-3">
+                                                      
+                                                        <!--begin::Menu item-->
+                                                        <div class="menu-item px-3">
+                                                            <a href="{{ route('product.destroy', $product->id) }}" class="menu-link px-3">
+                                                                Delete
+                                                            </a>
+                                                        </div>
+                                                        <!--end::Menu item-->
 
-                    </div>
-                    <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
+                                                                        <!--begin::Menu item-->
+                                                                        <!-- <a
+                                                                            href="javascript:void(0)"
+                                                                            id="show-product"
+                                                                            data-kt-ecommerce-product-filter="delete_row"
+                                                                            data-url="{{ route('product.destroy', $product->id) }}"
+                                                                            class="btn btn-danger btn-sm">Delete
+                                                                        </a> -->
+                                                                        <!--end::Menu item-->
+
+                                                        </div>
+                                                        <!--end::Menu item-->
+                                                        </div>
+                                        <!--end::Menu-->
                                 </td>
                </tr>
     @endforeach

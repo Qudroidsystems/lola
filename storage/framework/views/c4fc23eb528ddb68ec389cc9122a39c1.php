@@ -162,7 +162,7 @@
                                     <div class="single-product-item text-center">
                                         <!-- Product Image -->
                                         <figure class="product-thumb">
-                                            <a href="<?php echo e(route('product.show', $product->id)); ?>">
+                                            <a href="<?php echo e(route('shop.show', $product->id)); ?>">
                                                 <?php if($product->thumbnail): ?>
                                                     <img src="<?php echo e(asset($product->thumbnail)); ?>"
                                                          alt="<?php echo e($product->name); ?>"
@@ -176,7 +176,7 @@
                                         <!-- Product Details -->
                                         <div class="product-details">
                                             <h2>
-                                                <a href="<?php echo e(route('product.show', $product->id)); ?>">
+                                                <a href="<?php echo e(route('shop.show', $product->id)); ?>">
                                                     <?php echo e($product->name); ?>
 
                                                 </a>
@@ -300,5 +300,46 @@
 </div>
 <!--== Page Content Wrapper End ==-->
 <?php $__env->stopSection(); ?>
+
+
+<!-- Quick View Modals -->
+<?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<div class="modal fade" id="quickView-<?php echo e($product->id); ?>" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Add quick view content here -->
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="row">
+
+                    <?php if($product->thumbnail): ?>
+                    <img src="<?php echo e(asset($product->thumbnail)); ?>"
+                         class="img-fluid"
+                         alt="<?php echo e($product->name); ?>">
+                    <?php else: ?>
+                        <!-- Show placeholder or nothing -->
+                        <img src="<?php echo e(asset('images/placeholder.png')); ?>"
+                            class="img-fluid"
+                            alt="No image available">
+                    <?php endif; ?>
+                    <div class="col-md-6">
+                        <h3><?php echo e($product->name); ?></h3>
+                        <div class="price">
+                            $<?php echo e(number_format($product->base_price, 2)); ?>
+
+                            <?php if($product->on_sale): ?>
+                                <span class="text-danger">$<?php echo e(number_format($product->sale_price, 2)); ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <p><?php echo e($product->description); ?></p>
+                        <!-- Add more product details as needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+<!--== New Products Area End ==-->
 
 <?php echo $__env->make('frontend.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/frontend/shop.blade.php ENDPATH**/ ?>

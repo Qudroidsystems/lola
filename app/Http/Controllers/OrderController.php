@@ -35,102 +35,25 @@ class OrderController extends Controller
 
 
     public function store(Request $request)
-        {
-            //Log::info('Incoming request data', $request->all());
+    {
 
-            $validated = $request->validate([
-                'items' => 'required|array|min:1',
-                'items.*.productId' => 'required|integer|exists:products,id',
-                'items.*.quantity' => 'required|integer|min:1',
-                'payment_method' => 'required|string|in:cash,card,transfer',
-                'customer_id' => 'nullable|integer|exists:customers,id', // Keep nullable if it's optional
+        $request->validate([
+            'total' => 'required|numeric|min:1',
+        ]);
+
+        try {
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'total' => $request->total,
+                'status' => 'pending'
             ]);
 
-            DB::beginTransaction();
+            return redirect()->route('dashboard')->with('success', 'Order placed successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error placing order: ' . $e->getMessage());
+        }
+    
 
-            try {
-                $orderId = (string) Str::uuid();
-                $totalAmount = $this->calculateTotalAmount($validated['items']);
-
-                // Log::info('Validation passed, proceeding with order creation.', [
-                //     'validated_data' => $validated,
-                //     'total_amount' => $totalAmount,
-                // ]);
-
-                $order = Orders::create([
-                    'genOrderId' => $orderId,
-                    'customer_id' => $request->customer_id ?? null,
-                    'total_amount' => $totalAmount,
-                    'status' => 'Pending',
-                ]);
-
-                        $orderDetails = []; // Initialize an array to hold order details
-
-                        foreach ($validated['items'] as $item) {
-                            $product = Product::findOrFail($item['productId']); // Retrieve product details
-
-                            // Add the product details to the orderDetails array
-                            $orderDetails[] = [
-                                'product_name' => $product->name,
-                                'quantity' => $item['quantity'],
-                                'price' => $product->base_price,
-                                'total' => $product->base_price * $item['quantity'],
-                            ];
-
-                            $order->items()->create([
-                                'product_id' => $item['productId'],
-                                'quantity' => $item['quantity'],
-                                'price' => $product->base_price, // Include the price field
-                                'total' => $product->base_price * $item['quantity'],
-                            ]);
-
-                        // Create corresponding sales record
-                        Sale::create([
-                            'product_id' => $item['productId'],
-                            'order_id' => $order->id,
-                            'user_id' => auth()->id(),
-                            'quantity' => $item['quantity'],
-                            'price' => $product->base_price,
-                            'total' => $product->base_price * $item['quantity'],
-                        ]);
-                }
-
-                $order->payment()->create([
-                    'order_id' => $order->id, // Ensure this matches your payments table schema
-                    'customer_id' => $validated['customer_id'] ?? null, // Ensure null is acceptable
-                    'payment_method' => $validated['payment_method'],
-                    'amount' => $totalAmount,
-                    'status' => 'Pending',
-                ]);
-
-                $invoice = Invoice::create([
-                    'invoice_no' => 'CS' . str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT),
-                    'order_id' => $order->id,
-                    'issued_at' => now(),
-                ]);
-
-                DB::commit();
-
-                return response()->json([
-                    'message' => 'Order created successfully.',
-                    'order_id' => $orderId,
-                    'invoice_id'=> $invoice,
-                    'items' => $orderDetails,
-                    'total_amount' => $totalAmount,
-                ], 201);
-             } catch (\Exception $e) {
-                DB::rollBack();
-
-                // Log::error('Failed to create order.', [
-                //     'error_message' => $e->getMessage(),
-                //     'stack_trace' => $e->getTraceAsString(),
-                // ]);
-
-                return response()->json([
-                    'error' => 'Failed to create order.',
-                    'details' => $e->getMessage(),
-                ], 500);
-            }
     }
      /**
       * Calculate the total amount for the order items.

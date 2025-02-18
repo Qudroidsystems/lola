@@ -25,10 +25,9 @@ class User extends Authenticatable
      *
      * @var string[]
      */
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'email', 'password', 'role',
     ];
 
     /**
@@ -50,6 +49,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
+
     public function staffPicture(): HasOne
     {
         return $this->hasOne(ImageModel::class,'user_id');
@@ -65,20 +75,7 @@ class User extends Authenticatable
         return $this->hasOne(staffemploymentDetailsModel::class,'staff_');
     }
 
-    /**
-     * Get the user associated with the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function bio(): HasOne
-    {
-        return $this->hasOne(BioModel::class);
-    }
 
-    public function journal(): HasMany
-    {
-        return $this->hasMany(Journals::class,'user_id');
-    }// User model
 
 
     public function roles_all(): BelongsToMany
@@ -102,4 +99,18 @@ class User extends Authenticatable
         return $this->hasMany(WishlistItem::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function billingAddress()
+    {
+        return $this->hasOne(BillingAddress::class);
+    }
+
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
 }

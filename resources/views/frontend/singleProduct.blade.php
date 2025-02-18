@@ -9,7 +9,7 @@
                 <div class="page-title-content">
                     <ul class="breadcrumb">
                         <li><a href="{{ route('home') }}">Home</a></li>
-                        <li><a href="{{ route('shop.index') }}">Shop</a></li>
+                        <li><a href="{{ route('shop') }}">Shop</a></li>
                         <li class="active">{{ $product->name }}</li>
                     </ul>
                 </div>
@@ -34,7 +34,7 @@
                                     <div class="single-thumb-item">
                                         <a href="#">
                                             <img class="img-fluid"
-                                                 src="{{ asset('storage/' . $image->path) }}"
+                                                 src="{{ asset($image->path) }}"
                                                  alt="{{ $product->name }}"/>
                                         </a>
                                     </div>
@@ -65,18 +65,18 @@
                                     @endfor
                                 </div>
 
-                                <span class="price">{{ number_format($product->price, 2) }}</span>
+                                <span class="price">{{ number_format($product->sale_price, 2) }}</span>
 
                                 <div class="product-info-stock-sku">
-                                    <span class="product-stock-status {{ $product->in_stock ? 'text-success' : 'text-danger' }}">
-                                        {{ $product->in_stock ? 'In Stock' : 'Out of Stock' }}
+                                    <span class="product-stock-status {{ $product->stock ? 'text-success' : 'text-danger' }}">
+                                        {{ $product->stock ? 'In Stock' : 'Out of Stock' }}
                                     </span>
                                     <span class="product-sku-status ms-5">
                                         <strong>SKU</strong> {{ $product->sku }}
                                     </span>
                                 </div>
 
-                                <p class="products-desc">{{ $product->description }}</p>
+                                <p class="products-desc">{!! $product->description !!}</p>
 
                                 @if($product->in_stock)
                                 <form action="{{ route('cart.store') }}" method="POST" class="product-quantity mt-5 d-flex align-items-center">
@@ -109,7 +109,7 @@
                         <!-- Product Details End -->
                     </div>
 
-                    <div class="row">
+                     <div class="row">
                         <div class="col-lg-12">
                             <div class="product-full-info-reviews">
                                 <nav class="nav" id="nav-tab">
@@ -119,7 +119,7 @@
 
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="description">
-                                        {!! $product->long_description !!}
+                                        {!! $product->description !!}
                                     </div>
 
                                     <div class="tab-pane fade" id="reviews">
@@ -152,7 +152,7 @@
                                                     @auth
                                                     <div class="ratting-form-wrapper fix">
                                                         <h3>Add your Review</h3>
-                                                        <form action="{{ route('reviews.store', $product) }}" method="POST">
+                                                        <form action="{{ route('reviews.store', $product->id) }}" method="POST">
                                                             @csrf
                                                             <div class="ratting-form row">
                                                                 <div class="col-12 mb-4">
@@ -174,7 +174,7 @@
                                                                 </div>
 
                                                                 <div class="col-12">
-                                                                    <button type="submit" class="btn btn-primary">
+                                                                    <button type="submit" class="btn-add-to-cart" >
                                                                         Submit Review
                                                                     </button>
                                                                 </div>
@@ -199,25 +199,41 @@
 </div>
 <!--== Page Content Wrapper End ==-->
 
-@push('scripts')
+@endsection
+
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Rating stars interaction
-        const stars = document.querySelectorAll('#ratingStars .fa');
-        const ratingInput = document.getElementById('selectedRating');
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('#ratingStars .fa');
+    const ratingInput = document.getElementById('selectedRating');
 
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = parseInt(this.dataset.rating);
-                ratingInput.value = rating;
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.dataset.rating);
 
-                stars.forEach((s, index) => {
-                    s.classList.toggle('fa-star-o', index >= rating);
-                    s.classList.toggle('fa-star', index < rating);
-                });
+            // Update stars display
+            stars.forEach((s, index) => {
+                s.classList.toggle('fa-star-o', index >= rating);
+                s.classList.toggle('fa-star', index < rating);
             });
+
+            // Set hidden input value
+            ratingInput.value = rating;
+
+            // Clear validation state
+            ratingInput.classList.remove('is-invalid');
         });
     });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!ratingInput.value) {
+            e.preventDefault();
+            ratingInput.classList.add('is-invalid');
+            alert('Please select a rating!');
+        }
+    });
+});
 </script>
-@endpush
-@endsection
+
+

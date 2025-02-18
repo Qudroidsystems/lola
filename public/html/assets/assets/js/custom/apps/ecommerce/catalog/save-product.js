@@ -35,40 +35,97 @@ var KTAppEcommerceSaveProduct = function () {
 
 
 
-    // Init quill editor
-    const initQuill = () => {
-        // Define all elements for quill editor
-        const elements = [
-            '#kt_ecommerce_add_product_description',
-            '#kt_ecommerce_add_product_meta_description'
-        ];
+    // // Init quill editor
+    // const initQuill = () => {
+    //     // Define all elements for quill editor
+    //     const elements = [
+    //         '#kt_ecommerce_add_product_description',
+    //         '#kt_ecommerce_add_product_meta_description'
+    //     ];
 
-        // Loop all elements
-        elements.forEach(element => {
-            // Get quill element
-            let quill = document.querySelector(element);
+    //     // Loop all elements
+    //     elements.forEach(element => {
+    //         // Get quill element
+    //         let quill = document.querySelector(element);
 
-            // Break if element not found
-            if (!quill) {
-                return;
-            }
+    //         // Break if element not found
+    //         if (!quill) {
+    //             return;
+    //         }
 
-            // Init quill --- more info: https://quilljs.com/docs/quickstart/
-            quill = new Quill(element, {
-                modules: {
-                    toolbar: [
-                        [{
-                            header: [1, 2, false]
-                        }],
-                        ['bold', 'italic', 'underline'],
-                        ['image', 'code-block']
-                    ]
-                },
-                placeholder: 'Type your text here...',
-                theme: 'snow' // or 'bubble'
+    //         // Init quill --- more info: https://quilljs.com/docs/quickstart/
+    //         quill = new Quill(element, {
+    //             modules: {
+    //                 toolbar: [
+    //                     [{
+    //                         header: [1, 2, false]
+    //                     }],
+    //                     ['bold', 'italic', 'underline'],
+    //                     ['image', 'code-block']
+    //                 ]
+    //             },
+    //             placeholder: 'Type your text here...',
+    //             theme: 'snow' // or 'bubble'
+    //         });
+    //     });
+    // }
+
+
+            // Init quill editor
+        const initQuill = () => {
+            // Define all elements for quill editor
+            const elements = [
+                '#kt_ecommerce_add_product_description',
+                //'#kt_ecommerce_add_product_meta_description'
+            ];
+
+            const form = document.getElementById('kt_ecommerce_add_product_form');
+
+            // Loop all elements
+            elements.forEach(selector => {
+                // Get quill container element
+                const container = document.querySelector(selector);
+
+                // Break if element not found
+                if (!container) return;
+
+                // Init quill
+                const quill = new Quill(selector, {
+                    modules: {
+                        toolbar: [
+                            [{
+                                header: [1, 2, false]
+                            }],
+                            ['bold', 'italic', 'underline'],
+                            ['image', 'code-block']
+                        ]
+                    },
+                    placeholder: 'Type your text here...',
+                    theme: 'snow'
+                });
+
+                // Get corresponding textarea ID
+                // const textareaId = selector.split('_').pop();
+                // const textarea = document.getElementById(textareaId);
+                const textarea = document.getElementById('description');
+
+                // Update textarea on content change
+                quill.on('text-change', () => {
+                    if (textarea) {
+                        textarea.value = quill.root.innerHTML;
+                    }
+                });
+
+                // Update textarea before form submission
+                if (form) {
+                    form.addEventListener('submit', () => {
+                        textarea.value = quill.root.innerHTML;
+                    });
+                }
             });
-        });
-    }
+        };
+
+
 
     // Init tagify
     const initTagify = () => {

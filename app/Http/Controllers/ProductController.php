@@ -24,7 +24,7 @@ class ProductController extends Controller
     {
 
          // Fetch all products with relevant data like SKU, quantity, price, etc.
-        $products = Product::select('id', 'name', 'description','sku', 'stock', 'base_price',  'status')->get();
+        $products = Product::select('id', 'name', 'description','sku', 'stock', 'base_price', 'sale_price', 'status')->get();
         return view('product.index', compact('products'));
     }
 
@@ -59,6 +59,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'product_name' => 'required|unique:products,name|max:255',
@@ -76,6 +77,10 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'stock_alert' => 'nullable|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'sale_price' => 'required|numeric|min:0',
+            'is_featured' => 'required|numeric|min:0',
+            'is_new' => 'required|numeric|min:0',
+            'on_sale' => 'required|numeric|min:0',
             'tax' => 'nullable|numeric|min:0|max:100',
             'vat_amount' => 'nullable|numeric|min:0|max:100',
             'manufacture' => 'nullable|date',
@@ -103,6 +108,10 @@ class ProductController extends Controller
         $product->stock = $validatedData['stock'];
         $product->stock_alert = $validatedData['stock_alert'] ?? null;
         $product->base_price = $validatedData['price'];
+        $product->sale_price = $validatedData['sale_price'];
+        $product->is_featured = $validatedData['is_featured'];
+        $product->is_new = $validatedData['is_new'];
+        $product->on_sale = $validatedData['on_sale'];
         $product->tax = $validatedData['tax'] ?? null;
         $product->vat_amount = $validatedData['vat_amount'] ?? null;
         $product->manufactured = $validatedData['manufacture'] ?? null;
@@ -382,21 +391,21 @@ class ProductController extends Controller
 
 
     public function destroy($id)
-{
-    $product = Product::findOrFail($id);
+    {
+        $product = Product::findOrFail($id);
 
-    // Delete images images
-    ProductImage::where('product_id', $product->id)->delete();
+        // Delete images images
+        ProductImage::where('product_id', $product->id)->delete();
 
-    // Delete thumbnail file (optional, if needed)
-    if ($product->thumbnail) {
-        Storage::disk('public')->delete($product->thumbnail);
+        // Delete thumbnail file (optional, if needed)
+        if ($product->thumbnail) {
+            Storage::disk('public')->delete($product->thumbnail);
+        }
+
+        // Delete product record
+        $product->delete();
+
+        return redirect()->back()->with('success', 'Product deleted successfully!');
     }
-
-    // Delete product record
-    $product->delete();
-
-    return redirect()->back()->with('success', 'Product deleted successfully!');
-}
 
 }

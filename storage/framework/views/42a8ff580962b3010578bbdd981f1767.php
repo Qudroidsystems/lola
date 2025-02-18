@@ -652,12 +652,32 @@
                 <!--begin::Input group-->
                 <div class="w-100 w-md-800px">
                     <!--begin::Label-->
-                    <label class="required form-label">Price</label>
+                    <label class="required form-label">Base Price</label>
                     <!--end::Label-->
 
                     <!--begin::Input-->
                     <div class="d-flex gap-3">
                         <input type="number" name="price" class="form-control mb-2" placeholder="Price" required value="" />
+
+                    </div>
+                    <!--end::Input-->
+
+                    <!--begin::Description-->
+                    <div class="text-muted fs-7">Enter the product Price.</div>
+                    <!--end::Description-->
+                </div>
+            <!--end::Input group-->
+
+
+              <!--begin::Input group-->
+              <div class="w-100 w-md-800px">
+                    <!--begin::Label-->
+                    <label class="required form-label">Sale Price</label>
+                    <!--end::Label-->
+
+                    <!--begin::Input-->
+                    <div class="d-flex gap-3">
+                        <input type="number" name="sale_price" class="form-control mb-2" placeholder="Sale Price" required value="" />
 
                     </div>
                     <!--end::Input-->
@@ -791,8 +811,9 @@
                     <!--begin::Input group-->
                     <div class="fv-row w-100 flex-md-root">
                         <!--begin::Label-->
-                        <label class="required form-label">Manufacture Date</label>
+                        <label class="form-label">Manufactured On</label>
                         <!--end::Label-->
+
 
                         <!--begin::Select2-->
                           <!--begin::Input-->
@@ -825,6 +846,74 @@
                     <!--end::Input group-->
                 </div>
                 <!--end:Tax-->
+
+
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-stack">
+
+                      <!--begin::Label-->
+                      <label class="form-label">Product's Featuring</label>
+                        <!--end::Label-->
+
+
+
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-stack">
+
+
+
+
+
+                        <!--begin::Switch-->
+                        <label class="form-check form-switch form-check-custom form-check-solid">
+                            <input class="form-check-input" name="is_featured" type="checkbox" value="1" checked="checked"/>
+                            <span class="form-check-label fw-semibold text-muted">
+                              Featured Product
+                            </span>
+                        </label>
+                        <!--end::Switch-->
+
+                         <!--begin::Switch-->
+                         <label class="form-check form-switch form-check-custom form-check-solid">
+                                <input class="form-check-input" name="is_new" type="checkbox" value="1" checked="checked"/>
+                                <span class="form-check-label fw-semibold text-muted">
+                                   New Product
+                                </span>
+                            </label>
+                            <!--end::Switch-->
+
+                             <!--begin::Switch-->
+                             <label class="form-check form-switch form-check-custom form-check-solid">
+                                <input class="form-check-input" name="on_sale" type="checkbox" value="1" checked="checked"/>
+                                <span class="form-check-label fw-semibold text-muted">
+                                   On Sale
+                                </span>
+                            </label>
+                            <!--end::Switch-->
+                    </div>
+                    <!--end::Input group-->
+
+
+
+
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-stack">
+
+                        <!--begin::Label-->
+                        <label class="form-label"></label>
+                        <!--end::Label-->
+
+
+
+
+
+                    </div>
+                    <!--end::Input group-->
+
 
                 <div class="d-flex justify-content-end">
                     <!--begin::Button-->
@@ -867,15 +956,7 @@
                     </div>
         <!--end::Tab content-->
 
-        <div class="d-flex justify-content-end">
-            <!--begin::Button-->
-            <a href="products.html" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">
-                Cancel
-            </a>
-            <!--end::Button-->
 
-
-        </div>
     </div>
     <!--end::Main column-->
 </form>
@@ -904,5 +985,25 @@
         });
     });
 </script>
+
+<!-- <script>
+document.addEventListener("DOMContentLoaded", function () {
+    let contentDiv = document.getElementById("kt_ecommerce_add_product_description");
+    let hiddenTextarea = document.getElementById("description");
+
+    // Sync content on input
+    contentDiv.addEventListener("input", function () {
+        hiddenTextarea.value = contentDiv.innerHTML;
+
+    });
+
+
+    // Also sync before form submission
+    document.getElementById("kt_ecommerce_add_product_form").addEventListener("submit", function () {
+        hiddenTextarea.value = contentDiv.innerHTML;
+    });
+});
+</script> -->
+
 
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/product/add.blade.php ENDPATH**/ ?>

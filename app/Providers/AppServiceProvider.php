@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
                 $cartItems = auth()->user()->cartItems()->with('product')->get();
                 $cartCount = $cartItems->sum('quantity');
                 $cartTotal = $cartItems->sum(function ($item) {
-                    return $item->quantity * $item->product->base_price;
+                    return $item->quantity * $item->product->sale_price;
                 });
             }
 

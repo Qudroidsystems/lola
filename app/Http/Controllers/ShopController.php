@@ -82,7 +82,12 @@ class ShopController extends Controller
      */
     public function show(string $id)
     {
-        //
+            // Find the product by ID and load related data
+            $product = Product::with(['categories', 'brands', 'units', 'warehouses', 'images', 'reviews.user'])
+            ->findOrFail($id);
+
+            // Return the product details view
+            return view('frontend.singleProduct', compact('product'));
     }
 
     /**

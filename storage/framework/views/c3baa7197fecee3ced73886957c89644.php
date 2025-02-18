@@ -86,7 +86,7 @@
                                 </a>
                             </td>
                             <td class="pro-price">
-                                <span>$<?php echo e(number_format($item->product->base_price, 2)); ?></span>
+                                <span>$<?php echo e(number_format($item->product->sale_price, 2)); ?></span>
                             </td>
                             <td class="pro-quantity">
                                 <form action="<?php echo e(route('cart.update', $item->id)); ?>" method="POST">
@@ -102,7 +102,7 @@
                                 </form>
                             </td>
                             <td class="pro-subtotal">
-                                <span>$<?php echo e(number_format($item->product->base_price * $item->quantity, 2)); ?></span>
+                                <span>$<?php echo e(number_format($item->product->sale_price * $item->quantity, 2)); ?></span>
                             </td>
                             <td class="pro-remove">
                                 <form action="<?php echo e(route('cart.destroy', $item->id)); ?>" method="POST">

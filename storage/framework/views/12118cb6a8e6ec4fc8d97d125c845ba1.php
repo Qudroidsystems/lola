@@ -119,7 +119,7 @@
                         <!-- Single Product Item -->
                         <div class="single-product-item text-center">
                             <figure class="product-thumb">
-                                <a href="<?php echo e(route('product.show', $product->id)); ?>">
+                                <a href="<?php echo e(route('shop.show', $product->id)); ?>">
                                     <?php if($product->thumbnail): ?>
                                     <img src="<?php echo e(asset($product->thumbnail)); ?>"
                                          alt="<?php echo e($product->name); ?>"

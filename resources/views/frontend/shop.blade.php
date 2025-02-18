@@ -680,7 +680,7 @@
                                     <div class="single-product-item text-center">
                                         <!-- Product Image -->
                                         <figure class="product-thumb">
-                                            <a href="{{ route('product.show', $product->id) }}">
+                                            <a href="{{ route('shop.show', $product->id) }}">
                                                 @if($product->thumbnail)
                                                     <img src="{{ asset($product->thumbnail) }}"
                                                          alt="{{ $product->name }}"
@@ -694,7 +694,7 @@
                                         <!-- Product Details -->
                                         <div class="product-details">
                                             <h2>
-                                                <a href="{{ route('product.show', $product->id) }}">
+                                                <a href="{{ route('shop.show', $product->id) }}">
                                                     {{ $product->name }}
                                                 </a>
                                             </h2>
@@ -813,3 +813,43 @@
 </div>
 <!--== Page Content Wrapper End ==-->
 @endSection
+
+
+<!-- Quick View Modals -->
+@foreach($products as $product)
+<div class="modal fade" id="quickView-{{ $product->id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Add quick view content here -->
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="row">
+
+                    @if($product->thumbnail)
+                    <img src="{{ asset($product->thumbnail) }}"
+                         class="img-fluid"
+                         alt="{{ $product->name }}">
+                    @else
+                        <!-- Show placeholder or nothing -->
+                        <img src="{{ asset('images/placeholder.png') }}"
+                            class="img-fluid"
+                            alt="No image available">
+                    @endif
+                    <div class="col-md-6">
+                        <h3>{{ $product->name }}</h3>
+                        <div class="price">
+                            ${{ number_format($product->base_price, 2) }}
+                            @if($product->on_sale)
+                                <span class="text-danger">${{ number_format($product->sale_price, 2) }}</span>
+                            @endif
+                        </div>
+                        <p>{{ $product->description }}</p>
+                        <!-- Add more product details as needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+<!--== New Products Area End ==-->

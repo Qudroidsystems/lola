@@ -9,25 +9,13 @@ class Orders extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'genOrderId',
-        'customer_id',
-        'total_amount',
-        'status',
+        'user_id', 'total', 'status'
     ];
 
-
-    public function items()
-{
-    return $this->hasMany(OrderItem::class, 'order_id'); // Explicitly specify the foreign key if needed
-}
-
-    public function payment()
+    public function user()
     {
-        return $this->hasOne(Payment::class, 'order_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function sales()
-    {
-        return $this->hasMany(Sale::class);
-    }
+    
 }

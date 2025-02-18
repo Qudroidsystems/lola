@@ -27,7 +27,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
-
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,14 @@ use App\Http\Controllers\CartController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+ // shop routes
+ Route::prefix('shop')->group(function () {
+    Route::get('/', [ShopController::class, 'index'])->name('shop');
+    Route::post('/', [ShopController::class, 'store'])->name('shop.store');
+    Route::get('/show/{id}', [ShopController::class, 'show'])->name('shop.show');
+
+});
 
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 Auth::routes();
@@ -59,6 +68,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/updateuserrole', [RoleController::class, 'updateuserrole'])->name('roles.updateuserrole');
     Route::get('/userid/{userid}/roleid/{roleid}', [RoleController::class, 'removeuserrole'])->name('roles.removeuserrole');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/user/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
+    Route::post('/billing/update', [BillingAddressController::class, 'update'])->name('billing.update');
 
     Route::resource('category', CategoryController::class);
     Route::delete('/deletecategory/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
@@ -71,7 +85,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::resource('product', ProductController::class);
-    Route::delete('/deleteproduct/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+    Route::get('/deleteproduct/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
     Route::post('/upload-images', [ProductController::class, 'uploadImages'])->name('upload.images');
     //Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 
@@ -130,6 +144,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/compare/{product}', [CompareController::class, 'add'])->name('compare.add');
     Route::get('/compare', [CompareController::class, 'index'])->name('compare.index');
     Route::delete('/compare/{product}', [CompareController::class, 'remove'])->name('compare.remove');
+
+    Route::prefix('reviews')->group(function (){
+            Route::post('/{productId}', [ReviewController::class, 'store'])->name('reviews.store');
+            Route::put('/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+            Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    });
+
 
 
         // Cart routes

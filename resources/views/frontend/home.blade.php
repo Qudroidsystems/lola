@@ -118,7 +118,7 @@
                         <!-- Single Product Item -->
                         <div class="single-product-item text-center">
                             <figure class="product-thumb">
-                                <a href="{{ route('product.show', $product->id) }}">
+                                <a href="{{ route('shop.show', $product->id) }}">
                                     @if($product->thumbnail)
                                     <img src="{{ asset($product->thumbnail) }}"
                                          alt="{{ $product->name }}"

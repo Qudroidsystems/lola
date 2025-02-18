@@ -84,7 +84,7 @@
                                 </a>
                             </td>
                             <td class="pro-price">
-                                <span>${{ number_format($item->product->base_price, 2) }}</span>
+                                <span>${{ number_format($item->product->sale_price, 2) }}</span>
                             </td>
                             <td class="pro-quantity">
                                 <form action="{{ route('cart.update', $item->id) }}" method="POST">
@@ -100,7 +100,7 @@
                                 </form>
                             </td>
                             <td class="pro-subtotal">
-                                <span>${{ number_format($item->product->base_price * $item->quantity, 2) }}</span>
+                                <span>${{ number_format($item->product->sale_price * $item->quantity, 2) }}</span>
                             </td>
                             <td class="pro-remove">
                                 <form action="{{ route('cart.destroy', $item->id) }}" method="POST">
