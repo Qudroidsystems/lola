@@ -32,8 +32,9 @@
                     <!-- Banner Single Carousel Start -->
                     <div class="single-carousel-wrap home_6_slide_1">
                         <div class="banner-caption text-center text-lg-start">
-                            <h4>Rubby Store</h4>
-                            <h2>Ring Solitaire <br> for Princess</h2>
+                            <p>  <h2>LorLahtate Store </h2></p>
+
+                            <h3>Necklace  <br> for Princess</h3>
                             <p>Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
                             <a href="#" class="btn-long-arrow">Learn More</a>
                         </div>
@@ -43,8 +44,9 @@
                     <!-- Banner Single Carousel Start -->
                     <div class="single-carousel-wrap home_6_slide_2">
                         <div class="banner-caption text-center text-lg-start">
-                            <h4>New Collection 2017</h4>
-                            <h2>Nice Earrings <br> Collection</h2>
+                        <p>  <h2>LorLahtate Store </h2></p>
+
+                            <h3>Necklace  <br> for Princess</h3>
                             <p>Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
                             <a href="#" class="btn-long-arrow">Learn More</a>
                         </div>
