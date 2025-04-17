@@ -243,60 +243,7 @@
 
 
 <!--== Testimonial Area Start ==-->
-<section id="testimonial-area" class="mt-9">
-    <div class="ruby-container">
-        <div class="testimonial-wrapper">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <!-- Section Title Start -->
-                    <div class="section-title">
-                        <h2>What People Say</h2>
-                        <p>Testimonials</p>
-                    </div>
-                    <!-- Section Title End -->
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-lg-7 m-auto text-center">
-                    <div class="testimonial-content-wrap">
-                        <div id="testimonialCarousel" class="owl-carousel">
-                            <div class="single-testimonial-item">
-                                <p>These guys have been absolutely outstanding. When I needed them they came through in
-                                    a big way! I know that if you buy this theme, you'll get the one thing we all look
-                                    for when we buy on Themeforest, and that's real support for the craziest of
-                                    requests!</p>
-
-                                <h3 class="client-name">Luis Manrata</h3>
-                                <span class="client-email">you@email.here</span>
-                            </div>
-
-                            <div class="single-testimonial-item">
-                                <p>These guys have been absolutely outstanding. When I needed them they came through in
-                                    a big way! I know that if you buy this theme, you'll get the one thing we all look
-                                    for when we buy on Themeforest, and that's real support for the craziest of
-                                    requests!</p>
-
-                                <h3 class="client-name">John Dibba</h3>
-                                <span class="client-email">you@email.here</span>
-                            </div>
-
-                            <div class="single-testimonial-item">
-                                <p>These guys have been absolutely outstanding. When I needed them they came through in
-                                    a big way! I know that if you buy this theme, you'll get the one thing we all look
-                                    for when we buy on Themeforest, and that's real support for the craziest of
-                                    requests!</p>
-
-                                <h3 class="client-name">Alex Tuntuni</h3>
-                                <span class="client-email">you@email.here</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <!--== Testimonial Area End ==-->
 <?php $__env->stopSection(); ?>
 
