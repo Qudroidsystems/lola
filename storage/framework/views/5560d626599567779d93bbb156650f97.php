@@ -11,7 +11,8 @@
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-        <link rel="shortcut icon" href="<?php echo e(asset('html/assets/assets/media/logos/favicon.ico')); ?>"/>
+        <!-- <link rel="shortcut icon" href="<?php echo e(asset('html/assets/assets/media/logos/favicon.ico')); ?>"/> -->
+        <link rel="shortcut icon" href="<?php echo e(asset('ruby/ruby/assets/img/favicon.ico')); ?>" type="image/x-icon"/>
 
         <!--begin::Fonts(mandatory for all pages)-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700"/>

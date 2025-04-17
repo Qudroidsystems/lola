@@ -12,7 +12,7 @@ class UserDashboardController extends Controller
         $orders = $user->orders()->latest()->get();
         $billingAddress = $user->billingAddress()->first();
 
-        \Log::info('Dashboard accessed for user: ' . $user->id . ', Orders found: ' . $orders->count());
+      //  \Log::info('Dashboard accessed for user: ' . $user->id . ', Orders found: ' . $orders->count());
         return view('frontend.user-dashboard', compact('user', 'orders', 'billingAddress'));
     }
 
