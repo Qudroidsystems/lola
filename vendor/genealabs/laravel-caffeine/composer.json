@@ -1,0 +1,47 @@
+{
+    "name": "genealabs/laravel-caffeine",
+    "description": "Keeping Your Laravel Forms Awake",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mike Bronner",
+            "email": "hello@genealabs.com"
+        }
+    ],
+    "require": {
+        "illuminate/routing": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0",
+        "jenssegers/model": "^1.5"
+    },
+    "require-dev": {
+        "orchestra/testbench-browser-kit": "^8.0",
+        "orchestra/testbench-dusk": "^8.0",
+        "orchestra/testbench": "^8.0|^9.0",
+        "phpmd/phpmd": "^2.13",
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GeneaLabs\\LaravelCaffeine\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GeneaLabs\\LaravelCaffeine\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GeneaLabs\\LaravelCaffeine\\Providers\\Service"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

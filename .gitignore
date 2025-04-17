@@ -1,0 +1,5 @@
+# Ignore storage directory
+storage
+
+# Ignore environment file
+.env

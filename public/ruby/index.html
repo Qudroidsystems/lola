@@ -1,0 +1,886 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+
+<!-- Mirrored from htmldemo.net/ruby/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 24 Dec 2024 23:51:05 GMT -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Ruby - Jewelry Store e-Commerce Bootstrap 5 Template</title>
+    <meta name="description" content="">
+    <meta name="robots" content="noindex, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+    <!--=============== All CSS Files =================-->
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Icon Font -->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <!-- Plugins css file -->
+    <link rel="stylesheet" href="assets/css/plugins.css">
+    <!-- Theme main style -->
+    <link rel="stylesheet" href="assets/style.css">
+    <!-- Responsive css -->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <!-- Modernizr JS -->
+    <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+
+    <style>
+        .overlay::before {
+            background-color: #222;
+            bottom: 0;
+            content: "";
+            left: 0;
+            opacity: 0.9;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: -1;
+        }
+
+        .demo-item:hover .image::after {
+            opacity: 0.7;
+        }
+
+        .section-title {
+            text-transform: capitalize;
+        }
+
+        .buy-btn {
+            padding: 10px 40px;
+            height: auto;
+        }
+
+        .buy-btn.top-btn {
+            background-color: #e74c3c;
+            border: medium none;
+            color: #ffffff;
+            line-height: 28px;
+            margin: 16px 0;
+        }
+
+        .buy-btn.top-btn:hover {
+            background: #d24948;
+            border-color: #e74c3c;
+        }
+
+        .buy-btn:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .demo-item .image::after {
+            background-color: #e74c3c;
+        }
+
+        .demo-item .image i:hover {
+            color: #e74c3c;
+        }
+
+        .stick .buy-btn.top-btn {
+            border: medium none;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .stick .logo {
+            float: inherit;
+            margin: -8px 0 0;
+        }
+
+        .stick .buy-btn {
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        .single-feature .icon {
+            color: #e74c3c;
+        }
+
+        .footer-section {
+            background-color: #22252c;
+        }
+
+        .stick .buy-btn:hover {
+            color: #fff;
+        }
+
+        .demo-item .title a:hover {
+            color: #E54545;
+        }
+
+        .footer-section .buy-btn:hover {
+            color: #26aef9;
+        }
+
+        .footer-section .buy-btn.bottom-btn {
+            background-color: #e74c3c;
+            border: 2px solid #e74c3c;
+            color: #ffffff;
+        }
+
+        .hero-section,
+        .hero-section .container,
+        .hero-section .row {
+            height: 100vh;
+            padding: 0;
+        }
+
+        .hero-content-wrap {
+            display: flex;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .hero-content h1 strong {
+            text-transform: capitalize;
+            color: #e74c3c;
+        }
+
+        .stick .non-sticky {
+            display: none;
+        }
+
+        .demo-item {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .demo-item .title {
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        .demo-item .title {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        /*Feature css here*/
+        .feature-item {
+            background-color: #ffffff;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 45px 15px;
+            text-align: center;
+        }
+
+        .feature-item:hover {
+            animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        .feature-item img {
+            border-radius: 5px;
+            margin-bottom: 15px;
+            width: 70px;
+        }
+
+        .feature-item h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        .section-title h2 {
+            color: #373737;
+            font-size: 30px;
+            font-weight: 700;
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        .section-title p {
+            color: #444444;
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            margin: 15px auto 0;
+            max-width: 450px;
+        }
+
+        .stick .logo a {
+            width: 140px;
+            margin-top: 6px;
+        }
+
+        /* small mobile :320px */
+        @media (max-width: 767px) {
+            .section-title h1 {
+                font-size: 24px;
+            }
+        }
+
+    </style>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        '../../www.googletagmanager.com/gtm5445.html?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5JCTSSF');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5JCTSSF"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+    <!-- Start Header Section -->
+    <div class="header-section section sticker">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- Logo -->
+                    <div class="logo float-left">
+                        <a class="non-sticky" href="ruby/index.html"><img src="assets/img/ruby/logo.png" alt="logo-image"></a>
+                        <a href="ruby/index.html"><img src="assets/img/ruby/logo-2.png" alt="" class="sticky-logo"></a>
+                    </div>
+                    <!-- Logo -->
+                    <div class="float-right">
+                        <a class="buy-btn top-btn" href="https://1.envato.market/63Y7q" target="_blank">buy Ruby</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header Section End -->
+
+    <!-- Start Hero Section -->
+    <div class="hero-section section overlay d-flex" style="background-image: url('assets/img/ruby/slider-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="hero-content-wrap">
+                    <div class="hero-content text-center col-xs-12">
+                        <h1><strong>Ruby</strong> Jewelry Store e-Commerce Bootstrap 5 Template</h1>
+                        <p>Ruby - Jewelry Store e-Commerce Bootstrap 5 Template is a clean and modern designed HTML5 template.</p>
+                        <a class="buy-btn" href="#core-feature">Template Feature</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero Section End -->
+
+    <!-- Start Demo Section -->
+    <div class="demo-section section pt-120 pb-40" id="demo-area">
+        <div class="container">
+            <div class="row">
+                <div class="section-style">
+                    <div class="section-title col-xs-12 mb-50">
+                        <h1>Home page Layouts</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/index.html" class="image" >
+                            <img src="assets/img/ruby/home-1.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/index.html" >Home Layout 1</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/index2.html" class="image" >
+                            <img src="assets/img/ruby/home-2.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/index2.html" >Home Layout 2</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/index3.html" class="image" >
+                            <img src="assets/img/ruby/home-3.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/index3.html" >Home Layout 3</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/index4.html" class="image" >
+                            <img src="assets/img/ruby/home-4.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/index4.html" >Home Layout 4</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/index5.html" class="image" >
+                            <img src="assets/img/ruby/home-5.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/index5.html" >Home Layout 5</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/index6.html" class="image" >
+                            <img src="assets/img/ruby/home-6.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/index6.html" >Home Layout 6</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-section section  pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="section-style">
+                    <div class="section-title col-xs-12 mb-70">
+                        <h1>Shop Page Layouts.</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/shop.html" class="image" >
+                            <img src="assets/img/ruby/shop-l-s.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/shop.html" >Shop Left Sidebar</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/shop-right-sidebar.html" class="image" >
+                            <img src="assets/img/ruby/shop-r-s.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/shop-right-sidebar.html" >Shop Right Sidebar</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/shop-left-full-wide.html" class="image" >
+                            <img src="assets/img/ruby/shop-l-w.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/shop-left-full-wide.html" >Shop Left Sidebar Wide</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/shop-right-full-wide.html" class="image" >
+                            <img src="assets/img/ruby/shop-r-w.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/shop.html" >Shop Right Sidebar Wide</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/shop-full-wide.html" class="image" >
+                            <img src="assets/img/ruby/shop-w-s.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/shop-full-wide.html" >Shop Without Sidebar</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/single-product.html" class="image" >
+                            <img src="assets/img/ruby/single-product.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/single-product.html" >Product Details</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/single-product-external.html" class="image" >
+                            <img src="assets/img/ruby/single-product-external.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/single-product-external.html" >Product Details External</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/single-product-group.html" class="image" >
+                            <img src="assets/img/ruby/single-product-group.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/single-product-group.html" >Product Details Group</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/single-product-normal.html" class="image" >
+                            <img src="assets/img/ruby/single-product-normal.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/single-product-normal.html" >Product Details Normal</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-section section  pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="section-style">
+                    <div class="section-title col-xs-12 mb-70">
+                        <h1>E-Commerce pages</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/cart.html" class="image" >
+                            <img src="assets/img/ruby/cart.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/cart.html" >Shopping Cart</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/checkout.html" class="image" >
+                            <img src="assets/img/ruby/checkout.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/checkout.html" >checkout</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/wishlist.html" class="image" >
+                            <img src="assets/img/ruby/wishlist.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/wishlist.html" >Wishlist</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/compare.html" class="image" >
+                            <img src="assets/img/ruby/compare.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/compare.html" >Compare Products</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/my-account.html" class="image" >
+                            <img src="assets/img/ruby/myaccount.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/my-account.html" >My Account</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/login-register.html" class="image" >
+                            <img src="assets/img/ruby/login-reg.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/login-register.html" >Login &amp; Register</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-section section  pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="section-style">
+                    <div class="section-title col-xs-12 mb-70">
+                        <h1>Other pages</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/blog-gird.html" class="image" >
+                            <img src="assets/img/ruby/blog-gird.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/blog-gird.html" >Blog Gird Layout</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/blog.html" class="image" >
+                            <img src="assets/img/ruby/blog-rght-sidebar.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/blog.html" >Blog Right Sidebar</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/blog-left-sidebar.html" class="image" >
+                            <img src="assets/img/ruby/blog-left-sidebar.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/blog-left-sidebar.html" >Blog Left Sidebar</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/single-blog.html" class="image" >
+                            <img src="assets/img/ruby/blog-details.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/single-blog.html" >Blog Details</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/contact.html" class="image" >
+                            <img src="assets/img/ruby/contact.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/contact.html" >Contact Page</a></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="ruby/404.html" class="image" >
+                            <img src="assets/img/ruby/error.jpg" alt="Demo Images" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title"><a href="ruby/404.html" >404 Error Page</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Template Feature -->
+    <div class="bg-gray section pt-120 pb-90" id="core-feature">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="section-title text-center mb-80">
+                        <h2>Our core feature</h2>
+                        <p>ruby comes with some Powerful features that make ruby easily customizable and scalable.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/bootstrap.png" alt="">
+                        <h4>bootstrap v5.x.x</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/sass.png" alt="">
+                        <h4>SCSS</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/html5.png" alt="">
+                        <h4>HTML5</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/css3.png" alt="">
+                        <h4>CSS3</h4>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/jquery.png" alt="">
+                        <h4>jQuery</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/responsive.png" alt="">
+                        <h4>fully responsive</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/owl-logo.png" alt="">
+                        <h4>Owl Slider</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/fontawesome.png" alt="">
+                        <h4>fontAwesome icon</h4>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/google-font.png" alt="">
+                        <h4>google font</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/mailchimp.png" alt="">
+                        <h4>Mailchimp Subscribe</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/mail.png" alt="">
+                        <h4>ajax contact form</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/w3c-validation.png" alt="">
+                        <h4>W3C Validation</h4>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/code.png" alt="">
+                        <h4>Clean Code</h4>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/speed.png" alt="">
+                        <h4>Speed Optimized</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/document.png" alt="">
+                        <h4>Well Documented</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-12 mb-30">
+                    <div class="feature-item">
+                        <img src="assets/img/ruby/slick.png" alt="">
+                        <h4>24/7 Support</h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Template Feature -->
+
+    <!-- Start Feature React Product -->
+    <div class="demo-section also-like section pt-120 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="section-title col-xs-12 mb-70">
+                    <h1>You May Also Like (REACT)</h1>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://1.envato.market/VLXVj" target="_blank" class="image" >
+                            <img src="../../themeforest.img.customer.envatousercontent.com/files/345926825/01_preview_wokiee_react.__large_previewd203.jpg?auto=compress%2Cformat&amp;q=80&amp;fit=crop&amp;crop=top&amp;max-h=8000&amp;max-w=590&amp;s=b3a68bed5d5a8a02e82569a5b51d389a"
+                                 alt="Tri-o" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title">
+                            <a href="https://1.envato.market/VLXVj" target="_blank">Wokiee - Multipurpose React eCommerce Template</a>
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://1.envato.market/WD4yQO" class="image" target="_blank">
+                            <img src="../../themeforest.img.customer.envatousercontent.com/files/345926729/01_preview_brook_react.__large_preview1c22.jpg?auto=compress%2Cformat&amp;q=80&amp;fit=crop&amp;crop=top&amp;max-h=8000&amp;max-w=590&amp;s=735402c39364e3c2a381c5b9f437110d"
+                                 alt="" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title">
+                            <a href="https://1.envato.market/WD4yQO" target="_blank">Brook - React JS Creative Multipurpose Template</a>
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://1.envato.market/zajN1M" class="image" target="_blank">
+                            <img src="../../themeforest.img.customer.envatousercontent.com/files/342100068/01_preview_doar_react.__large_preview2110.jpg?auto=compress%2Cformat&amp;q=80&amp;fit=crop&amp;crop=top&amp;max-h=8000&amp;max-w=590&amp;s=2b6a256484eef26881b1d83a3648b038"
+                                 alt="" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title">
+                            <a href="https://1.envato.market/zajN1M" target="_blank">
+                                Doar – Responsive React Dashboard Admin Template
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Feature React Product -->
+
+    <!-- Start Feature HTML Product -->
+    <div class="demo-section also-like bg-gray section pt-120 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="section-title col-xs-12 mb-70">
+                    <h1>You May Also Like (HTML)</h1>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://1.envato.market/mEQ4O" target="_blank" class="image" >
+                            <img src="../../themeforest.img.customer.envatousercontent.com/files/259264814/01_preview_trio.__large_preview03b5.png?auto=compress%2Cformat&amp;fit=crop&amp;crop=top&amp;max-h=8000&amp;max-w=590&amp;s=1dee4d330de7d4d77018f6c9626df0d0"
+                                 alt="Tri-o" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title">
+                            <a href="https://1.envato.market/mEQ4O" target="_blank">Tri-O - Multipurpose Creative Bootstrap 4 Template</a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://1.envato.market/xb3b1" class="image" target="_blank">
+                            <img src="../../themeforest.img.customer.envatousercontent.com/files/261688463/01_uptimo_preview.__large_preview3e50.jpg?auto=compress%2Cformat&amp;fit=crop&amp;crop=top&amp;max-h=8000&amp;max-w=590&amp;s=11ef45cc68fdc9a2493d07758345562f"
+                                 alt="" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title">
+                            <a href="https://1.envato.market/xb3b1" target="_blank">Uptimo - Multipurpose Bootstrap 4 Template</a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://1.envato.market/c/417168/275988/4415?subId1=hasthemes&amp;subId2=demo&amp;subId3=https%3A%2F%2Fthemeforest.net%2Fcart%2Fconfigure_before_adding%2F23106201%3Flicense%3Dregular%26size%3Dsource&amp;u=https%3A%2F%2Fthemeforest.net%2Fcart%2Fconfigure_before_adding%2F23106201%3Flicense%3Dregular%26size%3Dsource" class="image" target="_blank">
+                            <img src="../../themeforest.img.customer.envatousercontent.com/files/345926468/01_preview_lezada_html8d8c.jpg?auto=compress%2Cformat&amp;fit=crop&amp;crop=top&amp;w=590&amp;h=300&amp;s=2d68a7c8f6b4b904a4853f32317fd521"
+                                 alt="" />
+                            <i class="fa fa-long-arrow-right"></i>
+                        </a>
+                        <h4 class="title">
+                            <a href="https://1.envato.market/c/417168/275988/4415?subId1=hasthemes&amp;subId2=demo&amp;subId3=https%3A%2F%2Fthemeforest.net%2Fcart%2Fconfigure_before_adding%2F23106201%3Flicense%3Dregular%26size%3Dsource&amp;u=https%3A%2F%2Fthemeforest.net%2Fcart%2Fconfigure_before_adding%2F23106201%3Flicense%3Dregular%26size%3Dsource" target="_blank">
+                                Lezada - Multipurpose eCommerce Bootstrap 4 Template
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Feature HTML Product -->
+
+    <!-- Start Feature WP Product -->
+    <div class="demo-section also-like section pt-120 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="section-title col-xs-12 mb-70">
+                    <h1>You May Also Like our Other Wordpress Themes</h1>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://themeforest.net/item/jharon-cleaning-service-wordpress-theme/21280792?ref=AslamHasib" class="image" ><img src="../../s3.envato.com/files/239991007/preview.__large_preview.png" alt=""><i class="fa fa-long-arrow-right"></i></a>
+                        <h4 class="title"><a href="https://themeforest.net/item/jharon-cleaning-service-wordpress-theme/21280792?ref=AslamHasib" >Jharon - Cleaning Service WordPress Theme</a></h4>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://themeforest.net/item/haat-minimalist-woocommerce-wordpress-theme/20800446?ref=AslamHasib" class="image" ><img src="../../s3.envato.com/files/238844904/preview.__large_preview.png" alt=""><i class="fa fa-long-arrow-right"></i></a>
+                        <h4 class="title"><a href="https://themeforest.net/item/haat-minimalist-woocommerce-wordpress-theme/20800446?ref=AslamHasib" >Haat - Minimalist WooCommerce Wp Theme </a></h4>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-50">
+                    <div class="demo-item">
+                        <a href="https://themeforest.net/item/boast-corporate-wordpress-theme/20567356?ref=AslamHasib" class="image" ><img src="../../s3.envato.com/files/238369631/Preview.__large_preview.png" alt=""><i class="fa fa-long-arrow-right"></i></a>
+                        <h4 class="title"><a href="https://themeforest.net/item/boast-corporate-wordpress-theme/20567356?ref=AslamHasib" > Boast - Corporate WordPress Theme </a></h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Feature WP Product -->
+
+    <!-- Start Footer Area -->
+    <div class="footer-section section pt-65 pb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>Make your website come to life quickly.</h1>
+                    <a class="buy-btn float-right bottom-btn" href="https://1.envato.market/63Y7q" target="_blank">buy ruby</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Footer Area -->
+
+
+    <!-- Placed JS at the end of the document so the pages load faster -->
+    <!-- jQuery latest version -->
+    <script src="assets/js/vendor/jquery-3.1.1.min.js"></script>
+    <!-- Plugins js -->
+    <script src="assets/js/plugins.js"></script>
+    <!-- Main js -->
+    <script src="assets/js/main.js"></script>
+</body>
+
+
+<!-- Mirrored from htmldemo.net/ruby/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 24 Dec 2024 23:51:54 GMT -->
+</html>
