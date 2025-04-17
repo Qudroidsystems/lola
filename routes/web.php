@@ -69,13 +69,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/adduser/{id}', [RoleController::class, 'adduser'])->name('roles.adduser');
     Route::get('/updateuserrole', [RoleController::class, 'updateuserrole'])->name('roles.updateuserrole');
     Route::get('/userid/{userid}/roleid/{roleid}', [RoleController::class, 'removeuserrole'])->name('roles.removeuserrole');
-    //Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Route::get('/userdashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     // Dashboard Routes
     Route::get('/userdashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     Route::post('/userdashboard/update', [UserDashboardController::class, 'update'])->name('user.update');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
     Route::post('/billing/update', [BillingAddressController::class, 'update'])->name('billing.update');
 

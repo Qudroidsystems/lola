@@ -86,7 +86,7 @@
                                 <dl class="my-account">
                                     <dt>My Account</dt>
                                     <?php if(auth()->guard()->check()): ?>
-                                        <dd><a href="<?php echo e(route('dashboard')); ?>">Dashboard</a></dd>
+                                        <dd><a href="<?php echo e(route('user.dashboard')); ?>">Dashboard</a></dd>
                                         
                                         <dd>
                                             <form method="POST" action="<?php echo e(route('logout')); ?>">

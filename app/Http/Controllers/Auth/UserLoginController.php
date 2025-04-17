@@ -23,6 +23,10 @@ class UserLoginController extends Controller
             return redirect()->route('user.dashboard');
         }
 
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role' => 'admin'])) {
+            return redirect()->route('dashboard');
+        }
+
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
 

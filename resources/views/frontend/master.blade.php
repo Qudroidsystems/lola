@@ -86,7 +86,7 @@
                                 <dl class="my-account">
                                     <dt>My Account</dt>
                                     @auth
-                                        <dd><a href="{{ route('dashboard') }}">Dashboard</a></dd>
+                                        <dd><a href="{{ route('user.dashboard') }}">Dashboard</a></dd>
                                         {{-- <dd><a href="{{ route('profile.edit') }}">Profile</a></dd> --}}
                                         <dd>
                                             <form method="POST" action="{{ route('logout') }}">
