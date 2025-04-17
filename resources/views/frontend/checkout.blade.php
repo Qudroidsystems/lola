@@ -99,7 +99,7 @@
                                 </table>
                             </div>
                             <!-- WhatsApp Button -->
-                            <a href="#" id="whatsapp-button" class="btn btn-success mt-3">
+                            <a href="#" id="whatsapp-button" class="btn btn-success mt-5">
                                 <i class="fab fa-whatsapp"></i> Chat with Seller on WhatsApp
                             </a>
                         </div>
