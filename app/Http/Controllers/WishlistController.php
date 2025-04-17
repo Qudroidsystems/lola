@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\WishlistItem;
 
 class WishlistController extends Controller
 {
@@ -13,14 +14,6 @@ class WishlistController extends Controller
     {
         $wishlistItems = auth()->user()->wishlistItems()->with('product')->get();
         return view('frontend.wishlist', compact('wishlistItems'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -38,34 +31,9 @@ class WishlistController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Added to wishlist!');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error adding to wishlist: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     /**
@@ -73,15 +41,21 @@ class WishlistController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize('delete', $wishlistItem);
+        $wishlistItem = WishlistItem::findOrFail($id);
+
+        // Optional: Check if the item belongs to the user
+        if ($wishlistItem->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+
+        // Authorization (uncomment if policy exists)
+        // $this->authorize('delete', $wishlistItem);
 
         try {
             $wishlistItem->delete();
             return redirect()->back()->with('success', 'Removed from wishlist');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error removing item: ' . $e->getMessage());
         }
     }
-    
 }
