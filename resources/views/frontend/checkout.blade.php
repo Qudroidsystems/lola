@@ -99,7 +99,7 @@
                                 </table>
                             </div>
                             <!-- WhatsApp Button -->
-                            <a href="#" id="whatsapp-button" class="btn btn-success mt-5">
+                            <a href="#" id="whatsapp-button" class="btn btn-success btn-lg mt-5">
                                 <i class="fab fa-whatsapp"></i> Chat with Seller on WhatsApp
                             </a>
                         </div>
@@ -171,7 +171,7 @@
             const total = {{ $total }};
             const shipping = {{ $shipping }};
             const whatsappButton = document.getElementById('whatsapp-button');
-            const sellerPhone = '+2349057522004'; // Replace with seller's WhatsApp number, e.g., +1234567890
+            const sellerPhone = 'YOUR_SELLER_PHONE_NUMBER'; // Replace with seller's WhatsApp number, e.g., +1234567890
 
             const message = `Hello, I'd like to discuss my order:\n\n` +
                 cartItems.map(item => 
