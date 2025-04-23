@@ -171,7 +171,7 @@
             const total = {{ $total }};
             const shipping = {{ $shipping }};
             const whatsappButton = document.getElementById('whatsapp-button');
-            const sellerPhone = 'YOUR_SELLER_PHONE_NUMBER'; // Replace with seller's WhatsApp number, e.g., +1234567890
+            const sellerPhone = '+2349057522004'; // Replace with seller's WhatsApp number, e.g., +1234567890
 
             const message = `Hello, I'd like to discuss my order:\n\n` +
                 cartItems.map(item => 
