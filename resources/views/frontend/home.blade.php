@@ -32,7 +32,7 @@
                     <!-- Banner Single Carousel Start -->
                     <div class="single-carousel-wrap home_6_slide_1">
                         <div class="banner-caption text-center text-lg-start">
-                            <p>  <h2>LorLahtate Store </h2></p>
+                            <p>  <h2>LorLahtate </h2></p>
 
                             <h3>Necklace  <br> for Princess</h3>
                             <p>Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
