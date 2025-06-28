@@ -62,7 +62,14 @@
                                 </a>
                             </td>
                             <td class="pro-price">
-                                <span>${{ number_format($item->product->base_price, 2) }}</span>
+                                <span>
+                                    @if($item->product->on_sale)
+                                        <del>RM {{ number_format($item->product->base_price, 2) }}</del>
+                                        RM {{ number_format($item->product->sale_price, 2) }}
+                                    @else
+                                        RM {{ number_format($item->product->base_price, 2) }}
+                                    @endif
+                                </span>
                             </td>
                             <td class="pro-quantity">
                                 @if($item->product->stock > 0)

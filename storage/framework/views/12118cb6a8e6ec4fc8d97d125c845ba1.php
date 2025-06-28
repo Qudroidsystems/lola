@@ -33,10 +33,9 @@
                     <!-- Banner Single Carousel Start -->
                     <div class="single-carousel-wrap home_6_slide_1">
                         <div class="banner-caption text-center text-lg-start">
-                            <p>  <h2>LorLahtate Store </h2></p>
-
-                            <h3>Necklace  <br> for Princess</h3>
-                            <p>Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
+                            <p><h2>LorLahtate</h2></p>
+                            <h3>Necklace <br> for Princess</h3>
+                            <p>Elevate your elegance with our exquisite LorLahtate necklace, crafted with precision to enhance your royal charm.</p>
                             <a href="#" class="btn-long-arrow">Learn More</a>
                         </div>
                     </div>
@@ -45,10 +44,9 @@
                     <!-- Banner Single Carousel Start -->
                     <div class="single-carousel-wrap home_6_slide_2">
                         <div class="banner-caption text-center text-lg-start">
-                        <p>  <h2>LorLahtate Store </h2></p>
-
-                            <h3>Necklace  <br> for Princess</h3>
-                            <p>Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>
+                            <p><h2>LorLahtate</h2></p>
+                            <h3>Necklace <br> for Princess</h3>
+                            <p>Discover timeless beauty with the LorLahtate necklace, designed to make every moment sparkle with sophistication.</p>
                             <a href="#" class="btn-long-arrow">Learn More</a>
                         </div>
                     </div>
@@ -60,47 +58,6 @@
 </section>
 <!--== Banner Slider End ==-->
 
-
-<!--== Featured Products Area Start ==-->
-<!-- <div id="category-feature-product" class="pt-9">
-    <div class="ruby-container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="row">
-                    <?php $__currentLoopData = $featuredCategories->take(2); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="col-lg-12 mb-4">
-                        <div class="single-featured-product position-relative">
-                            <a href="<?php echo e(route('shop', ['category' => $category->slug])); ?>">
-                                <?php if($category->cover): ?>
-                                <img src="<?php echo e(asset('storage/'.$category->cover->path)); ?>"
-                                     alt="<?php echo e($category->name); ?>"
-                                     class="img-fluid rounded">
-                                <?php else: ?>
-                                <div class="category-placeholder bg-light rounded d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-image fa-3x text-muted"></i>
-                                </div>
-                                <?php endif; ?>
-                                <div class="category-overlay bg-dark bg-opacity-50 p-3 text-white">
-                                    <h3 class="mb-0"><?php echo e($category->name); ?></h3>
-                                    <?php if($category->description): ?>
-                                    <p class="mb-0 small"><?php echo e(Str::limit($category->description, 50)); ?></p>
-                                    <?php endif; ?>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-</div> -->
-<!--== Featured Products Area End ==-->
-
-
-
 <!--== New Products Area Start ==-->
 <section id="new-products-area" class="p-9">
     <div class="ruby-container">
@@ -108,7 +65,7 @@
             <div class="col-lg-12 text-center">
                 <div class="section-title">
                     <h2>New Products</h2>
-                    <p>Trending stunning Unique </p>
+                    <p>Discover our latest collection of stunning and unique jewelry pieces.</p>
                 </div>
             </div>
         </div>
@@ -145,11 +102,11 @@
                                 </span>
                                 <span class="price">
                                     <?php if($product->on_sale): ?>
-                                        <del>$<?php echo e(number_format($product->base_price, 2)); ?></del>
-                                        $<?php echo e(number_format($product->sale_price, 2)); ?>
+                                        <del>RM <?php echo e(number_format($product->base_price, 2)); ?></del>
+                                        RM <?php echo e(number_format($product->sale_price, 2)); ?>
 
                                     <?php else: ?>
-                                        $<?php echo e(number_format($product->base_price, 2)); ?>
+                                        RM <?php echo e(number_format($product->base_price, 2)); ?>
 
                                     <?php endif; ?>
                                 </span>
@@ -209,7 +166,6 @@
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 <div class="row">
-
                     <?php if($product->thumbnail): ?>
                     <img src="<?php echo e(asset($product->thumbnail)); ?>"
                          class="img-fluid"
@@ -223,10 +179,10 @@
                     <div class="col-md-6">
                         <h3><?php echo e($product->name); ?></h3>
                         <div class="price">
-                            $<?php echo e(number_format($product->base_price, 2)); ?>
+                            RM <?php echo e(number_format($product->base_price, 2)); ?>
 
                             <?php if($product->on_sale): ?>
-                                <span class="text-danger">$<?php echo e(number_format($product->sale_price, 2)); ?></span>
+                                <span class="text-danger">RM <?php echo e(number_format($product->sale_price, 2)); ?></span>
                             <?php endif; ?>
                         </div>
                         <p><?php echo e($product->description); ?></p>
@@ -239,12 +195,5 @@
 </div>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 <!--== New Products Area End ==-->
-
-
-
-<!--== Testimonial Area Start ==-->
-
-<!--== Testimonial Area End ==-->
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('frontend.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/frontend/home.blade.php ENDPATH**/ ?>

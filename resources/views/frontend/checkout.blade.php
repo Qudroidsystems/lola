@@ -67,7 +67,7 @@
                                 <div id="card-element" class="form-control"></div>
                                 <div id="card-errors" role="alert" class="text-danger"></div>
                             </div>
-                            <button type="submit" class="btn-add-to-cart mt-3">Pay ${{ number_format($total, 2) }}</button>
+                            <button type="submit" class="btn-add-to-cart mt-3">Pay RM {{ number_format($total, 2) }}</button>
                         </form>
                     </div>
                 </div>
@@ -81,20 +81,20 @@
                                     @foreach ($cartItems as $item)
                                         <tr>
                                             <td>{{ $item->product->name }} x {{ $item->quantity }}</td>
-                                            <td>${{ number_format($item->product->sale_price * $item->quantity, 2) }}</td>
+                                            <td>RM {{ number_format($item->product->sale_price * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
                                         <td>Sub Total</td>
-                                        <td>${{ number_format($total - $shipping, 2) }}</td>
+                                        <td>RM {{ number_format($total - $shipping, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Shipping</td>
-                                        <td>${{ number_format($shipping, 2) }}</td>
+                                        <td>RM {{ number_format($shipping, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Total</td>
-                                        <td>${{ number_format($total, 2) }}</td>
+                                        <td>RM {{ number_format($total, 2) }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -175,11 +175,11 @@
 
             const message = `Hello, I'd like to discuss my order:\n\n` +
                 cartItems.map(item => 
-                    `${item.product.name} x ${item.quantity} - $${(item.product.sale_price * item.quantity).toFixed(2)}`
+                    `${item.product.name} x ${item.quantity} - RM ${(item.product.sale_price * item.quantity).toFixed(2)}`
                 ).join('\n') +
-                `\n\nSubtotal: $${(total - shipping).toFixed(2)}` +
-                `\nShipping: $${shipping.toFixed(2)}` +
-                `\nTotal: $${total.toFixed(2)}` +
+                `\n\nSubtotal: RM ${(total - shipping).toFixed(2)}` +
+                `\nShipping: RM ${shipping.toFixed(2)}` +
+                `\nTotal: RM ${total.toFixed(2)}` +
                 `\n\nCan we discuss alternative payment options?`;
 
             const encodedMessage = encodeURIComponent(message);

@@ -32,8 +32,8 @@
                 <div class="page-title-content">
                     <h1>Shop</h1>
                     <ul class="breadcrumb">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="index.html" class="active">Shop</a></li>
+                        <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
+                        <li><a href="<?php echo e(route('shop')); ?>" class="active">Shop</a></li>
                     </ul>
                 </div>
             </div>
@@ -89,32 +89,21 @@
                                 <div class="shopping-option-item">
                                     <h4>Price</h4>
                                     <ul class="sidebar-list">
-                                        <li><a href="<?php echo e(route('shop', array_merge(request()->query(), ['price' => '0-50']))); ?>"
-                                            class="<?php echo e(request('price') == '0-50' ? 'active' : ''); ?>">$0 - $50</a></li>
-                                        <li><a href="<?php echo e(route('shop', array_merge(request()->query(), ['price' => '50-100']))); ?>"
-                                            class="<?php echo e(request('price') == '50-100' ? 'active' : ''); ?>">$50 - $100</a></li>
-                                        <li><a href="<?php echo e(route('shop', array_merge(request()->query(), ['price' => '100-200']))); ?>"
-                                            class="<?php echo e(request('price') == '100-200' ? 'active' : ''); ?>">$100 - $200</a></li>
+                                        <li><a href="<?php echo e(route('shop', array_merge(request()->query(), ['price' => '0-210']))); ?>"
+                                            class="<?php echo e(request('price') == '0-210' ? 'active' : ''); ?>">RM 0 - RM 210</a></li>
+                                        <li><a href="<?php echo e(route('shop', array_merge(request()->query(), ['price' => '210-420']))); ?>"
+                                            class="<?php echo e(request('price') == '210-420' ? 'active' : ''); ?>">RM 210 - RM 420</a></li>
+                                        <li><a href="<?php echo e(route('shop', array_merge(request()->query(), ['price' => '420-840']))); ?>"
+                                            class="<?php echo e(request('price') == '420-840' ? 'active' : ''); ?>">RM 420 - RM 840</a></li>
                                     </ul>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                     <!-- Single Sidebar Item End -->
-
-                    <!-- Single Sidebar Item Start -->
-                    <!--  -->
-                    <!-- Single Sidebar Item End -->
-
-                    <!-- Single Sidebar Item Start -->
-                    
-                    <!-- Single Sidebar Item End -->
                 </div>
             </div>
             <!-- Sidebar Area End -->
-
-
 
             <!-- Shop Page Content Start -->
             <div class="col-lg-9 order-first order-lg-last">
@@ -137,7 +126,7 @@
                                 <li class="box-gird"><i class="fa fa-th"></i></li>
                                 <li class="list"><i class="fa fa-list-ul"></i></li>
                             </ul>
-                            <span class="show-items">Items 1 - 9 of 17</span>
+                            <span class="show-items">Items 1 - 9 of <?php echo e($products->total()); ?></span>
                         </div>
 
                         <div class="product-sort_by d-flex align-items-center mt-3 mt-md-0">
@@ -154,8 +143,6 @@
 
                     <div class="shop-page-products-wrap">
                         <div class="products-wrapper">
-                            
-
                             <div class="row">
                                 <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="col-lg-4 col-sm-6 mb-4">
@@ -196,11 +183,11 @@
                                             <!-- Price -->
                                             <span class="price">
                                                 <?php if($product->on_sale): ?>
-                                                    <del>$<?php echo e(number_format($product->base_price, 2)); ?></del>
-                                                    $<?php echo e(number_format($product->sale_price, 2)); ?>
+                                                    <del>RM <?php echo e(number_format($product->base_price, 2)); ?></del>
+                                                    RM <?php echo e(number_format($product->sale_price, 2)); ?>
 
                                                 <?php else: ?>
-                                                    $<?php echo e(number_format($product->base_price, 2)); ?>
+                                                    RM <?php echo e(number_format($product->base_price, 2)); ?>
 
                                                 <?php endif; ?>
                                             </span>
@@ -273,22 +260,17 @@
 
                     <div class="products-settings-option d-block d-md-flex">
                         <nav class="page-pagination">
-                            <ul class="pagination">
-                                <li><a href="#" aria-label="Previous">&laquo;</a></li>
-                                <li><a class="current" href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#" aria-label="Next">&raquo;</a></li>
-                            </ul>
+                            <?php echo e($products->appends(request()->query())->links()); ?>
+
                         </nav>
 
                         <div class="product-per-page d-flex align-items-center mt-3 mt-md-0">
                             <label for="show-per-page">Show Per Page</label>
-                            <select name="sort" id="show-per-page">
-                                <option value="9">9</option>
-                                <option value="15">15</option>
-                                <option value="21">21</option>
-                                <option value="6">27</option>
+                            <select name="show-per-page" id="show-per-page">
+                                <option value="9" <?php echo e(request('show-per-page') == '9' ? 'selected' : ''); ?>>9</option>
+                                <option value="15" <?php echo e(request('show-per-page') == '15' ? 'selected' : ''); ?>>15</option>
+                                <option value="21" <?php echo e(request('show-per-page') == '21' ? 'selected' : ''); ?>>21</option>
+                                <option value="27" <?php echo e(request('show-per-page') == '27' ? 'selected' : ''); ?>>27</option>
                             </select>
                         </div>
                     </div>
@@ -301,7 +283,6 @@
 <!--== Page Content Wrapper End ==-->
 <?php $__env->stopSection(); ?>
 
-
 <!-- Quick View Modals -->
 <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 <div class="modal fade" id="quickView-<?php echo e($product->id); ?>" tabindex="-1">
@@ -311,7 +292,6 @@
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 <div class="row">
-
                     <?php if($product->thumbnail): ?>
                     <img src="<?php echo e(asset($product->thumbnail)); ?>"
                          class="img-fluid"
@@ -325,10 +305,10 @@
                     <div class="col-md-6">
                         <h3><?php echo e($product->name); ?></h3>
                         <div class="price">
-                            $<?php echo e(number_format($product->base_price, 2)); ?>
+                            RM <?php echo e(number_format($product->base_price, 2)); ?>
 
                             <?php if($product->on_sale): ?>
-                                <span class="text-danger">$<?php echo e(number_format($product->sale_price, 2)); ?></span>
+                                <span class="text-danger">RM <?php echo e(number_format($product->sale_price, 2)); ?></span>
                             <?php endif; ?>
                         </div>
                         <p><?php echo e($product->description); ?></p>
@@ -341,5 +321,5 @@
 </div>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 <!--== New Products Area End ==-->
-
+<?php $__env->stopSection(); ?>
 <?php echo $__env->make('frontend.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/frontend/shop.blade.php ENDPATH**/ ?>

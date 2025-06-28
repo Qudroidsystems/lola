@@ -65,7 +65,14 @@
                                     @endfor
                                 </div>
 
-                                <span class="price">{{ number_format($product->sale_price, 2) }}</span>
+                                <span class="price">
+                                    @if($product->on_sale)
+                                        <del>RM {{ number_format($product->base_price, 2) }}</del>
+                                        RM {{ number_format($product->sale_price, 2) }}
+                                    @else
+                                        RM {{ number_format($product->base_price, 2) }}
+                                    @endif
+                                </span>
 
                                 <div class="product-info-stock-sku">
                                     <span class="product-stock-status {{ $product->stock ? 'text-success' : 'text-danger' }}">
@@ -109,7 +116,7 @@
                         <!-- Product Details End -->
                     </div>
 
-                     <div class="row">
+                    <div class="row">
                         <div class="col-lg-12">
                             <div class="product-full-info-reviews">
                                 <nav class="nav" id="nav-tab">
@@ -174,7 +181,7 @@
                                                                 </div>
 
                                                                 <div class="col-12">
-                                                                    <button type="submit" class="btn-add-to-cart" >
+                                                                    <button type="submit" class="btn-add-to-cart">
                                                                         Submit Review
                                                                     </button>
                                                                 </div>
@@ -200,7 +207,6 @@
 <!--== Page Content Wrapper End ==-->
 
 @endsection
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -235,5 +241,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-

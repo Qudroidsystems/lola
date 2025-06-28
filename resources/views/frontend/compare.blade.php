@@ -80,10 +80,10 @@
                                         @foreach($products as $product)
                                         <td class="pro-price">
                                             @if($product->on_sale)
-                                                <del>${{ number_format($product->base_price, 2) }}</del>
-                                                ${{ number_format($product->sale_price, 2) }}
+                                                <del>RM {{ number_format($product->base_price, 2) }}</del>
+                                                RM {{ number_format($product->sale_price, 2) }}
                                             @else
-                                                ${{ number_format($product->base_price, 2) }}
+                                                RM {{ number_format($product->base_price, 2) }}
                                             @endif
                                         </td>
                                         @endforeach

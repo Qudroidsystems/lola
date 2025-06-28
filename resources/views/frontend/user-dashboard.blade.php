@@ -96,7 +96,7 @@
                                                                 <td>{{ $order->id }}</td>
                                                                 <td>{{ $order->created_at->format('M d, Y') }}</td>
                                                                 <td>{{ ucfirst($order->status) }}</td>
-                                                                <td>${{ number_format($order->total, 2) }}</td>
+                                                                <td>RM {{ number_format($order->total, 2) }}</td>
                                                             </tr>
                                                         @empty
                                                             <tr><td colspan="4">No orders found.</td></tr>
