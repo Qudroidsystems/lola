@@ -86,7 +86,7 @@
                                 </a>
                             </td>
                             <td class="pro-price">
-                                <span>$<?php echo e(number_format($item->product->sale_price, 2)); ?></span>
+                                <span>RM <?php echo e(number_format($item->product->sale_price, 2)); ?></span>
                             </td>
                             <td class="pro-quantity">
                                 <form action="<?php echo e(route('cart.update', $item->id)); ?>" method="POST">
@@ -102,7 +102,7 @@
                                 </form>
                             </td>
                             <td class="pro-subtotal">
-                                <span>$<?php echo e(number_format($item->product->sale_price * $item->quantity, 2)); ?></span>
+                                <span>RM <?php echo e(number_format($item->product->sale_price * $item->quantity, 2)); ?></span>
                             </td>
                             <td class="pro-remove">
                                 <form action="<?php echo e(route('cart.destroy', $item->id)); ?>" method="POST">
@@ -148,7 +148,7 @@
                             <table class="table table-bordered">
                                 <tr>
                                     <td>Sub Total</td>
-                                    <td>$<?php echo e(number_format($total, 2)); ?></td>
+                                    <td>RM <?php echo e(number_format($total, 2)); ?></td>
                                 </tr>
                                 <tr>
                                     <td>Shipping</td>
@@ -156,7 +156,7 @@
                                         <?php if($total > 500): ?>
                                             FREE
                                         <?php else: ?>
-                                            $<?php echo e(number_format(50, 2)); ?> 
+                                            RM <?php echo e(number_format(50, 2)); ?> 
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -164,10 +164,10 @@
                                     <td>Total</td>
                                     <td class="total-amount">
                                         <?php if($total > 500): ?>
-                                            $<?php echo e(number_format($total, 2)); ?>
+                                            RM <?php echo e(number_format($total, 2)); ?>
 
                                         <?php else: ?>
-                                            $<?php echo e(number_format($total + 50, 2)); ?>
+                                            RM <?php echo e(number_format($total + 50, 2)); ?>
 
                                         <?php endif; ?>
                                     </td>
@@ -185,5 +185,4 @@
 </div>
 <!--== Page Content Wrapper End ==-->
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('frontend.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/frontend/cart.blade.php ENDPATH**/ ?>
