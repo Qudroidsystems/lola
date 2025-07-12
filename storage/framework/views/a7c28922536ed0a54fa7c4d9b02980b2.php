@@ -97,7 +97,7 @@
                                                                 <td><?php echo e($order->id); ?></td>
                                                                 <td><?php echo e($order->created_at->format('M d, Y')); ?></td>
                                                                 <td><?php echo e(ucfirst($order->status)); ?></td>
-                                                                <td>$<?php echo e(number_format($order->total, 2)); ?></td>
+                                                                <td>RM <?php echo e(number_format($order->total, 2)); ?></td>
                                                             </tr>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                                             <tr><td colspan="4">No orders found.</td></tr>
