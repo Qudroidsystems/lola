@@ -407,7 +407,7 @@
     <script>
         // Function to format numbers in Malaysian style (e.g., 1,234.56)
         function formatMYR(value) {
-            return Number(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, 'M&,');
+            return Number(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '&,');
         }
 
         document.addEventListener('DOMContentLoaded', function () {
