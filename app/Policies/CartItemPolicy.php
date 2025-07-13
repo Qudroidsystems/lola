@@ -13,7 +13,7 @@ class CartItemPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true; // Allow authenticated users to view their cart
     }
 
     /**
@@ -21,7 +21,7 @@ class CartItemPolicy
      */
     public function view(User $user, CartItem $cartItem): bool
     {
-        //
+        return $user->id === $cartItem->user_id;
     }
 
     /**
@@ -29,7 +29,7 @@ class CartItemPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true; // Allow authenticated users to create cart items
     }
 
     /**
@@ -37,7 +37,6 @@ class CartItemPolicy
      */
     public function update(User $user, CartItem $cartItem)
     {
-        // Only allow update if user owns the cart item
         return $user->id === $cartItem->user_id;
     }
 
@@ -46,15 +45,15 @@ class CartItemPolicy
      */
     public function delete(User $user, CartItem $cartItem): bool
     {
-        // Make sure to return boolean
         return $user->id === $cartItem->user_id;
     }
+
     /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, CartItem $cartItem): bool
     {
-        //
+        return $user->id === $cartItem->user_id;
     }
 
     /**
@@ -62,6 +61,6 @@ class CartItemPolicy
      */
     public function forceDelete(User $user, CartItem $cartItem): bool
     {
-        //
+        return $user->id === $cartItem->user_id;
     }
 }
