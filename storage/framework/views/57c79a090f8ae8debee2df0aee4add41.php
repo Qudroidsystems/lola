@@ -31,17 +31,20 @@
             <!--begin::Content-->
             <div id="kt_app_content" class="app-content flex-column-fluid">
                 <div id="kt_app_content_container" class="app-container container-xxl">
+                    <?php if(session('error')): ?>
+                        <div class="alert alert-danger"><?php echo e(session('error')); ?></div>
+                    <?php endif; ?>
                     <!--begin::Row-->
                     <div class="row g-5 g-xl-10 mb-xl-10">
                         <!--begin::Col-->
                         <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
-                            <!--begin::Card widget 4-->
+                            <!--begin::Card widget 4 (Expected Earnings)-->
                             <div class="card card-flush h-md-50 mb-5 mb-xl-10">
                                 <div class="card-header pt-5">
                                     <div class="card-title d-flex flex-column">
                                         <div class="d-flex align-items-center">
-                                            <span class="fs-4 fw-semibold text-gray-400 me-1 align-self-start">$</span>
-                                            <span class="fs-2hx fw-bold text-dark me-2 lh-1 ls-n2"><?php echo e(number_format($expectedEarnings, 2)); ?></span>
+                                            <span class="fs-4 fw-semibold text-gray-400 me-1 align-self-start">RM</span>
+                                            <span class="fs-2hx fw-bold text-dark me-2 lh-1 ls-n2"><?php echo e(number_format($expectedEarnings ?? 0, 2, '.', ',')); ?></span>
                                             <span class="badge badge-light-<?php echo e($earningsChange >= 0 ? 'success' : 'danger'); ?> fs-base">
                                                 <i class="ki-duotone ki-arrow-<?php echo e($earningsChange >= 0 ? 'up' : 'down'); ?> fs-5 text-<?php echo e($earningsChange >= 0 ? 'success' : 'danger'); ?> ms-n1">
                                                     <span class="path1"></span><span class="path2"></span>
@@ -52,7 +55,7 @@
                                         <span class="text-gray-400 pt-1 fw-semibold fs-6">Expected Earnings</span>
                                     </div>
                                 </div>
-                                <!-- <div class="card-body pt-2 pb-4 d-flex align-items-center">
+                                <div class="card-body pt-2 pb-4 d-flex align-items-center">
                                     <div class="d-flex flex-center me-5 pt-2">
                                         <div id="kt_card_widget_4_chart" style="min-width: 70px; min-height: 70px" data-kt-size="70" data-kt-line="11"></div>
                                     </div>
@@ -61,15 +64,15 @@
                                             <div class="d-flex fs-6 fw-semibold align-items-center my-1">
                                                 <div class="bullet w-8px h-6px rounded-2 <?php echo e($loop->index == 0 ? 'bg-danger' : ($loop->index == 1 ? 'bg-primary' : 'bg-light')); ?> me-3"></div>
                                                 <div class="text-gray-500 flex-grow-1 me-4"><?php echo e($category); ?></div>
-                                                <div class="fw-bolder text-gray-700 text-xxl-end">$<?php echo e(number_format($total, 2)); ?></div>
+                                                <div class="fw-bolder text-gray-700 text-xxl-end">RM <?php echo e(number_format($total ?? 0, 2, '.', ',')); ?></div>
                                             </div>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                             <!--end::Card widget 4-->
 
-                            <!--begin::Card widget 5-->
+                            <!--begin::Card widget 5 (Orders This Month)-->
                             <div class="card card-flush h-md-50 mb-xl-10">
                                 <div class="card-header pt-5">
                                     <div class="card-title d-flex flex-column">
@@ -85,7 +88,7 @@
                                         <span class="text-gray-400 pt-1 fw-semibold fs-6">Orders This Month</span>
                                     </div>
                                 </div>
-                                <!-- <div class="card-body d-flex align-items-end pt-0">
+                                <div class="card-body d-flex align-items-end pt-0">
                                     <div class="d-flex align-items-center flex-column mt-3 w-100">
                                         <div class="d-flex justify-content-between w-100 mt-auto mb-2">
                                             <span class="fw-bolder fs-6 text-dark"><?php echo e(max(0, 3000 - $ordersThisMonth)); ?> to Goal</span>
@@ -95,7 +98,7 @@
                                             <div class="bg-success rounded h-8px" role="progressbar" style="width: <?php echo e(round(($ordersThisMonth / 3000) * 100)); ?>%;" aria-valuenow="<?php echo e($ordersThisMonth); ?>" aria-valuemin="0" aria-valuemax="3000"></div>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                             <!--end::Card widget 5-->
                         </div>
@@ -103,13 +106,13 @@
 
                         <!--begin::Col-->
                         <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
-                            <!--begin::Card widget 6-->
+                            <!--begin::Card widget 6 (Average Daily Sales)-->
                             <div class="card card-flush h-md-50 mb-5 mb-xl-10">
                                 <div class="card-header pt-5">
                                     <div class="card-title d-flex flex-column">
                                         <div class="d-flex align-items-center">
-                                            <span class="fs-4 fw-semibold text-gray-400 me-1 align-self-start">$</span>
-                                            <span class="fs-2hx fw-bold text-dark me-2 lh-1 ls-n2"><?php echo e(number_format($avgDailySales, 2)); ?></span>
+                                            <span class="fs-4 fw-semibold text-gray-400 me-1 align-self-start">RM</span>
+                                            <span class="fs-2hx fw-bold text-dark me-2 lh-1 ls-n2"><?php echo e(number_format($avgDailySales ?? 0, 2, '.', ',')); ?></span>
                                             <span class="badge badge-light-<?php echo e($avgSalesChange >= 0 ? 'success' : 'danger'); ?> fs-base">
                                                 <i class="ki-duotone ki-arrow-<?php echo e($avgSalesChange >= 0 ? 'up' : 'down'); ?> fs-5 text-<?php echo e($avgSalesChange >= 0 ? 'success' : 'danger'); ?> ms-n1">
                                                     <span class="path1"></span><span class="path2"></span>
@@ -120,13 +123,13 @@
                                         <span class="text-gray-400 pt-1 fw-semibold fs-6">Average Daily Sales</span>
                                     </div>
                                 </div>
-                                <!-- <div class="card-body d-flex align-items-end px-0 pb-0">
+                                <div class="card-body d-flex align-items-end px-0 pb-0">
                                     <div id="kt_card_widget_6_chart" class="w-100" style="height: 80px"></div>
-                                </div> -->
+                                </div>
                             </div>
                             <!--end::Card widget 6-->
 
-                            <!--begin::Card widget 7-->
+                            <!--begin::Card widget 7 (New Customers)-->
                             <div class="card card-flush h-md-50 mb-xl-10">
                                 <div class="card-header pt-5">
                                     <div class="card-title d-flex flex-column">
@@ -134,7 +137,7 @@
                                         <span class="text-gray-400 pt-1 fw-semibold fs-6">New Customers This Month</span>
                                     </div>
                                 </div>
-                                <!-- <div class="card-body d-flex flex-column justify-content-end pe-0">
+                                <div class="card-body d-flex flex-column justify-content-end pe-0">
                                     <span class="fs-6 fw-bolder text-gray-800 d-block mb-2">Recent Customers</span>
                                     <div class="symbol-group symbol-hover flex-nowrap">
                                         <?php $__currentLoopData = $recentCustomers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -146,7 +149,7 @@
                                             <span class="symbol-label bg-light text-gray-400 fs-8 fw-bold">+<?php echo e(max(0, $newCustomersCount - 6)); ?></span>
                                         </a>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                             <!--end::Card widget 7-->
                         </div>
@@ -154,7 +157,7 @@
 
                         <!--begin::Col-->
                         <div class="col-lg-12 col-xl-12 col-xxl-6 mb-5 mb-xl-0">
-                            <!--begin::Chart widget 3-->
+                            <!--begin::Chart widget 3 (Sales This Month)-->
                             <div class="card card-flush overflow-hidden h-md-100">
                                 <div class="card-header py-5">
                                     <h3 class="card-title align-items-start flex-column">
@@ -210,16 +213,16 @@
                                         <!--end::Menu 2-->
                                     </div>
                                 </div>
-                                <!-- <div class="card-body d-flex justify-content-between flex-column pb-1 px-0">
+                                <div class="card-body d-flex justify-content-between flex-column pb-1 px-0">
                                     <div class="px-9 mb-5">
                                         <div class="d-flex mb-2">
-                                            <span class="fs-4 fw-semibold text-gray-400 me-1">$</span>
-                                            <span class="fs-2hx fw-bold text-gray-800 me-2 lh-1 ls-n2"><?php echo e(number_format($expectedEarnings, 2)); ?></span>
+                                            <span class="fs-4 fw-semibold text-gray-400 me-1">RM</span>
+                                            <span class="fs-2hx fw-bold text-gray-800 me-2 lh-1 ls-n2"><?php echo e(number_format($expectedEarnings ?? 0, 2, '.', ',')); ?></span>
                                         </div>
-                                        <span class="fs-6 fw-semibold text-gray-400">Another $<?php echo e(number_format(max(0, 50000 - $expectedEarnings), 2)); ?> to Goal</span>
+                                        <span class="fs-6 fw-semibold text-gray-400">Another RM <?php echo e(number_format(max(0, 50000 - $expectedEarnings), 2, '.', ',')); ?> to Goal</span>
                                     </div>
                                     <div id="kt_charts_widget_3" class="min-h-auto ps-4 pe-6" style="height: 300px"></div>
-                                </div> -->
+                                </div>
                             </div>
                             <!--end::Chart widget 3-->
                         </div>
@@ -235,12 +238,12 @@
 
                         <!--begin::Col-->
                         <div class="col-xl-12 mb-5 mb-xl-10">
-                            <!--begin::Table Widget 4-->
+                            <!--begin::Table Widget 4 (Product Orders)-->
                             <div class="card card-flush h-xl-100">
                                 <div class="card-header pt-7">
                                     <h3 class="card-title align-items-start flex-column">
                                         <span class="card-label fw-bold text-gray-800">Product Orders</span>
-                                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Avg. <?php echo e(round($ordersThisMonth / max(1, Carbon\Carbon::now()->day))); ?> orders per day</span>
+                                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Avg. <?php echo e(round($ordersThisMonth / max(1, \Carbon\Carbon::now()->day))); ?> orders per day</span>
                                     </h3>
                                     <div class="card-toolbar">
                                         <div class="d-flex flex-stack flex-wrap gap-4">
@@ -292,8 +295,8 @@
                                                     <td class="text-end">
                                                         <a href="#" class="text-gray-600 text-hover-primary"><?php echo e($order['customer']); ?></a>
                                                     </td>
-                                                    <td class="text-end">$<?php echo e(number_format($order['total'], 2)); ?></td>
-                                                    <td class="text-end">$<?php echo e(number_format($order['profit'], 2)); ?></td>
+                                                    <td class="text-end">RM <?php echo e(number_format($order['total'] ?? 0, 2, '.', ',')); ?></td>
+                                                    <td class="text-end">RM <?php echo e(number_format($order['profit'] ?? 0, 2, '.', ',')); ?></td>
                                                     <td class="text-end">
                                                         <span class="badge py-3 px-4 fs-7 badge-light-<?php echo e($order['status'] == 'completed' ? 'success' : ($order['status'] == 'pending' ? 'warning' : 'danger')); ?>"><?php echo e(ucfirst($order['status'])); ?></span>
                                                     </td>
@@ -305,7 +308,8 @@
                                                     </td>
                                                 </tr>
                                                 <tr data-kt-table-widget-4="subtable_template" class="d-none">
-                                                    <td colspan="2">
+                                                    <td colspan="7">
+                                                        <div class="text-gray-800 fs-6 fw-bold mb-2">Cart Items for <?php echo e($order['customer']); ?></div>
                                                         <div class="d-flex align-items-center gap-3">
                                                             <a href="#" class="symbol symbol-50px bg-secondary bg-opacity-25 rounded">
                                                                 <img src="#" data-kt-src-path="/metronic8/demo1/assets/media/stock/ecommerce/" alt="" data-kt-table-widget-4="template_image" />
@@ -334,41 +338,53 @@
                                                     </td>
                                                     <td></td>
                                                 </tr>
-                                                <?php $__currentLoopData = $order['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php if($order['items']->isEmpty()): ?>
                                                     <tr class="subtable-row d-none" data-kt-table-widget-4="subtable">
-                                                        <td colspan="2">
-                                                            <div class="d-flex align-items-center gap-3">
-                                                                <a href="#" class="symbol symbol-50px bg-secondary bg-opacity-25 rounded">
-                                                                    <img src="<?php echo e($item['image']); ?>" alt="<?php echo e($item['name']); ?>" />
-                                                                </a>
-                                                                <div class="d-flex flex-column text-muted">
-                                                                    <a href="#" class="text-gray-800 text-hover-primary fw-bold"><?php echo e($item['name']); ?></a>
-                                                                    <div class="fs-7"><?php echo e($item['description']); ?></div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <div class="text-gray-800 fs-7">Cost</div>
-                                                            <div class="text-muted fs-7 fw-bold">$<?php echo e(number_format($item['cost'], 2)); ?></div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <div class="text-gray-800 fs-7">Qty</div>
-                                                            <div class="text-muted fs-7 fw-bold"><?php echo e($item['quantity']); ?></div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <div class="text-gray-800 fs-7">Total</div>
-                                                            <div class="text-muted fs-7 fw-bold">$<?php echo e(number_format($item['total'], 2)); ?></div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <div class="text-gray-800 fs-7 me-3">On hand</div>
-                                                            <div class="text-muted fs-7 fw-bold"><?php echo e($item['stock']); ?></div>
-                                                        </td>
-                                                        <td></td>
+                                                        <td colspan="7" class="text-center text-muted">No cart items for this user.</td>
                                                     </tr>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                <?php else: ?>
+                                                    <?php $__currentLoopData = $order['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <tr class="subtable-row d-none" data-kt-table-widget-4="subtable">
+                                                            <td colspan="2">
+                                                                <div class="d-flex align-items-center gap-3">
+                                                                    <a href="#" class="symbol symbol-50px bg-secondary bg-opacity-25 rounded">
+                                                                        <img src="<?php echo e($item['image']); ?>" alt="<?php echo e($item['name']); ?>" />
+                                                                    </a>
+                                                                    <div class="d-flex flex-column text-muted">
+                                                                        <a href="#" class="text-gray-800 text-hover-primary fw-bold"><?php echo e($item['name']); ?></a>
+                                                                        <div class="fs-7"><?php echo e($item['description']); ?></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="text-gray-800 fs-7">Cost</div>
+                                                                <div class="text-muted fs-7 fw-bold">RM <?php echo e(number_format($item['cost'] ?? 0, 2, '.', ',')); ?></div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="text-gray-800 fs-7">Qty</div>
+                                                                <div class="text-muted fs-7 fw-bold"><?php echo e($item['quantity']); ?></div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="text-gray-800 fs-7">Total</div>
+                                                                <div class="text-muted fs-7 fw-bold">RM <?php echo e(number_format($item['total'] ?? 0, 2, '.', ',')); ?></div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="text-gray-800 fs-7 me-3">On hand</div>
+                                                                <div class="text-muted fs-7 fw-bold"><?php echo e($item['stock']); ?></div>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                <?php endif; ?>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </tbody>
                                     </table>
+                                    <!--begin::Pagination-->
+                                    <div class="d-flex justify-content-end mt-5">
+                                        <?php echo e($productOrders->links()); ?>
+
+                                    </div>
+                                    <!--end::Pagination-->
                                 </div>
                             </div>
                             <!--end::Table Widget 4-->
@@ -381,8 +397,143 @@
             </div>
             <!--end::Content-->
         </div>
-        <!--end::Content wrapper-->
-    </div>
-    <!--end::Main-->
+        <!--end::Main-->
+
+    <!--begin::Chart.js CDN-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!--end::Chart.js CDN-->
+
+    <!--begin::Chart Initialization-->
+    <script>
+        // Category Sales Chart (kt_card_widget_4_chart)
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx4 = document.getElementById('kt_card_widget_4_chart').getContext('2d');
+            new Chart(ctx4, {
+                type: 'pie',
+                data: {
+                    labels: <?php echo json_encode(array_keys($categorySales), 15, 512) ?>,
+                    datasets: [{
+                        data: <?php echo json_encode(array_values($categorySales), 15, 512) ?>,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        hoverOffset: 20
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.label}: RM ${context.raw.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Daily Sales Chart (kt_card_widget_6_chart)
+            const ctx6 = document.getElementById('kt_card_widget_6_chart').getContext('2d');
+            new Chart(ctx6, {
+                type: 'line',
+                data: {
+                    labels: <?php echo json_encode(array_keys($dailySales), 15, 512) ?>,
+                    datasets: [{
+                        label: 'Daily Sales',
+                        data: <?php echo json_encode(array_values($dailySales), 15, 512) ?>,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Sales (RM)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `RM ${context.raw.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Sales This Month Chart (kt_charts_widget_3)
+            const ctx3 = document.getElementById('kt_charts_widget_3').getContext('2d');
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: <?php echo json_encode(array_keys($categorySales), 15, 512) ?>,
+                    datasets: [{
+                        label: 'Sales by Category',
+                        data: <?php echo json_encode(array_values($categorySales), 15, 512) ?>,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        borderColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Sales (RM)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Category'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.label}: RM ${context.raw.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+    </script>
+    <!--end::Chart Initialization-->
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/dashboard.blade.php ENDPATH**/ ?>

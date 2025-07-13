@@ -150,12 +150,12 @@
                                 </tr>
                                 <tr>
                                     <td>Shipping</td>
-                                    <td>
-                                        @if($total > 500)
+                                    <td> Contact The Seller
+                                        {{-- @if($total > 500)
                                             FREE
                                         @else
                                             RM {{ number_format(50, 2) }} {{-- Example shipping calculation --}}
-                                        @endif
+                                        @endif --}}
                                     </td>
                                 </tr>
                                 <tr>
