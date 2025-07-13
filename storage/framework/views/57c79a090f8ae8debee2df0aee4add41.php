@@ -405,8 +405,13 @@
 
     <!--begin::Chart Initialization-->
     <script>
-        // Category Sales Chart (kt_card_widget_4_chart)
+        // Function to format numbers in Malaysian style (e.g., 1,234.56)
+        function formatMYR(value) {
+            return Number(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, 'M&,');
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
+            // Category Sales Chart (kt_card_widget_4_chart)
             const ctx4 = document.getElementById('kt_card_widget_4_chart').getContext('2d');
             new Chart(ctx4, {
                 type: 'pie',
@@ -426,7 +431,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    return `${context.label}: RM ${context.raw.toFixed(2)}`;
+                                    return `${context.label}: RM ${formatMYR(context.raw)}`;
                                 }
                             }
                         }
@@ -458,6 +463,11 @@
                             title: {
                                 display: true,
                                 text: 'Sales (RM)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return 'RM ' + formatMYR(value);
+                                }
                             }
                         },
                         x: {
@@ -475,7 +485,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    return `RM ${context.raw.toFixed(2)}`;
+                                    return `RM ${formatMYR(context.raw)}`;
                                 }
                             }
                         }
@@ -506,6 +516,11 @@
                             title: {
                                 display: true,
                                 text: 'Sales (RM)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return 'RM ' + formatMYR(value);
+                                }
                             }
                         },
                         x: {
@@ -523,7 +538,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    return `${context.label}: RM ${context.raw.toFixed(2)}`;
+                                    return `${context.label}: RM ${formatMYR(context.raw)}`;
                                 }
                             }
                         }
