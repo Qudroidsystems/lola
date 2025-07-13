@@ -130,12 +130,22 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/saveorders', [OrderController::class, 'store'])->name('orders.saveorders');
 
      // Cart routes
-    Route::prefix('cart')->group(function () {
+    Route::prefix('cart')->middleware(['auth', 'debug.auth'])->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart.index');
         Route::post('/', [CartController::class, 'store'])->name('cart.store');
         Route::put('/{cartItem}', [CartController::class, 'update'])->name('cart.update');
         Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
     });
+
+    Route::get('/debug-session', function () {
+    return [
+        'authenticated' => auth()->check(),
+        'user_id' => auth()->id(),
+        'user_email' => auth()->check() ? auth()->user()->email : null,
+        'session_id' => session()->getId(),
+        'session_data' => session()->all(),
+    ];
+});
 
     // Wishlist routes
     Route::prefix('wishlist')->group(function () {
