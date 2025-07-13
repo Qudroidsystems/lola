@@ -221,8 +221,8 @@
                     <!--end:Menu sub-->
                 </div>
                 <!--end:Menu item-->
-                {{-- <!--begin:Menu item-->
-                <div data-kt-menu-trigger="click" class="menu-item {{
+                <!--begin:Menu item-->
+                {{-- <div data-kt-menu-trigger="click" class="menu-item {{
                         request()->is('overview*') ||
                         request()->is('settings*')
                         ? ' here show menu-accordion' : '' }}">
@@ -246,7 +246,7 @@
                         <!--end:Menu item-->
                     </div>
                     <!--end:Menu sub-->
-                </div>
+                </div> --}}
                 <!--end:Menu item-->
                 <!--begin:Menu item-->
                 <div data-kt-menu-trigger="click" class="menu-item {{
@@ -268,7 +268,7 @@
                     <!--end:Menu sub-->
                 </div>
                 <!--end:Menu item-->
-                <!--begin:Menu item-->
+                {{-- <!--begin:Menu item-->
                 <div class="menu-item pt-5">
                     <!--begin:Menu content-->
                     <div class="menu-content"> <span class="menu-heading fw-bold text-uppercase fs-7"> STOCK MANAGEMENT </span> </div>
