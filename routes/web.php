@@ -129,15 +129,15 @@ Route::group(['middleware' => ['auth']], function () {
     //Route::resource('orders', OrderController::class);
     Route::post('/saveorders', [OrderController::class, 'store'])->name('orders.saveorders');
 
-     // Cart routes
     Route::prefix('cart')->middleware(['auth', 'debug.auth'])->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('cart.index');
-        Route::post('/', [CartController::class, 'store'])->name('cart.store');
-        Route::put('/{cartItem}', [CartController::class, 'update'])->name('cart.update');
-        Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
-    });
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/', [CartController::class, 'store'])->name('cart.store');
+    Route::put('/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+});
 
-    Route::get('/debug-session', function () {
+Route::get('/debug-session', function () {
     return [
         'authenticated' => auth()->check(),
         'user_id' => auth()->id(),
