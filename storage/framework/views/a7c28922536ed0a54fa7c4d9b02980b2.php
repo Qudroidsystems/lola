@@ -59,7 +59,14 @@
                                     <a href="#orders" data-bs-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a>
                                     <a href="#address" data-bs-toggle="tab"><i class="fa fa-map-marker"></i> Address</a>
                                     <a href="#account-info" data-bs-toggle="tab"><i class="fa fa-user"></i> Account Details</a>
-                                    <a href="<?php echo e(route('logout')); ?>"><i class="fa fa-sign-out"></i> Logout</a>
+                                    
+                                     <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                                <?php echo csrf_field(); ?>
+                                                <a href="<?php echo e(route('logout')); ?>"
+                                                onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa fa-sign-out"></i>
+                                                    Logout
+                                                </a>
+                                            </form>
                                 </div>
                             </div>
 
@@ -71,7 +78,15 @@
                                         <div class="myaccount-content">
                                             <h3>Dashboard</h3>
                                             <div class="welcome">
-                                                <p>Hello, <strong><?php echo e($user->name); ?></strong> (Not <strong><?php echo e($user->name); ?>?</strong> <a href="<?php echo e(route('logout')); ?>" class="logout">Logout</a>)</p>
+                                                <p>Hello, <strong><?php echo e($user->name); ?></strong> (Not <strong><?php echo e($user->name); ?>?</strong> )
+                                                    <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                                        <?php echo csrf_field(); ?>
+                                                        <a href="<?php echo e(route('logout')); ?>"
+                                                        onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa fa-sign-out"></i>
+                                                            Logout
+                                                        </a>
+                                                    </form>
+                                                </p>
                                             </div>
                                             <p>From your dashboard, you can check your orders, manage your address, and edit account details.</p>
                                         </div>
