@@ -20,11 +20,11 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $user = Auth::user();
-        $isAdmin = $user->role;
+       $user = Auth::user();
+       $isAdmin = $user->hasRole('Admin','Super Admin'); // Use Spatie's hasRole method
 
         // Redirect non-admins to user dashboard
-        if ($isAdmin != 'admin') {
+        if (!$isAdmin) {
             $orders = $user->orders()->latest()->get();
             $billingAddress = $user->billingAddress()->first();
             Log::info('User dashboard accessed for user: ' . $user->id . ', Orders found: ' . $orders->count());

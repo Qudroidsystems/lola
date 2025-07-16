@@ -1,37 +1,41 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PosController;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SaleController;
-use App\Http\Controllers\UnitController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\BillingAddressController;
+use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CompareController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\StoreController;
+use App\Http\Controllers\OverviewController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReturnController;
-use App\Http\Controllers\BiodataController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\VariantController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\OverviewController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\WarehouseController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserDashboardController;
-use App\Http\Controllers\BillingAddressController;
+use App\Http\Controllers\VariantController;
+use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\WishlistController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
