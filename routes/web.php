@@ -46,10 +46,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-
+Route::get('/userlogin', [App\Http\Controllers\Auth\UserLoginController::class, 'showLoginForm'])->name('userlogin');
+Route::post('/userlogin', [App\Http\Controllers\Auth\UserLoginController::class, 'login']);
+Route::post('/logout', [App\Http\Controllers\Auth\UserLoginController::class, 'logout'])->name('logout');
  // shop routes
  Route::prefix('shop')->group(function () {
     Route::get('/', [ShopController::class, 'index'])->name('shop');
@@ -59,7 +61,7 @@ Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 });
 
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
-Auth::routes();
+
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);

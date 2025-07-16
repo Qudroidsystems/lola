@@ -37,7 +37,7 @@
                     <div class="tab-content" id="login-reg-tabcontent">
                         <div class="tab-pane fade show active" id="login" role="tabpanel">
                             <div class="login-reg-form-wrap">
-                            <form method="POST" action="{{ route('login') }}">
+                            <form method="POST" action="{{ route('userlogin') }}">
                                 @csrf
                                     <div class="single-input-item">
                                         <input type="text"  placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus/>

@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserLoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.user-login'); // Create this view
+        return view('auth.user-login');
     }
 
     public function login(Request $request)
@@ -19,14 +20,20 @@ class UserLoginController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role' => 'user'])) {
+        Log::info('Login attempt for email: ' . $request->email);
+        // Attempt authentication without role condition
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+            Log::info('Login successful for user: ' . $user->id . ', Roles: ' . json_encode($user->getRoleNames()) . ', Table Role: ' . $user->role);
+            if ($user->hasRole('Admin') || $user->hasRole === 'Super Admin') {
+                Log::info('Redirecting to admin dashboard');
+                return redirect()->route('dashboard');
+            }
+            Log::info('Redirecting to user dashboard');
             return redirect()->route('user.dashboard');
         }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role' => 'admin'])) {
-            return redirect()->route('dashboard');
-        }
-
+        Log::warning('Login failed for email: ' . $request->email);
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
 

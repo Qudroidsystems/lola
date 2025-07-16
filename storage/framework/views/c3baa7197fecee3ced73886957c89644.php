@@ -152,12 +152,9 @@
                                 </tr>
                                 <tr>
                                     <td>Shipping</td>
-                                    <td>
-                                        <?php if($total > 500): ?>
-                                            FREE
-                                        <?php else: ?>
-                                            RM <?php echo e(number_format(50, 2)); ?> 
-                                        <?php endif; ?>
+                                    <td> Contact The Seller
+                                        
+                                        <?php endif; ?> --}}
                                     </td>
                                 </tr>
                                 <tr>

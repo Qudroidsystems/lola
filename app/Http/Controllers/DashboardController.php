@@ -18,10 +18,12 @@ class DashboardController extends Controller
         $this->middleware('permission:dashboard-list', ['only' => ['index', 'store']]);
     }
 
+
     public function index()
     {
-       $user = Auth::user();
-       $isAdmin = $user->hasRole('Admin','Super Admin'); // Use Spatie's hasRole method
+        $user = Auth::user();
+        $isAdmin = $user->hasRole('admin') || $user->role === 'admin'; // Support both Spatie and role column
+        Log::info('Dashboard accessed - User ID: ' . $user->id . ', Roles: ' . json_encode($user->getRoleNames()) . ', Table Role: ' . $user->role . ', Is Admin: ' . ($isAdmin ? 'Yes' : 'No'));
 
         // Redirect non-admins to user dashboard
         if (!$isAdmin) {
@@ -36,7 +38,6 @@ class DashboardController extends Controller
         $endOfMonth = Carbon::now()->endOfMonth();
 
         try {
-            // Expected Earnings (total order value this month)
             $expectedEarnings = Cache::remember('expected_earnings_' . $startOfMonth->format('Y-m'), 60, function () use ($startOfMonth, $endOfMonth) {
                 return Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])->sum('total');
             });
@@ -50,7 +51,6 @@ class DashboardController extends Controller
                 ? (($expectedEarnings - $previousMonthEarnings) / $previousMonthEarnings) * 100
                 : 0;
 
-            // Orders This Month
             $ordersThisMonth = Cache::remember('orders_this_month_' . $startOfMonth->format('Y-m'), 60, function () use ($startOfMonth, $endOfMonth) {
                 return Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
             });
@@ -64,7 +64,6 @@ class DashboardController extends Controller
                 ? (($ordersThisMonth - $previousMonthOrders) / $previousMonthOrders) * 100
                 : 0;
 
-            // Average Daily Sales
             $daysInMonth = Carbon::now()->daysInMonth;
             $avgDailySales = $daysInMonth > 0 ? $expectedEarnings / $daysInMonth : 0;
             $previousMonthAvgDailySales = $previousMonthEarnings / Carbon::now()->subMonth()->daysInMonth;
@@ -72,7 +71,6 @@ class DashboardController extends Controller
                 ? (($avgDailySales - $previousMonthAvgDailySales) / $previousMonthAvgDailySales) * 100
                 : 0;
 
-            // New Customers This Month
             $newCustomersCount = Cache::remember('new_customers_' . $startOfMonth->format('Y-m'), 60, function () use ($startOfMonth, $endOfMonth) {
                 return User::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
             });
@@ -80,7 +78,6 @@ class DashboardController extends Controller
                 return User::whereBetween('created_at', [$startOfMonth, $endOfMonth])->take(6)->get();
             });
 
-            // Sales by Category
             $categorySales = Cache::remember('category_sales_' . $startOfMonth->format('Y-m'), 60, function () use ($startOfMonth, $endOfMonth) {
                 return Order::whereBetween('orders.created_at', [$startOfMonth, $endOfMonth])
                     ->join('order_items', 'orders.id', '=', 'order_items.order_id')
@@ -93,7 +90,6 @@ class DashboardController extends Controller
                     ->toArray();
             });
 
-            // Daily Sales for Chart
             $dailySales = Cache::remember('daily_sales_' . $startOfMonth->format('Y-m'), 60, function () use ($startOfMonth, $endOfMonth) {
                 return Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])
                     ->selectRaw('DATE(created_at) as date, SUM(total) as total')
@@ -103,12 +99,10 @@ class DashboardController extends Controller
                     ->toArray();
             });
 
-            // Product Orders (with Cart Items for subtable)
             $productOrders = Order::with(['user', 'items.product'])
                 ->latest()
                 ->paginate(10)
                 ->through(function ($order) {
-                    // Fetch cart items for the user associated with the order
                     $cartItems = Cache::remember('cart_items_user_' . $order->user_id, 60, function () use ($order) {
                         return CartItem::where('user_id', $order->user_id)
                             ->with('product')
@@ -177,6 +171,7 @@ class DashboardController extends Controller
         }
     }
 
+    
     public function create() { /* ... */ }
     public function store(Request $request) { /* ... */ }
     public function show(string $id) { /* ... */ }
