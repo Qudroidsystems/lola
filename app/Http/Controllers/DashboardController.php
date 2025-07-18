@@ -22,7 +22,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $isAdmin = $user->hasRole('admin') || $user->role === 'admin'; // Support both Spatie and role column
+        $isAdmin = $user->hasRole('Admin'); // Support both Spatie and role column
         Log::info('Dashboard accessed - User ID: ' . $user->id . ', Roles: ' . json_encode($user->getRoleNames()) . ', Table Role: ' . $user->role . ', Is Admin: ' . ($isAdmin ? 'Yes' : 'No'));
 
         // Redirect non-admins to user dashboard

@@ -324,7 +324,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="copyright-text">
-                        <p>© LorlahTate, 2021. Developed By  by <a href="http://qudroidsystems.com/" target="_blank">Qudroid Systems</a></p>
+                        <p>© LorlahTate, 2021. Developed By  by <a href="http://qudroidsystems.com/" target="_blank">Qudroid Systems</a> &nbsp;&nbsp;&nbsp;&nbsp;  <a href="/adminlogin" target="_blank">admin</a></p>
                     </div>
                 </div>
             </div>

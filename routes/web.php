@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\BillingAddressController;
 use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\BrandController;
@@ -36,6 +37,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -52,6 +54,9 @@ Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 Route::get('/userlogin', [App\Http\Controllers\Auth\UserLoginController::class, 'showLoginForm'])->name('userlogin');
 Route::post('/userlogin', [App\Http\Controllers\Auth\UserLoginController::class, 'login']);
 Route::post('/logout', [App\Http\Controllers\Auth\UserLoginController::class, 'logout'])->name('logout');
+
+Route::get('/adminlogin', [App\Http\Controllers\Auth\AdminLoginController::class, 'showLoginForm'])->name('adminlogin');
+Route::post('/adminlogin', [AdminLoginController::class, 'login']);
  // shop routes
  Route::prefix('shop')->group(function () {
     Route::get('/', [ShopController::class, 'index'])->name('shop');

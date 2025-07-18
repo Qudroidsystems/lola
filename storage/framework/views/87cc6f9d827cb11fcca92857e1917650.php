@@ -1,144 +1,135 @@
-<?php $__env->startSection('content'); ?>
+<!DOCTYPE html>
 
-<!--== Page Title Area Start ==-->
-<div id="page-title-area">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center">
-                <div class="page-title-content">
-                    <h1>Member Area</h1>
-                    <ul class="breadcrumb">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="login-register.html" class="active">Login & Register</a></li>
-                    </ul>
-                </div>
-            </div>
+<html lang="en" >
+    <!--begin::Head-->
+
+<!-- Mirrored from preview.keenthemes.com/metronic8/demo1/authentication/layouts/creative/sign-in.html')}} by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Jun 2023 04:07:02 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+        <title>Admin Login | LolaTete</title>
+        <meta charset="utf-8"/>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link rel="shortcut icon" href="<?php echo e(asset('html/assets/assets/media/logos/favicon.ico')); ?>"/>
+
+        <!--begin::Fonts(mandatory for all pages)-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700"/>        <!--end::Fonts-->
+
+
+
+                    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+                            <link href="<?php echo e(asset('html/assets/assets/plugins/global/plugins.bundle.css')); ?>" rel="stylesheet" type="text/css"/>
+                            <link href="<?php echo e(asset('html/assets/assets/css/style.bundle.css')); ?>" rel="stylesheet" type="text/css"/>
+                        <!--end::Global Stylesheets Bundle-->
+
+
+        <script>
+            // Frame-busting to prevent site from being loaded within a frame without permission (click-jacking)
+            if (window.top != window.self) {
+                window.top.location.replace(window.self.location.href);
+            }
+        </script>
+    </head>
+    <!--end::Head-->
+
+    <!--begin::Body-->
+    <body  id="kt_body"  class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center bgi-no-repeat" >
+        <!--begin::Theme mode setup on page load-->
+<script>
+	var defaultThemeMode = "light";
+	var themeMode;
+
+	if ( document.documentElement ) {
+		if ( document.documentElement.hasAttribute("data-bs-theme-mode")) {
+			themeMode = document.documentElement.getAttribute("data-bs-theme-mode");
+		} else {
+			if ( localStorage.getItem("data-bs-theme") !== null ) {
+				themeMode = localStorage.getItem("data-bs-theme");
+			} else {
+				themeMode = defaultThemeMode;
+			}
+		}
+
+		if (themeMode === "system") {
+			themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+		}
+
+		document.documentElement.setAttribute("data-bs-theme", themeMode);
+	}
+</script>
+<!--end::Theme mode setup on page load-->
+                    <!--Begin::Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html')}}?id=GTM-5FS8GGP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!--End::Google Tag Manager (noscript) -->
+
+        <!--begin::Root-->
+<div class="d-flex flex-column flex-root" id="kt_app_root">
+    <!--begin::Page bg image-->
+<style>
+    body {
+        background-image: url('<?php echo e(asset('html/assets/assets/media/auth/bg9-dark.jpg')); ?>');
+    }
+
+    [data-bs-theme="dark"] body {
+        background-image: url('<?php echo e(asset('html/assets/assets/media/auth/bg9-dark.jpg')); ?>');
+    }
+</style>
+<!--end::Page bg image-->
+
+<!--begin::Authentication - Sign-in -->
+<div class="d-flex flex-column flex-column-fluid flex-lg-row">
+    <!--begin::Aside-->
+    <div class="d-flex flex-center w-lg-50 pt-15 pt-lg-0 px-10">
+        <div class="d-flex flex-center flex-lg-start flex-column">
+            <!--begin::Logo-->
+
+            <!--end::Logo-->
+
+            <!--begin::Title-->
+            <h2 class="text-white fw-normal m-0">
+                <!-- <img alt="Logo" src="<?php echo e(asset('html/assets/assets/media/logos/scroll.png')); ?>" class="h-100px app-sidebar-logo-default"/> -->
+                 Login Area
+            </h2>
+            <!--end::Title-->
         </div>
     </div>
-</div>
-<!--== Page Title Area End ==-->
+    <!--begin::Aside-->
 
-<!--== Page Content Wrapper Start ==-->
-<div id="page-content-wrapper" class="p-9">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-7 m-auto">
-                <!-- Login & Register Content Start -->
-                <div class="login-register-wrapper">
-                    <!-- Login & Register tab Menu -->
-                    <nav class="nav login-reg-tab-menu">
-                        <a class="active" id="login-tab" data-bs-toggle="tab" href="#login">Login</a>
-                        <a id="register-tab" data-bs-toggle="tab" href="#register">Register</a>
-                    </nav>
-                    <!-- Login & Register tab Menu -->
+    <!--begin::Body-->
+    <div class="d-flex flex-column-fluid flex-lg-row-auto justify-content-center justify-content-lg-end p-12 p-lg-20">
+        <!--begin::Card-->
+        <div class="bg-body d-flex flex-column align-items-stretch flex-center rounded-4 w-md-600px p-20">
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-center flex-column flex-column-fluid px-lg-10 pb-15 pb-lg-20">
 
-                    <div class="tab-content" id="login-reg-tabcontent">
-                        <div class="tab-pane fade show active" id="login" role="tabpanel">
-                            <div class="login-reg-form-wrap">
-                            <form method="POST" action="<?php echo e(route('login')); ?>">
-                                <?php echo csrf_field(); ?>
-                                    <div class="single-input-item">
-                                        <input type="text"  placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent <?php $__errorArgs = ['email'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" name="email" value="<?php echo e(old('email')); ?>" required autocomplete="email" autofocus/>
-                                    </div>
-                                        <?php $__errorArgs = ['email'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong><?php echo e($message); ?></strong>
-                                            </span>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+<!--begin::Form-->
+<form class="form w-100" novalidate="novalidate"  method="POST" action="<?php echo e(route('adminlogin')); ?>">
 
-                                    <div class="single-input-item">
-                                         <!--begin::Password-->
-                                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent"  <?php $__errorArgs = ['password'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" name="password" required autocomplete="current-password"/>
-                                        <!--end::Password-->
-                                                    <?php $__errorArgs = ['password'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong><?php echo e($message); ?></strong>
-                                                    </span>
-                                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </div>
+        <?php echo csrf_field(); ?>
+    <!--begin::Heading-->
+    <div class="text-center mb-11">
+        <a href="/dashboard">
 
-                                    <div class="single-input-item">
-                                        <div class="login-reg-form-meta d-flex align-items-center justify-content-between">
-                                            <div class="remember-meta">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                                    <label class="form-check-label" for="rememberMe">Remember Me</label>
-                                                </div>
-                                            </div>
 
-                                            <a href="#" class="forget-pwd">Forget Password?</a>
-                                        </div>
-                                    </div>
 
-                                    <div class="single-input-item">
-                                        <button class="btn-login">Login</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="register" role="tabpanel">
-                            <div class="login-reg-form-wrap">
-                            <form class="form w-100" method="POST" action="<?php echo e(route('register')); ?>" novalidate="novalidate" id="kt_sign_up_form" >
-                            <?php echo csrf_field(); ?>
-                                    <div class="single-input-item">
-                                        <!--begin::Email-->
-                                            <input type="text" placeholder="Full Name"   class="form-control <?php $__errorArgs = ['name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" name="name" value="<?php echo e(old('name')); ?>" required autocomplete="name" autofocus/>
-                                            <!--end::Email-->
+        </a>
+        <!--begin::Title-->
+        <h1 class="text-dark fw-bolder mb-3">
+            Sign In
+        </h1>
+        <!--end::Title-->
 
-                                            <?php $__errorArgs = ['name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong><?php echo e($message); ?></strong>
-                                            </span>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </div>
 
-                                    <div class="single-input-item">
-                                        <input type="email" placeholder="Enter your Email" required/>
-                                    </div>
-<!--begin::Email-->
-<input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent <?php $__errorArgs = ['email'];
+
+    </div>
+    <!--begin::Heading-->
+
+
+    <!--begin::Input group--->
+    <div class="fv-row mb-8">
+        <!--begin::Email-->
+        <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -159,47 +150,117 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="single-input-item">
-                                                <input type="password" placeholder="Enter your Password" required/>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="single-input-item">
-                                                <input type="password" placeholder="Repeat your Password" required/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <div class="login-reg-form-meta">
-                                            <div class="remember-meta">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="subnewsletter">
-                                                    <label class="form-check-label" for="subnewsletter">Subscribe Our
-                                                        Newsletter</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <button class="btn-login">Register</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Login & Register Content End -->
-            </div>
-        </div>
     </div>
+
+    <!--end::Input group--->
+    <div class="fv-row mb-3">
+        <!--begin::Password-->
+        <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent"  <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="password" required autocomplete="current-password"/>
+        <!--end::Password-->
+        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+        <span class="invalid-feedback" role="alert">
+            <strong><?php echo e($message); ?></strong>
+        </span>
+    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+    </div>
+    <!--end::Input group--->
+
+    <!--begin::Wrapper-->
+    <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
+        <div></div>
+
+        <!--begin::Link-->
+        <a href="reset-password.html')}}" class="link-primary">
+            Forgot Password ?
+        </a>
+        <!--end::Link-->
+    </div>
+    <!--end::Wrapper-->
+
+    <!--begin::Submit button-->
+    <div class="d-grid mb-10">
+        <button type="submit" id="kt_sign_in_submit" class="btn btn-primary">
+
+<!--begin::Indicator label-->
+<span class="indicator-label">
+    Sign In</span>
+<!--end::Indicator label-->
+
+<!--begin::Indicator progress-->
+<span class="indicator-progress">
+    Please wait...    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+</span>
+<!--end::Indicator progress-->        </button>
+    </div>
+    <!--end::Submit button-->
+
+    <!--begin::Sign up-->
+    <div class="text-gray-500 text-center fw-semibold fs-6">
+        Not a Member yet?
+
+        <a href="<?php echo e(route('register')); ?>" class="link-primary">
+            Sign up
+        </a>
+    </div>
+    <!--end::Sign up-->
+</form>
+<!--end::Form-->
+
+            </div>
+            <!--end::Wrapper-->
+
+            <!--begin::Footer-->
+            <div class="d-flex flex-stack px-lg-10">
+
+                <!--begin::Links-->
+                <div class="d-flex fw-semibold text-primary fs-base gap-5">
+                    <a href="#" target="_blank">About Qudroid systems</a>
+
+
+                </div>
+                <!--end::Links-->
+            </div>
+            <!--end::Footer-->
+        </div>
+        <!--end::Card-->
+    </div>
+    <!--end::Body-->
 </div>
-<!--== Page Content Wrapper End ==-->
+<!--end::Authentication - Sign-in--></div>
+<!--end::Root-->
 
-<?php $__env->stopSection(); ?>
+        <!--begin::Javascript-->
+        <script>
+            var hostUrl = "<?php echo e(asset('html/assets/assets/index.html')); ?>";        </script>
 
-<?php echo $__env->make('frontend.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/auth/login.blade.php ENDPATH**/ ?>
+                    <!--begin::Global Javascript Bundle(mandatory for all pages)-->
+                            <script src="<?php echo e(asset('html/assets/assets/plugins/global/plugins.bundle.js')); ?>"></script>
+                            <script src="<?php echo e(asset('html/assets/assets/js/scripts.bundle.js')); ?>"></script>
+                        <!--end::Global Javascript Bundle-->
+
+
+                    <!--begin::Custom Javascript(used for this page only)-->
+                            <script src="<?php echo e(asset('html/assets/assets/js/custom/authentication/sign-in/general.js')); ?>"></script>
+                        <!--end::Custom Javascript-->
+                <!--end::Javascript-->
+
+            </body>
+    <!--end::Body-->
+
+
+</html>
+<?php /**PATH C:\xampp\htdocs\lola\resources\views/auth/login.blade.php ENDPATH**/ ?>

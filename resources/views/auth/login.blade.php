@@ -6,7 +6,7 @@
 <!-- Mirrored from preview.keenthemes.com/metronic8/demo1/authentication/layouts/creative/sign-in.html')}} by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Jun 2023 04:07:02 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
-        <title>Login | LolaTete</title>
+        <title>Admin Login | LolaTete</title>
         <meta charset="utf-8"/>
 
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -104,7 +104,7 @@
             <div class="d-flex flex-center flex-column flex-column-fluid px-lg-10 pb-15 pb-lg-20">
 
 <!--begin::Form-->
-<form class="form w-100" novalidate="novalidate"  method="POST" action="{{ route('login') }}">
+<form class="form w-100" novalidate="novalidate"  method="POST" action="{{ route('adminlogin') }}">
 
         @csrf
     <!--begin::Heading-->
