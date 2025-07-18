@@ -37,38 +37,35 @@
                     <div class="tab-content" id="login-reg-tabcontent">
                         <div class="tab-pane fade show active" id="login" role="tabpanel">
                             <div class="login-reg-form-wrap">
-                            <form method="POST" action="{{ route('userlogin') }}">
-                                @csrf
+                                <form method="POST" action="{{ route('userlogin') }}">
+                                    @csrf
                                     <div class="single-input-item">
-                                        <input type="text"  placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus/>
-                                    </div>
+                                        <input type="email" placeholder="Email" name="email" class="form-control bg-transparent @error('email') is-invalid @enderror" value="{{ old('email') }}" required autocomplete="email" autofocus/>
                                         @error('email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
+                                    </div>
 
                                     <div class="single-input-item">
-                                         <!--begin::Password-->
-                                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent"  @error('password') is-invalid @enderror" name="password" required autocomplete="current-password"/>
-                                        <!--end::Password-->
-                                                    @error('password')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                        <input type="password" placeholder="Password" name="password" class="form-control bg-transparent @error('password') is-invalid @enderror" required autocomplete="current-password"/>
+                                        @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
 
                                     <div class="single-input-item">
                                         <div class="login-reg-form-meta d-flex align-items-center justify-content-between">
                                             <div class="remember-meta">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                                    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
                                                     <label class="form-check-label" for="rememberMe">Remember Me</label>
                                                 </div>
                                             </div>
-
-                                            <a href="#" class="forget-pwd">Forget Password?</a>
+                                            <a href="{{ route('password.request') }}" class="forget-pwd">Forget Password?</a>
                                         </div>
                                     </div>
 
@@ -80,14 +77,11 @@
                         </div>
                         <div class="tab-pane fade" id="register" role="tabpanel">
                             <div class="login-reg-form-wrap">
-                            <form class="form w-100" method="POST" action="{{ route('register') }}" novalidate="novalidate" id="kt_sign_up_form" >
-                            @csrf
+                                <form method="POST" action="{{ route('register') }}" id="kt_sign_up_form">
+                                    @csrf
                                     <div class="single-input-item">
-                                        <!--begin::Email-->
-                                            <input type="text" placeholder="Full Name"   class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus/>
-                                            <!--end::Email-->
-
-                                            @error('name')
+                                        <input type="text" placeholder="Full Name" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required autocomplete="name" autofocus/>
+                                        @error('name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -95,26 +89,29 @@
                                     </div>
 
                                     <div class="single-input-item">
-                                        <input type="email" placeholder="Enter your Email" required/>
+                                        <input type="email" placeholder="Email" name="email" class="form-control bg-transparent @error('email') is-invalid @enderror" value="{{ old('email') }}" required autocomplete="email"/>
+                                        @error('email')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
-<!--begin::Email-->
-<input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus/>
-        <!--end::Email-->
-        @error('email')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-       @enderror
+
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="single-input-item">
-                                                <input type="password" placeholder="Enter your Password" required/>
+                                                <input type="password" placeholder="Enter your Password" name="password" class="form-control @error('password') is-invalid @enderror" required autocomplete="new-password"/>
+                                                @error('password')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6">
                                             <div class="single-input-item">
-                                                <input type="password" placeholder="Repeat your Password" required/>
+                                                <input type="password" placeholder="Repeat your Password" name="password_confirmation" class="form-control" required autocomplete="new-password"/>
                                             </div>
                                         </div>
                                     </div>
@@ -123,9 +120,8 @@
                                         <div class="login-reg-form-meta">
                                             <div class="remember-meta">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="subnewsletter">
-                                                    <label class="form-check-label" for="subnewsletter">Subscribe Our
-                                                        Newsletter</label>
+                                                    <input type="checkbox" class="form-check-input" id="subnewsletter" name="subnewsletter">
+                                                    <label class="form-check-label" for="subnewsletter">Subscribe Our Newsletter</label>
                                                 </div>
                                             </div>
                                         </div>

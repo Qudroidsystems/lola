@@ -35,18 +35,17 @@
                     <div class="tab-content" id="login-reg-tabcontent">
                         <div class="tab-pane fade show active" id="login" role="tabpanel">
                             <div class="login-reg-form-wrap">
-                            <form method="POST" action="<?php echo e(route('userlogin')); ?>">
-                                <?php echo csrf_field(); ?>
+                                <form method="POST" action="<?php echo e(route('userlogin')); ?>">
+                                    <?php echo csrf_field(); ?>
                                     <div class="single-input-item">
-                                        <input type="text"  placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent <?php $__errorArgs = ['email'];
+                                        <input type="email" placeholder="Email" name="email" class="form-control bg-transparent <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" name="email" value="<?php echo e(old('email')); ?>" required autocomplete="email" autofocus/>
-                                    </div>
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('email')); ?>" required autocomplete="email" autofocus/>
                                         <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -59,68 +58,18 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                    </div>
 
                                     <div class="single-input-item">
-                                         <!--begin::Password-->
-                                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent"  <?php $__errorArgs = ['password'];
+                                        <input type="password" placeholder="Password" name="password" class="form-control bg-transparent <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" name="password" required autocomplete="current-password"/>
-                                        <!--end::Password-->
-                                                    <?php $__errorArgs = ['password'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong><?php echo e($message); ?></strong>
-                                                    </span>
-                                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <div class="login-reg-form-meta d-flex align-items-center justify-content-between">
-                                            <div class="remember-meta">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                                    <label class="form-check-label" for="rememberMe">Remember Me</label>
-                                                </div>
-                                            </div>
-
-                                            <a href="#" class="forget-pwd">Forget Password?</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="single-input-item">
-                                        <button class="btn-login">Login</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="register" role="tabpanel">
-                            <div class="login-reg-form-wrap">
-                            <form class="form w-100" method="POST" action="<?php echo e(route('register')); ?>" novalidate="novalidate" id="kt_sign_up_form" >
-                            <?php echo csrf_field(); ?>
-                                    <div class="single-input-item">
-                                        <!--begin::Email-->
-                                            <input type="text" placeholder="Full Name"   class="form-control <?php $__errorArgs = ['name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" name="name" value="<?php echo e(old('name')); ?>" required autocomplete="name" autofocus/>
-                                            <!--end::Email-->
-
-                                            <?php $__errorArgs = ['name'];
+unset($__errorArgs, $__bag); ?>" required autocomplete="current-password"/>
+                                        <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -135,40 +84,102 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
 
                                     <div class="single-input-item">
-                                        <input type="email" placeholder="Enter your Email" required/>
+                                        <div class="login-reg-form-meta d-flex align-items-center justify-content-between">
+                                            <div class="remember-meta">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
+                                                    <label class="form-check-label" for="rememberMe">Remember Me</label>
+                                                </div>
+                                            </div>
+                                            <a href="<?php echo e(route('password.request')); ?>" class="forget-pwd">Forget Password?</a>
+                                        </div>
                                     </div>
-<!--begin::Email-->
-<input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent <?php $__errorArgs = ['email'];
+
+                                    <div class="single-input-item">
+                                        <button class="btn-login">Login</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="register" role="tabpanel">
+                            <div class="login-reg-form-wrap">
+                                <form method="POST" action="<?php echo e(route('register')); ?>" id="kt_sign_up_form">
+                                    <?php echo csrf_field(); ?>
+                                    <div class="single-input-item">
+                                        <input type="text" placeholder="Full Name" name="name" class="form-control <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" name="email" value="<?php echo e(old('email')); ?>" required autocomplete="email" autofocus/>
-        <!--end::Email-->
-        <?php $__errorArgs = ['email'];
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('name')); ?>" required autocomplete="name" autofocus/>
+                                        <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-        <span class="invalid-feedback" role="alert">
-            <strong><?php echo e($message); ?></strong>
-        </span>
-       <?php unset($message);
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong><?php echo e($message); ?></strong>
+                                            </span>
+                                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                    </div>
+
+                                    <div class="single-input-item">
+                                        <input type="email" placeholder="Email" name="email" class="form-control bg-transparent <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" value="<?php echo e(old('email')); ?>" required autocomplete="email"/>
+                                        <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong><?php echo e($message); ?></strong>
+                                            </span>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    </div>
+
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="single-input-item">
-                                                <input type="password" placeholder="Enter your Password" required/>
+                                                <input type="password" placeholder="Enter your Password" name="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" required autocomplete="new-password"/>
+                                                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong><?php echo e($message); ?></strong>
+                                                    </span>
+                                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6">
                                             <div class="single-input-item">
-                                                <input type="password" placeholder="Repeat your Password" required/>
+                                                <input type="password" placeholder="Repeat your Password" name="password_confirmation" class="form-control" required autocomplete="new-password"/>
                                             </div>
                                         </div>
                                     </div>
@@ -177,9 +188,8 @@ unset($__errorArgs, $__bag); ?>
                                         <div class="login-reg-form-meta">
                                             <div class="remember-meta">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="subnewsletter">
-                                                    <label class="form-check-label" for="subnewsletter">Subscribe Our
-                                                        Newsletter</label>
+                                                    <input type="checkbox" class="form-check-input" id="subnewsletter" name="subnewsletter">
+                                                    <label class="form-check-label" for="subnewsletter">Subscribe Our Newsletter</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -201,5 +211,4 @@ unset($__errorArgs, $__bag); ?>
 <!--== Page Content Wrapper End ==-->
 
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('frontend.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\lola\resources\views/auth/user-login.blade.php ENDPATH**/ ?>
