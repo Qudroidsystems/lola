@@ -154,7 +154,11 @@
                                     <td>Shipping</td>
                                     <td> Contact The Seller
                                         
-                                        <?php endif; ?> --}}
+                                            
+                                        
+                                            
+                                            
+                                        
                                     </td>
                                 </tr>
                                 <tr>

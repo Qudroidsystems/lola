@@ -268,11 +268,10 @@
                             <p>Products you can trust...</p>
 
                             <div class="footer-social-icons">
-                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="https://www.facebook.com/Lorlah Tate"><i class="fa fa-facebook"></i></a>
                                 <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-pinterest"></i></a>
-                                <a href="#"><i class="fa fa-instagram"></i></a>
-                                <a href="#"><i class="fa fa-flickr"></i></a>
+                                <a href="https://www.instagram.com/lorlahtate"><i class="fa fa-instagram"></i></a>
+                            
                             </div>
 
                             <!-- <a href="#"><img src="{{ asset('ruby/ruby/assets/img/payment.png')}}" alt="Payment Method"/></a> -->
