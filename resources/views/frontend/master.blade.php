@@ -268,8 +268,8 @@
                             <p>Products you can trust...</p>
 
                             <div class="footer-social-icons">
-                                <a href="https://www.facebook.com/Lorlah Tate"><i class="fa fa-facebook"></i></a>
-                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="https://www.facebook.com/share/16tzffW7Qw/"><i class="fa fa-facebook"></i></a>
+                                {{-- <a href="#"><i class="fa fa-twitter"></i></a> --}}
                                 <a href="https://www.instagram.com/lorlahtate"><i class="fa fa-instagram"></i></a>
                             
                             </div>
