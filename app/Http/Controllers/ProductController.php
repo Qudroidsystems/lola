@@ -48,7 +48,7 @@ class ProductController extends Controller
         $units = Unit::all();
         $brands = Brand::all();
         $kt_ecommerce_add_product_options = Variation::all();
-        return view('product.create', compact('categories', 'tags', 'stores', 'units', 'brands', 'kt_ecommerce_add_product_options'));
+        return view('product.add', compact('categories', 'tags', 'stores', 'units', 'brands', 'kt_ecommerce_add_product_options'));
     }
 
     /**

@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('content'); ?>
 <?php if($errors->any()): ?>
         <div class="alert alert-danger">
