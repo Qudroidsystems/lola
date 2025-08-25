@@ -46,7 +46,7 @@
                         @foreach($wishlistItems as $item)
                         <tr>
                             <td class="pro-thumbnail">
-                                <a href="{{ route('product.show', $item->product->id) }}">
+                                <!-- <a href="{{ route('product.show', $item->product->id) }}"> -->
                                     @if($item->product->cover)
                                     <img class="img-fluid"
                                          src="{{ asset('storage/'.$item->product->cover->path) }}"
@@ -54,12 +54,12 @@
                                     @else
                                     <div class="img-placeholder"></div>
                                     @endif
-                                </a>
+                                <!-- </a> -->
                             </td>
                             <td class="pro-title">
-                                <a href="{{ route('product.show', $item->product->id) }}">
+                                <!-- <a href="{{ route('product.show', $item->product->id) }}"> -->
                                     {{ $item->product->name }}
-                                </a>
+                                <!-- </a> -->
                             </td>
                             <td class="pro-price">
                                 <span>
