@@ -142,20 +142,24 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <!--begin::Thumbnail-->
-                                        <a href="edit-product.html" class="symbol symbol-50px">
-                                            <span class="symbol-label" style="background-image:url('{{ $product->cover ? asset('storage/' . $product->cover->path) : asset('storage/uploads/product_default.jpg') }}');"></span>
-                                        </a>
-                                        <!--end::Thumbnail-->
+    <div class="d-flex align-items-center">
+        <!--begin::Thumbnail-->
+        <a href="{{ route('product.edit', $product->id) }}" class="symbol symbol-50px">
+            @if($product->thumbnail)
+                <span class="symbol-label" style="background-image:url('{{ asset($product->thumbnail) }}'); background-size: cover; background-position: center;"></span>
+            @else
+                <span class="symbol-label" style="background-image:url('{{ asset('assets/media/svg/files/blank-image.svg') }}'); background-size: cover; background-position: center;"></span>
+            @endif
+        </a>
+        <!--end::Thumbnail-->
 
-                                        <div class="ms-5">
-                                            <!--begin::Title-->
-                                            <a href="edit-product.html" class="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">{{ $product->name }}</a>
-                                            <!--end::Title-->
-                                        </div>
-                                    </div>
-                                </td>
+        <div class="ms-5">
+            <!--begin::Title-->
+            <a href="{{ route('product.edit', $product->id) }}" class="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">{{ $product->name }}</a>
+            <!--end::Title-->
+        </div>
+    </div>
+</td>
                                 <td class="text-end pe-0">
                                     <span class="fw-bold">{{ $product->sku }}</span>
                                 </td>
