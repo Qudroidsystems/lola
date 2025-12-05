@@ -179,7 +179,7 @@
                             <div class="symbol symbol-35px me-4">
                                 <span class="symbol-label bg-light-info">
                                     <i class="ki-duotone ki-picture
- fs-2 text-info"></i>
+    fs-2 text-info"></i>
                                 </span>
                             </div>
                             <!--end::Symbol-->
@@ -275,7 +275,7 @@
         <!--end::Tab panel-->
 
         <!--begin::Tab panel-->
-        <div class="tab-pane fade" id="kt_topbar_notifications_3" role="tabpanel">
+        {{-- <div class="tab-pane fade" id="kt_topbar_notifications_3" role="tabpanel">
             <!--begin::Items-->
             <div class="scroll-y mh-325px my-5 px-8">
                                     <!--begin::Item-->
@@ -517,7 +517,7 @@
                     <i class="ki-duotone ki-arrow-right fs-5"><span class="path1"></span><span class="path2"></span></i>                </a>
 			</div>
 			<!--end::View more-->
-        </div>
+        </div> --}}
         <!--end::Tab panel-->
     </div>
     <!--end::Tab content-->
@@ -538,7 +538,7 @@
             <i class="ki-duotone ki-element-11 fs-2 fs-lg-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>        </div>
 
 <!--begin::My apps-->
-<div class="menu menu-sub menu-sub-dropdown menu-column w-100 w-sm-350px" data-kt-menu="true">
+{{-- <div class="menu menu-sub menu-sub-dropdown menu-column w-100 w-sm-350px" data-kt-menu="true">
     <!--begin::Card-->
     <div class="card">
         <!--begin::Card header-->
@@ -601,7 +601,7 @@
         <!--end::Card body-->
     </div>
     <!--end::Card-->
-</div>
+</div> --}}
 <!--end::My apps-->
         <!--end::Menu wrapper-->
     </div>

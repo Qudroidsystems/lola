@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Product;
 use App\Models\Tag;
 use App\Models\Unit;
+use App\Models\Brand;
 use App\Models\Upload;
+use App\Models\Product;
+use App\Models\Category;
 use App\Models\Variation;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -20,6 +20,7 @@ class ProductController extends Controller
         if ($file && $file->isValid()) {
             $path = $file->store('uploads', 'public');
             return Upload::create([
+                'filename' => $file->getClientOriginalName(), // Add this line
                 'path' => 'storage/' . $path,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $file->getClientMimeType(),
