@@ -40,9 +40,7 @@
                         <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
                         <li class="breadcrumb-item text-muted">eCommerce</li>
                         <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('product.index') }}" class="text-muted text-hover-primary">Catalog</a>
-                        </li>
+                        <li class="breadcrumb-item text-muted">Catalog</li>
                         <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
                         <li class="breadcrumb-item text-gray-800">Add Product</li>
                     </ul>
@@ -61,7 +59,6 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <div id="kt_app_content_container" class="app-container container-xxl">
 
-                <!--begin::Form-->
                 <form action="{{ route('product.store') }}" method="POST" id="kt_ecommerce_add_product_form"
                       class="form d-flex flex-column flex-lg-row" enctype="multipart/form-data">
                     @csrf
@@ -106,7 +103,7 @@
                                     </span>
                                 </div>
 
-                                <div class="text-muted fs-7">Set the product thumbnail image. Only *.png, *.jpg, *.jpeg and *.gif files are accepted.</div>
+                                <div class="text-muted fs-7">Only *.png, *.jpg, *.jpeg and *.gif files are accepted</div>
                             </div>
                         </div>
                         <!--end::Thumbnail settings-->
@@ -132,7 +129,7 @@
                         </div>
                         <!--end::Status-->
 
-                        <!--begin::Category, Tag & Unit-->
+                        <!--begin::Category & tags-->
                         <div class="card card-flush py-4">
                             <div class="card-header">
                                 <div class="card-title"><h2>Category, Tag & Unit</h2></div>
@@ -148,8 +145,8 @@
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="text-muted fs-7">Add product to one or more categories.</div>
-                                    <a href="{{ route('category.create') }}" class="btn btn-light-primary btn-sm mt-3">
+                                    <div class="text-muted fs-7 mb-7">Add product to one or more categories.</div>
+                                    <a href="{{ route('category.create') }}" class="btn btn-light-primary btn-sm mb-10">
                                         <i class="ki-duotone ki-plus fs-2"></i> Create new category
                                     </a>
                                 </div>
@@ -158,12 +155,12 @@
                                 <div class="mb-7">
                                     <label class="form-label">Tags</label>
                                     <select name="selected_tag_ids[]" multiple class="form-select mb-2" data-control="select2"
-                                            data-placeholder="Select or type new tags" id="kt_ecommerce_add_product_tags">
+                                            data-placeholder="Select or type tags" id="kt_ecommerce_add_product_tags">
                                         @foreach ($tags as $tag)
                                             <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="text-muted fs-7">Add tags to a product.</div>
+                                    <div class="text-muted fs-7 mb-7">Add tags to a product.</div>
                                 </div>
 
                                 <!-- Unit -->
@@ -175,8 +172,8 @@
                                             <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="text-muted fs-7">Select one or more units.</div>
-                                    <a href="{{ route('unit.create') }}" class="btn btn-light-primary btn-sm mt-3">
+                                    <div class="text-muted fs-7 mb-7">Add one or more units to product.</div>
+                                    <a href="{{ route('unit.create') }}" class="btn btn-light-primary btn-sm mb-10">
                                         <i class="ki-duotone ki-plus fs-2"></i> Create new Unit
                                     </a>
                                 </div>
@@ -205,12 +202,12 @@
                         <!-- Store / Warehouse -->
                         <div class="card card-flush py-4">
                             <div class="card-header">
-                                <div class="card-title"><h2>Store / Warehouse</h2></div>
+                                <div class="card-title"><h2>Store</h2></div>
                             </div>
                             <div class="card-body pt-0">
-                                <label class="form-label required">Select warehouses/stores</label>
+                                <label class="form-label required">Select a product store</label>
                                 <select name="warehouses[]" multiple class="form-select mb-2" data-control="select2"
-                                        data-placeholder="Select warehouses" required>
+                                        data-placeholder="Select stores" required>
                                     @foreach ($stores as $store)
                                         <option value="{{ $store->id }}">{{ $store->name }}</option>
                                     @endforeach
@@ -224,8 +221,6 @@
 
                     <!--begin::Main column-->
                     <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
-
-                        <!-- Tabs -->
                         <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2">
                             <li class="nav-item">
                                 <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab"
@@ -239,11 +234,10 @@
 
                         <div class="tab-content">
 
-                            <!-- General Tab -->
+                            <!--begin::General Tab-->
                             <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general">
                                 <div class="d-flex flex-column gap-7 gap-lg-10">
 
-                                    <!-- Product Info -->
                                     <div class="card card-flush py-4">
                                         <div class="card-header">
                                             <div class="card-title"><h2>Product Information</h2></div>
@@ -258,13 +252,13 @@
 
                                             <div class="mb-10">
                                                 <label class="form-label">Description</label>
-                                                <textarea name="description" class="form-control" rows="6">{{ old('description') }}</textarea>
+                                                <div id="kt_ecommerce_add_product_description" class="min-h-200px mb-2"></div>
+                                                <textarea name="description" id="description" class="d-none">{{ old('description') }}</textarea>
                                                 <div class="text-muted fs-7">Set a description to the product for better visibility.</div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Gallery Images -->
                                     <div class="card card-flush py-4">
                                         <div class="card-header">
                                             <div class="card-title"><h2>Media</h2></div>
@@ -279,7 +273,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Meta Options -->
                                     <div class="card card-flush py-4">
                                         <div class="card-header">
                                             <div class="card-title"><h2>Meta Options</h2></div>
@@ -287,7 +280,8 @@
                                         <div class="card-body pt-0">
                                             <div class="mb-10">
                                                 <label class="form-label">Meta Tag Title</label>
-                                                <input type="text" name="meta_title" class="form-control mb-2" placeholder="Meta tag title" value="{{ old('meta_title') }}" />
+                                                <input type="text" name="meta_title" class="form-control mb-2"
+                                                       placeholder="Meta tag title" value="{{ old('meta_title') }}" />
                                             </div>
                                             <div class="mb-10">
                                                 <label class="form-label">Meta Tag Description</label>
@@ -295,88 +289,101 @@
                                             </div>
                                             <div class="mb-10">
                                                 <label class="form-label">Meta Tag Keywords</label>
-                                                <input type="text" name="meta_tag_keywords" class="form-control mb-2" placeholder="keyword1, keyword2" value="{{ old('meta_tag_keywords') }}" />
+                                                <input type="text" name="meta_tag_keywords" class="form-control mb-2"
+                                                       placeholder="keyword1, keyword2" value="{{ old('meta_tag_keywords') }}" />
                                             </div>
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
-                            <!-- End General Tab -->
+                            <!--end::General Tab-->
 
-                            <!-- Pricing & Stocks Tab -->
+                            <!--begin::Advanced Tab-->
                             <div class="tab-pane fade" id="kt_ecommerce_add_product_advanced">
                                 <div class="d-flex flex-column gap-7 gap-lg-10">
                                     <div class="card card-flush py-4">
                                         <div class="card-header">
-                                            <div class="card-title"><h2>Inventory & Pricing</h2></div>
+                                            <div class="card-title"><h2>Inventory</h2></div>
                                         </div>
                                         <div class="card-body pt-0">
 
                                             <div class="row g-9 mb-10">
-                                                <div class="col-md-6">
+                                                <div class="col-md-6 fv-row">
                                                     <label class="required form-label">SKU</label>
-                                                    <input type="text" name="sku" class="form-control" value="{{ old('sku') }}" required />
+                                                    <input type="text" name="sku" class="form-control mb-2" value="{{ old('sku') }}" required />
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Barcode</label>
-                                                    <input type="text" name="barcode" class="form-control" value="{{ old('barcode') }}" />
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <label class="required form-label">Stock Quantity</label>
-                                                    <input type="number" name="stock" class="form-control" value="{{ old('stock', 0) }}" min="0" required />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label class="form-label">Stock Alert</label>
-                                                    <input type="number" name="stock_alert" class="form-control" value="{{ old('stock_alert') }}" min="0" />
+                                                <div class="col-md-6 fv-row">
+                                                    <label class="required form-label">Barcode</label>
+                                                    <input type="text" name="barcode" class="form-control mb-2" value="{{ old('barcode') }}" />
                                                 </div>
 
-                                                <div class="col-md-4">
-                                                    <label class="form-label">Tax (%)</label>
-                                                    <input type="number" name="tax" step="0.01" class="form-control" value="{{ old('tax') }}" min="0" max="100" />
+                                                <div class="col-md-4 fv-row">
+                                                    <label class="required form-label">Stock (Quantity)</label>
+                                                    <input type="number" name="stock" class="form-control mb-2" value="{{ old('stock', 0) }}" min="0" required />
+                                                </div>
+                                                <div class="col-md-4 fv-row">
+                                                    <label class="required form-label">Stock Alert</label>
+                                                    <input type="number" name="stock_alert" class="form-control mb-2" value="{{ old('stock_alert') }}" min="0" />
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    <label class="required form-label">Base Price</label>
-                                                    <input type="number" name="price" step="0.01" class="form-control" value="{{ old('price') }}" required />
+                                                <div class="col-md-4 fv-row">
+                                                    <label class="form-label">Base Price</label>
+                                                    <input type="number" name="price" step="0.01" class="form-control mb-2" value="{{ old('price') }}" required />
                                                 </div>
-                                                <div class="col-md-6">
+
+                                                <div class="col-md-6 fv-row">
                                                     <label class="required form-label">Sale Price</label>
-                                                    <input type="number" name="sale_price" step="0.01" class="form-control" value="{{ old('sale_price') }}" required />
+                                                    <input type="number" name="sale_price" step="0.01" class="form-control mb-2" value="{{ old('sale_price') }}" required />
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Manufactured On</label>
-                                                    <input type="date" name="manufacture" class="form-control" value="{{ old('manufacture') }}" />
+                                                <div class="col-md-6 fv-row">
+                                                    <label class="form-label">Tax Class</label>
+                                                    <select class="form-select mb-2" name="tax" data-control="select2" data-hide-search="true">
+                                                        <option value="0">Tax Free</option>
+                                                        <option value="1">Taxable Goods</option>
+                                                        <option value="2">Downloadable Product</option>
+                                                    </select>
                                                 </div>
-                                                <div class="col-md-6">
+
+                                                <div class="col-md-6 fv-row">
+                                                    <label class="form-label">VAT Amount (%)</label>
+                                                    <input type="text" name="vat_amount" class="form-control mb-2" value="{{ old('vat_amount') }}" />
+                                                </div>
+
+                                                <div class="col-md-6 fv-row">
+                                                    <label class="form-label">Manufactured On</label>
+                                                    <input type="date" name="manufacture" class="form-control mb-2" value="{{ old('manufacture') }}" />
+                                                </div>
+                                                <div class="col-md-6 fv-row">
                                                     <label class="form-label">Expiry On</label>
-                                                    <input type="date" name="expiry" class="form-control" value="{{ old('expiry') }}" />
+                                                    <input type="date" name="expiry" class="form-control mb-2" value="{{ old('expiry') }}" />
                                                 </div>
                                             </div>
 
-                                            <div class="d-flex flex-stack gap-5 mb-10">
+                                            <div class="d-flex flex-stack mb-10">
                                                 <label class="form-check form-switch form-check-custom form-check-solid me-10">
-                                                    <input class="form-check-input" type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }} />
+                                                    <input class="form-check-input" name="is_featured" type="checkbox" value="1" {{ old('is_featured') ? 'checked' : '' }} />
                                                     <span class="form-check-label fw-semibold text-muted">Featured Product</span>
                                                 </label>
                                                 <label class="form-check form-switch form-check-custom form-check-solid me-10">
-                                                    <input class="form-check-input" type="checkbox" name="is_new" value="1" {{ old('is_new') ? 'checked' : '' }} />
+                                                    <input class="form-check-input" name="is_new" type="checkbox" value="1" {{ old('is_new') ? 'checked' : '' }} />
                                                     <span class="form-check-label fw-semibold text-muted">New Product</span>
                                                 </label>
                                                 <label class="form-check form-switch form-check-custom form-check-solid">
-                                                    <input class="form-check-input" type="checkbox" name="on_sale" value="1" {{ old('on_sale') ? 'checked' : '' }} />
+                                                    <input class="form-check-input" name="on_sale" type="checkbox" value="1" {{ old('on_sale') ? 'checked' : '' }} />
                                                     <span class="form-check-label fw-semibold text-muted">On Sale</span>
                                                 </label>
                                             </div>
 
                                             <div class="d-flex justify-content-end">
-                                                <a href="{{ route('product.index') }}" class="btn btn-light me-5">Cancel</a>
+                                                <a href="{{ route('product.index') }}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">
+                                                    Cancel
+                                                </a>
                                                 <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
-                                                    <span class="indicator-label">Save Product</span>
-                                                    <span class="indicator-progress">
-                                                        Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                    <span class="indicator-label">Save Changes</span>
+                                                    <span class="indicator-progress">Please wait... 
+                                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                                     </span>
                                                 </button>
                                             </div>
@@ -385,7 +392,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End Advanced Tab -->
+                            <!--end::Advanced Tab-->
 
                         </div>
                     </div>
@@ -395,12 +402,11 @@
         </div>
     </div>
 </div>
-<!--end::Main-->
 
-
+@push('scripts')
 <script>
     $(document).ready(function() {
-        // Initialize all Select2 controls
+        // Initialize all Select2
         $("select[data-control='select2']").select2({
             placeholder: function() {
                 return $(this).data('placeholder') || "Select an option";
@@ -408,25 +414,24 @@
             allowClear: true
         });
 
-        // Enable tagging on Tags field
+        // Enable tagging for tags
         $("#kt_ecommerce_add_product_tags").select2({
             tags: true,
             tokenSeparators: [','],
-            placeholder: "Select existing or type new tags"
+            placeholder: "Select or type new tags"
         });
 
-        // Gallery image preview
+        // Gallery preview
         $("#images").on('change', function(e) {
             $("#imagePreview").empty();
             $.each(e.target.files, function(i, file) {
                 if (file.type.match('image.*')) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        $("<img>")
-                            .attr("src", e.target.result)
-                            .addClass("rounded")
-                            .css({ width: "120px", height: "120px", objectFit: "cover", margin: "5px" })
-                            .appendTo("#imagePreview");
+                        $("<img>").attr("src", e.target.result)
+                                  .addClass("rounded")
+                                  .css({ width: "120px", height: "120px", objectFit: "cover", margin: "5px" })
+                                  .appendTo("#imagePreview");
                     };
                     reader.readAsDataURL(file);
                 }
@@ -434,6 +439,6 @@
         });
     });
 </script>
-
+@endpush
 
 @endsection
