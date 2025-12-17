@@ -1,189 +1,199 @@
 @extends('layouts.master')
 
 @section('content')
+
+<!--begin::Main-->
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <!--begin::Content wrapper-->
     <div class="d-flex flex-column flex-column-fluid">
-        <!-- Toolbar similar to add -->
+
+        <!--begin::Toolbar-->
         <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
             <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+
+                <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                        Edit Product: {{ $product->name }}
+                        Products
                     </h1>
-                    <!-- Breadcrumb same as add -->
+
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                        <li class="breadcrumb-item text-muted">
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home</a>
+                        </li>
+                        <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
+                        <li class="breadcrumb-item text-muted">eCommerce</li>
+                        <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
+                        <li class="breadcrumb-item text-muted">Catalog</li>
+                        <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
+                        <li class="breadcrumb-item text-gray-800">Products</li>
+                    </ul>
                 </div>
+                <!--end::Page title-->
+
+                <!--begin::Actions-->
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('product.create') }}" class="btn btn-primary">
+                        Add Product
+                    </a>
+                </div>
+                <!--end::Actions-->
             </div>
         </div>
+        <!--end::Toolbar-->
 
+        <!--begin::Content-->
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <div id="kt_app_content_container" class="app-container container-xxl">
+
+                <!--begin::Products Card-->
                 <div class="card card-flush">
-                    <div class="card-header mt-6">
+
+                    <!--begin::Card header-->
+                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
                         <div class="card-title">
-                            <h2 class="fw-bold">Edit Product</h2>
+                            <div class="d-flex align-items-center position-relative my-1">
+                                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
+                                    <span class="path1"></span><span class="path2"></span>
+                                </i>
+                                <input type="text" data-kt-ecommerce-product-filter="search"
+                                       class="form-control form-control-solid w-250px ps-12"
+                                       placeholder="Search Product" />
+                            </div>
+                        </div>
+
+                        <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+                            <div class="w-100 mw-150px">
+                                <select class="form-select form-select-solid"
+                                        data-control="select2"
+                                        data-hide-search="true"
+                                        data-placeholder="Status"
+                                        data-kt-ecommerce-product-filter="status">
+                                    <option value="all">All</option>
+                                    <option value="published">Published</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+
+                            <a href="{{ route('product.create') }}" class="btn btn-primary">
+                                Add Product
+                            </a>
                         </div>
                     </div>
+                    <!--end::Card header-->
+
+                    <!--begin::Card body-->
                     <div class="card-body pt-0">
-                        <form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-
-                            <!-- Same fields as add, but with old() + existing values -->
-
-                            <div class="mb-10">
-                                <label class="form-label required">Product Name</label>
-                                <input type="text" name="product_name" class="form-control" value="{{ old('product_name', $product->name) }}" required />
-                            </div>
-
-                            <div class="mb-10">
-                                <label class="form-label">Description</label>
-                                <textarea name="description" class="form-control" rows="4">{{ old('description', $product->description) }}</textarea>
-                            </div>
-
-                            <!-- SKU, Barcode, Stock -->
-                            <div class="row mb-10">
-                                <div class="col-md-4">
-                                    <label class="form-label required">SKU</label>
-                                    <input type="text" name="sku" class="form-control" value="{{ old('sku', $product->sku) }}" required />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Barcode</label>
-                                    <input type="text" name="barcode" class="form-control" value="{{ old('barcode', $product->barcode) }}" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label required">Stock Quantity</label>
-                                    <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" required />
-                                </div>
-                            </div>
-
-                            <!-- Prices -->
-                            <div class="row mb-10">
-                                <div class="col-md-6">
-                                    <label class="form-label required">Base Price</label>
-                                    <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->base_price) }}" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label required">Sale Price</label>
-                                    <input type="number" step="0.01" name="sale_price" class="form-control" value="{{ old('sale_price', $product->sale_price) }}" required />
-                                </div>
-                            </div>
-
-                            <!-- Multi-selects with pre-selected values -->
-                            <div class="mb-10">
-                                <label class="form-label required">Categories</label>
-                                <select name="category[]" multiple class="form-select" data-control="select2" required>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" {{ $product->categories->contains($category->id) ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-10">
-                                <label class="form-label required">Brands</label>
-                                <select name="brand[]" multiple class="form-select" data-control="select2" required>
-                                    @foreach($brands as $brand)
-                                        <option value="{{ $brand->id }}" {{ $product->brands->contains($brand->id) ? 'selected' : '' }}>
-                                            {{ $brand->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-10">
-                                <label class="form-label required">Units</label>
-                                <select name="unit[]" multiple class="form-select" data-control="select2" required>
-                                    @foreach($units as $unit)
-                                        <option value="{{ $unit->id }}" {{ $product->units->contains($unit->id) ? 'selected' : '' }}>
-                                            {{ $unit->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-10">
-                                <label class="form-label required">Warehouses</label>
-                                <select name="warehouses[]" multiple class="form-select" data-control="select2" required>
-                                    @foreach($stores as $store)
-                                        <option value="{{ $store->id }}" {{ $product->warehouses->contains($store->id) ? 'selected' : '' }}>
-                                            {{ $store->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-10">
-                                <label class="form-label">Tags</label>
-                                <select name="selected_tag_ids[]" multiple class="form-select" data-control="select2" id="kt_ecommerce_add_product_tags">
-                                    @foreach($tags as $tag)
-                                        <option value="{{ $tag->id }}" {{ $product->tags->contains($tag->id) ? 'selected' : '' }}>
-                                            {{ $tag->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- Thumbnail (optional on edit) -->
-                            <div class="mb-10">
-                                <label class="form-label">Current Thumbnail</label><br>
-                                @if($product->thumbnail)
-                                    <img src="{{ asset($product->thumbnail) }}" alt="thumbnail" style="max-height: 150px; border-radius: 8px;">
-                                @endif
-                                <label class="form-label mt-4">Change Thumbnail</label>
-                                <input type="file" name="thumbnail" class="form-control" accept="image/*" />
-                            </div>
-
-                            <!-- Gallery Images -->
-                            <div class="mb-10">
-                                <label class="form-label">Current Gallery Images</label><br>
-                                <div class="row">
-                                    @foreach($product->images as $image)
-                                        <div class="col-3 mb-3">
-                                            <img src="{{ asset($image->path) }}" style="width:100%; border-radius:8px;">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_products_table">
+                            <thead>
+                                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="w-10px pe-2">
+                                        <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                            <input class="form-check-input" type="checkbox"
+                                                   data-kt-check="true"
+                                                   data-kt-check-target="#kt_ecommerce_products_table .form-check-input"
+                                                   value="1" />
                                         </div>
-                                    @endforeach
-                                </div>
-                                <label class="form-label mt-4">Replace Gallery Images</label>
-                                <input type="file" name="images[]" multiple class="form-control" accept="image/*" />
-                                <small class="text-muted">Uploading new images will replace all current gallery images.</small>
-                            </div>
+                                    </th>
+                                    <th class="min-w-200px">Product</th>
+                                    <th class="text-end min-w-100px">SKU</th>
+                                    <th class="text-end min-w-70px">Qty</th>
+                                    <th class="text-end min-w-100px">Price</th>
+                                    <th class="text-end min-w-100px">Sale Price</th>
+                                    <th class="text-end min-w-100px">Status</th>
+                                    <th class="text-end min-w-70px">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-semibold text-gray-600">
+                                @forelse($products as $product)
+                                    <tr>
+                                        <td>
+                                            <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                                <input class="form-check-input" type="checkbox" value="{{ $product->id }}" />
+                                            </div>
+                                        </td>
 
-                            <!-- Status & Checkboxes -->
-                            <div class="row mb-10">
-                                <div class="col-md-4">
-                                    <label class="form-label required">Status</label>
-                                    <select name="status" class="form-select" required>
-                                        <option value="published" {{ $product->status == 'published' ? 'selected' : '' }}>Published</option>
-                                        <option value="draft" {{ $product->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-8">
-                                    <label class="form-label">Options</label><br>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="is_featured" value="1" {{ $product->is_featured ? 'checked' : '' }} />
-                                        <label class="form-check-label">Featured</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="is_new" value="1" {{ $product->is_new ? 'checked' : '' }} />
-                                        <label class="form-check-label">New</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="on_sale" value="1" {{ $product->on_sale ? 'checked' : '' }} />
-                                        <label class="form-check-label">On Sale</label>
-                                    </div>
-                                </div>
-                            </div>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="{{ route('product.edit', $product->id) }}" class="symbol symbol-50px me-5">
+                                                    @if($product->thumbnail)
+                                                        <span class="symbol-label"
+                                                              style="background-image: url('{{ asset($product->thumbnail) }}');
+                                                                     background-size: cover;
+                                                                     background-position: center;"></span>
+                                                    @else
+                                                        <span class="symbol-label"
+                                                              style="background-image: url('{{ asset('assets/media/svg/files/blank-image.svg') }}');
+                                                                     background-size: cover;"></span>
+                                                    @endif
+                                                </a>
 
-                            <div class="d-flex justify-content-end">
-                                <a href="{{ route('product.index') }}" class="btn btn-light me-3">Cancel</a>
-                                <button type="submit" class="btn btn-primary">Update Product</button>
-                            </div>
-                        </form>
+                                                <div class="d-flex flex-column">
+                                                    <a href="{{ route('product.edit', $product->id) }}"
+                                                       class="text-gray-800 text-hover-primary fs-5 fw-bold">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-end">{{ $product->sku }}</td>
+                                        <td class="text-end">{{ $product->stock }}</td>
+                                        <td class="text-end">{{ number_format($product->base_price, 2) }}</td>
+                                        <td class="text-end">{{ number_format($product->sale_price, 2) }}</td>
+
+                                        <td class="text-end">
+                                            <span class="badge badge-light-{{ $product->status == 'published' ? 'success' : 'warning' }}">
+                                                {{ ucfirst($product->status) }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <a href="#" class="btn btn-sm btn-light btn-active-light-primary"
+                                               data-kt-menu-trigger="click"
+                                               data-kt-menu-placement="bottom-end">
+                                                Actions
+                                                <i class="ki-duotone ki-down fs-5 ms-1"></i>
+                                            </a>
+
+                                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
+                                                 data-kt-menu="true">
+                                                <div class="menu-item px-3">
+                                                    <a href="{{ route('product.edit', $product->id) }}" class="menu-link px-3">
+                                                        Edit
+                                                    </a>
+                                                </div>
+                                                <div class="menu-item px-3">
+                                                    <form action="{{ route('product.destroy', $product->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="menu-link px-3 text-danger"
+                                                                onclick="return confirm('Are you sure you want to delete this product?')">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center py-10">
+                                            <div class="text-muted">No products found.</div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
+                    <!--end::Card body-->
                 </div>
+                <!--end::Products Card-->
             </div>
         </div>
+        <!--end::Content-->
     </div>
 </div>
+<!--end::Main-->
+
 @endsection
