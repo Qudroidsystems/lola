@@ -98,7 +98,7 @@
                                             </form>
                                         </dd>
                                     @else
-                                        <dd><a href="{{ route('login') }}">Login</a></dd>
+                                        <dd><a href="{{ route('userlogin') }}">Login</a></dd>
                                         <dd><a href="{{ route('register') }}">Register</a></dd>
                                     @endauth
                                 </dl>
