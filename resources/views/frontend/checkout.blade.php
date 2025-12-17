@@ -119,52 +119,115 @@
     <!-- Stripe.js -->
     <script src="https://js.stripe.com/v3/"></script>
 
- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const cartItems = @json($cartItems);
-        const total = {{ $total }};
-        const shipping = {{ $shipping }};
-        const sellerPhone = '2349057522004'; // Nigeria number without + or 0
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // === Stripe Payment Logic ===
+            const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+            const elements = stripe.elements();
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': { color: '#aab7c4' },
+                    },
+                },
+            });
+            cardElement.mount('#card-element');
 
-        // Build clean, professional message
-        let message = "Hello! 👋%0A";
-        message += "I'd like to place an order from your website:%0A%0A";
+            const paymentForm = document.getElementById('payment-form');
+            const cardErrors = document.getElementById('card-errors');
 
-        cartItems.forEach(item => {
-            const itemPrice = (item.product.sale_price * item.quantity).toFixed(2);
-            message += `• ${item.product.name} × ${item.quantity} = RM ${itemPrice}%0A`;
+            // Create Payment Intent (your existing route)
+            fetch('{{ route('checkout.payment.intent') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    cardErrors.textContent = data.error;
+                    return;
+                }
+
+                const clientSecret = data.clientSecret;
+
+                paymentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const result = await stripe.confirmCardPayment(clientSecret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: {
+                                name: document.getElementById('name').value,
+                                email: document.getElementById('email').value,
+                            },
+                        },
+                    });
+
+                    if (result.error) {
+                        cardErrors.textContent = result.error.message;
+                    } else if (result.paymentIntent.status === 'succeeded') {
+                        const formData = new FormData();
+                        formData.append('payment_intent', result.paymentIntent.id);
+                        formData.append('_token', '{{ csrf_token() }}');
+
+                        await fetch('{{ route('checkout.process') }}', {
+                            method: 'POST',
+                            body: formData,
+                        });
+
+                        window.location.href = '{{ route('order.success') }}';
+                    }
+                });
+            });
+
+            // === WhatsApp Button Logic (Fixed Formatting + Reliable Launch) ===
+            const cartItems = @json($cartItems);
+            const total = {{ $total }};
+            const shipping = {{ $shipping }};
+            const sellerPhone = '601136655467'; // Malaysia number: +60 11-3665 5467 → 601136655467 (remove + and spaces/dashes)
+
+            // Build message with proper \n line breaks (WhatsApp will render them correctly)
+            let message = "Hello! 👋\n";
+            message += "I'd like to place an order from your website:\n\n";
+
+            cartItems.forEach(item => {
+                const itemTotal = (item.product.sale_price * item.quantity).toFixed(2);
+                message += `• ${item.product.name} × ${item.quantity} = RM ${itemTotal}\n`;
+            });
+
+            message += `\nSubtotal: RM ${(total - shipping).toFixed(2)}`;
+            message += `\nShipping: RM ${shipping.toFixed(2)}`;
+            message += `\n─────────────────`;
+            message += `\n*Total: RM ${total.toFixed(2)}*`;
+            message += `\n\nPlease confirm availability and let me know how to proceed with payment. Thank you! 😊`;
+
+            const encodedMessage = encodeURIComponent(message);
+
+            // Detect mobile vs desktop
+            const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+
+            let whatsappUrl;
+
+            if (isMobile) {
+                // Mobile: Open WhatsApp app directly
+                whatsappUrl = `whatsapp://send?phone=${sellerPhone}&text=${encodedMessage}`;
+            } else {
+                // Laptop/Desktop: Open WhatsApp Web (will switch to desktop app if running & linked)
+                whatsappUrl = `https://web.whatsapp.com/send?phone=${sellerPhone}&text=${encodedMessage}`;
+            }
+
+            const button = document.getElementById('whatsapp-button');
+            button.href = whatsappUrl;
+
+            // On desktop, open in new tab for better experience
+            if (!isMobile) {
+                button.target = "_blank";
+            }
         });
-
-        message += `%0A`;
-        message += `Subtotal: RM ${(total - shipping).toFixed(2)}%0A`;
-        message += `Shipping: RM ${shipping.toFixed(2)}%0A`;
-        message += `──────────────────%0A`;
-        message += `*TOTAL: RM ${total.toFixed(2)}*%0A%0A`;
-        message += `Please confirm stock and let me know how to proceed with payment. Thank you! 🙏`;
-
-        const encodedMessage = encodeURIComponent(message);
-
-        // Detect if user is on mobile or desktop
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-        let whatsappUrl;
-
-        if (isMobile) {
-            // Mobile: Open WhatsApp app directly
-            whatsappUrl = `whatsapp://send?phone=${sellerPhone}&text=${encodedMessage}`;
-        } else {
-            // Desktop/Laptop: Open WhatsApp Web
-            whatsappUrl = `https://web.whatsapp.com/send?phone=${sellerPhone}&text=${encodedMessage}`;
-        }
-
-        // Set the href
-        const button = document.getElementById('whatsapp-button');
-        button.href = whatsappUrl;
-
-        // Optional: Open in new tab on desktop for better UX
-        if (!isMobile) {
-            button.target = "_blank";
-        }
-    });
-</script>
+    </script>
 @endsection
