@@ -91,8 +91,7 @@
                                         <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
                                             <input class="form-check-input" type="checkbox"
                                                    data-kt-check="true"
-                                                   data-kt-check-target="#kt_ecommerce_products_table .form-check-input"
-                                                   value="1" />
+                                                   data-kt-check-target="#kt_ecommerce_products_table .form-check-input" />
                                         </div>
                                     </th>
                                     <th class="min-w-200px">Product</th>
@@ -156,30 +155,38 @@
                                                 <i class="ki-duotone ki-down fs-5 ms-1"></i>
                                             </a>
 
+                                            <!--begin::Menu-->
                                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
                                                  data-kt-menu="true">
+
+                                                <!-- Edit -->
                                                 <div class="menu-item px-3">
                                                     <a href="{{ route('product.edit', $product->id) }}" class="menu-link px-3">
                                                         Edit
                                                     </a>
                                                 </div>
+
+                                                <!-- Delete -->
                                                 <div class="menu-item px-3">
                                                     <form action="{{ route('product.destroy', $product->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="menu-link px-3 text-danger"
-                                                                onclick="return confirm('Are you sure you want to delete this product?')">
+                                                        <button type="submit"
+                                                                class="menu-link px-3 text-danger border-0 bg-transparent text-start w-100"
+                                                                onclick="return confirm('Are you sure you want to delete this product? This action cannot be undone.')">
                                                             Delete
                                                         </button>
                                                     </form>
                                                 </div>
+
                                             </div>
+                                            <!--end::Menu-->
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center py-10">
-                                            <div class="text-muted">No products found.</div>
+                                            <div class="text-muted fs-4">No products found.</div>
                                         </td>
                                     </tr>
                                 @endforelse
