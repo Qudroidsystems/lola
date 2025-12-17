@@ -1,4 +1,5 @@
 @extends('frontend.master')
+
 @section('content')
     <!--== Page Title Area Start ==-->
     <div id="page-title-area">
@@ -56,21 +57,24 @@
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" value="{{ auth()->user()->name }}" required>
+                                <input type="text" class="form-control" id="name" value="{{ auth()->user()->name ?? '' }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" value="{{ auth()->user()->email }}" required>
+                                <input type="email" class="form-control" id="email" value="{{ auth()->user()->email ?? '' }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="card-element">Credit or Debit Card</label>
-                                <div id="card-element" class="form-control"></div>
-                                <div id="card-errors" role="alert" class="text-danger"></div>
+                                <div id="card-element" class="form-control p-3"></div>
+                                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
                             </div>
-                            <button type="submit" class="btn-add-to-cart mt-3">Pay RM {{ number_format($total, 2) }}</button>
+                            <button type="submit" class="btn btn-primary mt-4 w-100">
+                                Pay RM {{ number_format($total, 2) }}
+                            </button>
                         </form>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     <!-- Order Summary -->
                     <div class="cart-calculator-wrapper">
@@ -80,27 +84,29 @@
                                 <table class="table table-bordered">
                                     @foreach ($cartItems as $item)
                                         <tr>
-                                            <td>{{ $item->product->name }} x {{ $item->quantity }}</td>
+                                            <td>{{ $item->product->name }} × {{ $item->quantity }}</td>
                                             <td>RM {{ number_format($item->product->sale_price * $item->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
-                                        <td>Sub Total</td>
+                                        <td><strong>Subtotal</strong></td>
                                         <td>RM {{ number_format($total - $shipping, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Shipping</td>
                                         <td>RM {{ number_format($shipping, 2) }}</td>
                                     </tr>
-                                    <tr>
-                                        <td>Total</td>
-                                        <td>RM {{ number_format($total, 2) }}</td>
+                                    <tr class="table-active">
+                                        <td><strong>Total</strong></td>
+                                        <td><strong>RM {{ number_format($total, 2) }}</strong></td>
                                     </tr>
                                 </table>
                             </div>
-                            <!-- WhatsApp Button -->
-                            <a href="#" id="whatsapp-button" class="btn btn-success btn-lg mt-5">
-                                <i class="fab fa-whatsapp"></i> Chat with Seller on WhatsApp
+
+                            <!-- WhatsApp Chat Button -->
+                            <a href="#" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
+                                <i class="fab fa-whatsapp fa-2x"></i>
+                                <span>Chat with Seller on WhatsApp</span>
                             </a>
                         </div>
                     </div>
@@ -110,19 +116,29 @@
     </div>
     <!--== Page Content Wrapper End ==-->
 
-    <!-- Stripe JavaScript -->
+    <!-- Stripe.js -->
     <script src="https://js.stripe.com/v3/"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // Stripe Payment Logic
+            // === Stripe Payment Logic ===
             const stripe = Stripe('{{ env('STRIPE_KEY') }}');
             const elements = stripe.elements();
-            const cardElement = elements.create('card');
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': { color: '#aab7c4' },
+                    },
+                },
+            });
             cardElement.mount('#card-element');
 
             const paymentForm = document.getElementById('payment-form');
             const cardErrors = document.getElementById('card-errors');
 
+            // Create Payment Intent
             const response = await fetch('{{ route('checkout.payment.intent') }}', {
                 method: 'POST',
                 headers: {
@@ -130,17 +146,17 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 },
             });
-            const { clientSecret, error } = await response.json();
 
-            if (error) {
-                cardErrors.textContent = error;
+            const { clientSecret, error: intentError } = await response.json();
+            if (intentError) {
+                cardErrors.textContent = intentError;
                 return;
             }
 
-            paymentForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
+            paymentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-                const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+                const result = await stripe.confirmCardPayment(clientSecret, {
                     payment_method: {
                         card: cardElement,
                         billing_details: {
@@ -150,40 +166,44 @@
                     },
                 });
 
-                if (error) {
-                    cardErrors.textContent = error.message;
-                } else if (paymentIntent.status === 'succeeded') {
+                if (result.error) {
+                    cardErrors.textContent = result.error.message;
+                } else if (result.paymentIntent.status === 'succeeded') {
                     const formData = new FormData();
-                    formData.append('payment_intent', paymentIntent.id);
+                    formData.append('payment_intent', result.paymentIntent.id);
                     formData.append('_token', '{{ csrf_token() }}');
 
                     await fetch('{{ route('checkout.process') }}', {
                         method: 'POST',
                         body: formData,
-                    }).then(() => {
-                        window.location.href = '{{ route('order.success') }}';
                     });
+
+                    window.location.href = '{{ route('order.success') }}';
                 }
             });
 
-            // WhatsApp Button Logic
+            // === WhatsApp Button Logic ===
             const cartItems = @json($cartItems);
             const total = {{ $total }};
             const shipping = {{ $shipping }};
-            const whatsappButton = document.getElementById('whatsapp-button');
-            const sellerPhone = '+2349057522004';
+            const sellerPhone = '2349057522004'; // Without + sign for wa.me
 
-            const message = `Hello, I'd like to discuss my order:\n\n` +
-                cartItems.map(item => 
-                    `${item.product.name} x ${item.quantity} - RM ${(item.product.sale_price * item.quantity).toFixed(2)}`
-                ).join('\n') +
-                `\n\nSubtotal: RM ${(total - shipping).toFixed(2)}` +
-                `\nShipping: RM ${shipping.toFixed(2)}` +
-                `\nTotal: RM ${total.toFixed(2)}` +
-                `\n\nCan we discuss alternative payment options?`;
+            let message = "Hello! 👋%0aI'd like to place an order:%0a%0a";
 
-            const encodedMessage = encodeURIComponent(message);
-            whatsappButton.href = `https://wa.me/${sellerPhone}?text=${encodedMessage}`;
+            cartItems.forEach(item => {
+                const itemTotal = (item.product.sale_price * item.quantity).toFixed(2);
+                message += `• ${item.product.name} × ${item.quantity} = RM ${itemTotal}%0a`;
+            });
+
+            message += `%0a`;
+            message += `Subtotal: RM ${(total - shipping).toFixed(2)}%0a`;
+            message += `Shipping: RM ${shipping.toFixed(2)}%0a`;
+            message += `─────────────────%0a`;
+            message += `*Total: RM ${total.toFixed(2)}*%0a%0a`;
+            message += `Please let me know alternative payment options or confirm availability. Thank you! 😊`;
+
+            const whatsappUrl = `https://wa.me/${sellerPhone}?text=${message}`;
+            document.getElementById('whatsapp-button').href = whatsappUrl;
         });
     </script>
 @endsection
