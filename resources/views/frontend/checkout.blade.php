@@ -138,7 +138,6 @@
             const paymentForm = document.getElementById('payment-form');
             const cardErrors = document.getElementById('card-errors');
 
-            // Create Payment Intent (your existing route)
             fetch('{{ route('checkout.payment.intent') }}', {
                 method: 'POST',
                 headers: {
@@ -183,15 +182,16 @@
                         window.location.href = '{{ route('order.success') }}';
                     }
                 });
+            }).catch(err => {
+                cardErrors.textContent = 'Failed to create payment intent.';
             });
 
-            // === WhatsApp Button Logic (Fixed Formatting + Reliable Launch) ===
+            // === WhatsApp Button Logic (Perfect Formatting + Reliable on Mobile & Desktop) ===
             const cartItems = @json($cartItems);
             const total = {{ $total }};
             const shipping = {{ $shipping }};
-            const sellerPhone = '601136655467'; // Malaysia number: +60 11-3665 5467 → 601136655467 (remove + and spaces/dashes)
+            const sellerPhone = '601136655467'; // +60 11-3665 5467 → 601136655467
 
-            // Build message with proper \n line breaks (WhatsApp will render them correctly)
             let message = "Hello! 👋\n";
             message += "I'd like to place an order from your website:\n\n";
 
@@ -208,25 +208,23 @@
 
             const encodedMessage = encodeURIComponent(message);
 
-            // Detect mobile vs desktop
             const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
 
             let whatsappUrl;
 
             if (isMobile) {
-                // Mobile: Open WhatsApp app directly
+                // Mobile: Direct app open (most reliable)
                 whatsappUrl = `whatsapp://send?phone=${sellerPhone}&text=${encodedMessage}`;
             } else {
-                // Laptop/Desktop: Open WhatsApp Web (will switch to desktop app if running & linked)
+                // Desktop/Laptop: WhatsApp Web (will auto-switch to Desktop app if installed & running)
                 whatsappUrl = `https://web.whatsapp.com/send?phone=${sellerPhone}&text=${encodedMessage}`;
             }
 
             const button = document.getElementById('whatsapp-button');
             button.href = whatsappUrl;
 
-            // On desktop, open in new tab for better experience
             if (!isMobile) {
-                button.target = "_blank";
+                button.target = "_blank"; // Open in new tab on desktop
             }
         });
     </script>
