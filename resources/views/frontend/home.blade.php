@@ -22,40 +22,40 @@
             {{ \Session::get('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-@endif
-<!--== Banner // Slider Area Start ==-->
-<section id="banner-area" class="banner__2">
-    <div class="ruby-container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div id="banner-carousel" class="owl-carousel">
-                    <!-- Banner Single Carousel Start -->
-                    <div class="single-carousel-wrap home_6_slide_1">
-                        <div class="banner-caption text-center text-lg-start">
-                            <p><h2>LorlahTate</h2></p>
-                            <h3>Necklace <br> for Princess</h3>
-                            <p>Elevate your elegance with our exquisite LorlahTate necklace, crafted with precision to enhance your royal charm.</p>
-                            <a href="#" class="btn-long-arrow">Learn More</a>
-                        </div>
-                    </div>
-                    <!-- Banner Single Carousel End -->
+            @endif
+            <!--== Banner // Slider Area Start ==-->
+            <section id="banner-area" class="banner__2">
+                <div class="ruby-container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="banner-carousel" class="owl-carousel">
+                                <!-- Banner Single Carousel Start -->
+                                <div class="single-carousel-wrap home_6_slide_1">
+                                    <div class="banner-caption text-center text-lg-start">
+                                        <p><h2>LorlahTate</h2></p>
+                                        <h3>Necklace <br> for Princess</h3>
+                                        <p>Elevate your elegance with our exquisite LorlahTate necklace, crafted with precision to enhance your royal charm.</p>
+                                        <a href="#" class="btn-long-arrow">Learn More</a>
+                                    </div>
+                                </div>
+                                <!-- Banner Single Carousel End -->
 
-                    <!-- Banner Single Carousel Start -->
-                    <div class="single-carousel-wrap home_6_slide_2">
-                        <div class="banner-caption text-center text-lg-start">
-                            <p><h2>LorlahTate</h2></p>
-                            <h3>Necklace <br> for Princess</h3>
-                            <p>Discover timeless beauty with the LorlahTate necklace, designed to make every moment sparkle with sophistication.</p>
-                            <a href="#" class="btn-long-arrow">Learn More</a>
+                                <!-- Banner Single Carousel Start -->
+                                <div class="single-carousel-wrap home_6_slide_2">
+                                    <div class="banner-caption text-center text-lg-start">
+                                        <p><h2>LorlahTate</h2></p>
+                                        <h3>Necklace <br> for Princess</h3>
+                                        <p>Discover timeless beauty with the LorlahTate necklace, designed to make every moment sparkle with sophistication.</p>
+                                        <a href="#" class="btn-long-arrow">Learn More</a>
+                                    </div>
+                                </div>
+                                <!-- Banner Single Carousel End -->
+                            </div>
                         </div>
                     </div>
-                    <!-- Banner Single Carousel End -->
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!--== Banner Slider End ==-->
+            </section>
+            <!--== Banner Slider End ==-->
 
 <!--== New Products Area Start ==-->
 <section id="new-products-area" class="p-9">

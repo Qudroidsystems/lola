@@ -53,25 +53,28 @@
             <!-- Navigation Area Start -->
             <div class="col-3 col-lg-9 col-xl-8 m-auto">
                 <div class="main-menu-wrap">
-                    <nav id="mainmenu">
-                        <ul>
-                            <li >
-                                <a href="{{route('home')}}">Home</a>
-                            </li>
-                            <li >
-                                <a href="{{route('shop')}}">Shop</a>
-                            </li>
-                            <li >
-                                <a href="{{route('cart.index')}}">My Cart</a>
-                            </li>
-                            <li >
-                                <a href="{{route('wishlist.index')}}">Wishlists</a>
-                            </li>
-                            <li>
-                                <a href="{{route('user.dashboard')}}">My Account</a>
-                            </li>
-                        </ul>
-                    </nav>
+                  <nav id="mainmenu">
+                    <ul>
+                        <li>
+                            <a href="{{ route('home') }}">Home</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('shop') }}">Shop</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('about') }}">About Us</a>  <!-- New About Link -->
+                        </li>
+                        <li>
+                            <a href="{{ route('cart.index') }}">My Cart</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('wishlist.index') }}">Wishlists</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('user.dashboard') }}">My Account</a>
+                        </li>
+                    </ul>
+                </nav>
                 </div>
             </div>
             <!-- Navigation Area End -->

@@ -50,6 +50,7 @@ use App\Http\Controllers\Auth\AdminLoginController;
 */
 Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 Route::get('/userlogin', [App\Http\Controllers\Auth\UserLoginController::class, 'showLoginForm'])->name('userlogin');
 Route::post('/userlogin', [App\Http\Controllers\Auth\UserLoginController::class, 'login']);
