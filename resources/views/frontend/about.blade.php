@@ -41,21 +41,21 @@
 
         <div class="row align-items-center mb-5">
             <div class="col-lg-6 order-lg-2">
-                <img src="{{ asset('ruby/ruby/assets/img/about-image.jpg') }}" alt="LorlahTate Craftsmanship" class="img-fluid rounded shadow">
+                <img src="{{ asset('ruby/ruby/assets/img/about-image.jpeg') }}" alt="LorlahTate Craftsmanship" class="img-fluid rounded shadow">
                 <!-- Replace with your own photo of the founder or bead-making process -->
             </div>
             <div class="col-lg-6 order-lg-1">
                 <h3>Our Story</h3>
                 <p>LorlahTate was born from a deep passion for bead-making in the vibrant heart of Nigeria. It all began in 2010, when our founder started crafting intricate, handmade jewelry pieces inspired by tradition, beauty, and personal expression.</p>
-                
+
                 <p>In 2015, a journey of exploration took us abroad, broadening horizons and enriching creative vision. Returning with fresh inspiration, we dove fully into the craft in 2017, honing skills and perfecting designs that blend timeless elegance with modern sophistication.</p>
-                
+
                 <p>A major milestone came in 2020, when we officially registered as <strong>LT Handicraft Enterprise</strong>—solidifying our commitment to quality, authenticity, and empowering women through exquisite accessories.</p>
-                
+
                 <p>Today, LorlahTate stands as a celebration of Nigerian heritage and artisanal excellence. Each piece is meticulously handcrafted with love, using premium materials to create necklaces, earrings, and more that tell a story of resilience, creativity, and royal charm. Whether it's a "Necklace for a Princess" or everyday elegance, our jewelry is designed to elevate your style and make you feel truly special.</p>
-                
+
                 <p>Thank you for being part of our journey. We can't wait to help you sparkle!</p>
-                
+
                 <a href="{{ route('shop') }}" class="btn-long-arrow">Shop Now</a>
             </div>
         </div>
