@@ -148,14 +148,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
     // Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
      // Checkout
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.payment.intent');
-    Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
-    Route::get('/order/success', function () {
-        return view('frontend.order-success');
-    })->name('order.success');
 
-     // Wishlist routes
+});
+
+Route::get('/debug-session', function () {
+    return [
+        'authenticated' => auth()->check(),
+        'user_id' => auth()->id(),
+        'user_email' => auth()->check() ? auth()->user()->email : null,
+        'session_id' => session()->getId(),
+        'session_data' => session()->all(),
+    ];
+});
+
+    // Wishlist routes
     Route::prefix('wishlist')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
         Route::post('/', [WishlistController::class, 'store'])->name('wishlist.store');
@@ -173,23 +179,12 @@ Route::group(['middleware' => ['auth']], function () {
             Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
 
+
+
+
     //billing address
     Route::get('/billingaddress/edit', [BillingAddressController::class, 'edit'])->name('user.address.edit');
     Route::post('/billingaddress/update', [BillingAddressController::class, 'update'])->name('user.address.update');
-
-});
-
-Route::get('/debug-session', function () {
-    return [
-        'authenticated' => auth()->check(),
-        'user_id' => auth()->id(),
-        'user_email' => auth()->check() ? auth()->user()->email : null,
-        'session_id' => session()->getId(),
-        'session_data' => session()->all(),
-    ];
-});
-
-
 
 
 });
