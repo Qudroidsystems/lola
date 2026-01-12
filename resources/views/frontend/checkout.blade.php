@@ -24,13 +24,14 @@
     <div id="page-content-wrapper" class="p-9">
         <div class="container">
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Whoops!</strong> There were some problems with your input.
+                    <ul class="mb-0 mt-2">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
@@ -48,69 +49,76 @@
                 </div>
             @endif
 
-            <div class="row">
+            <div class="row g-5">
+                <!-- Left Column - Billing & Payment -->
                 <div class="col-lg-6">
-                    <!-- Billing Details & Payment -->
-                    <div class="billing-details-wrapper">
-                        <h3>Billing Details</h3>
+                    <div class="billing-details-wrapper bg-light p-4 p-lg-5 rounded shadow-sm">
+                        <h3 class="mb-4">Billing Details</h3>
+
                         <form id="payment-form">
                             @csrf
-                            <div class="form-group mb-3">
-                                <label for="name">Full Name</label>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name"
-                                       value="{{ auth()->user()->name ?? old('name') }}" required>
+                                       value="{{ auth()->user()?->name ?? old('name') }}" required>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="email">Email Address</label>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email"
-                                       value="{{ auth()->user()->email ?? old('email') }}" required>
+                                       value="{{ auth()->user()?->email ?? old('email') }}" required>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="card-element">Credit or Debit Card</label>
-                                <div id="card-element" class="form-control p-3"></div>
-                                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+
+                            <div class="mb-4">
+                                <label for="card-element" class="form-label">Credit or Debit Card</label>
+                                <div id="card-element" class="form-control p-3 border"></div>
+                                <div id="card-errors" role="alert" class="text-danger mt-2 small"></div>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-3 w-100 py-3 fw-bold">
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3" id="pay-button">
                                 Pay RM {{ number_format($total, 2) }}
                             </button>
                         </form>
                     </div>
                 </div>
 
+                <!-- Right Column - Order Summary -->
                 <div class="col-lg-6">
-                    <!-- Order Summary -->
-                    <div class="cart-calculator-wrapper">
-                        <h3>Order Summary</h3>
+                    <div class="cart-calculator-wrapper bg-light p-4 p-lg-5 rounded shadow-sm">
+                        <h3 class="mb-4">Order Summary</h3>
+
                         <div class="cart-calculate-items">
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table class="table table-borderless table-sm">
                                     <tbody>
                                         @foreach ($cartItems as $item)
                                             <tr>
-                                                <td class="fw-medium">
+                                                <td class="py-2">
                                                     {{ $item->product->name }} × {{ $item->quantity }}
                                                 </td>
-                                                <td class="text-end">
+                                                <td class="text-end py-2 fw-medium">
                                                     RM {{ number_format($item->product->sale_price * $item->quantity, 2) }}
                                                 </td>
                                             </tr>
                                         @endforeach
 
-                                        <tr>
-                                            <td><strong>Subtotal</strong></td>
-                                            <td class="text-end">
+                                        <tr class="border-top">
+                                            <td class="py-3"><strong>Subtotal</strong></td>
+                                            <td class="text-end py-3">
                                                 RM {{ number_format($total - $shipping, 2) }}
                                             </td>
                                         </tr>
+
                                         <tr>
-                                            <td>Shipping</td>
-                                            <td class="text-end">
+                                            <td class="py-2">Shipping</td>
+                                            <td class="text-end py-2">
                                                 RM {{ number_format($shipping, 2) }}
                                             </td>
                                         </tr>
-                                        <tr class="table-active">
-                                            <td><strong>Total</strong></td>
-                                            <td class="text-end fw-bold">
+
+                                        <tr class="border-top fw-bold fs-5">
+                                            <td class="py-3">Total</td>
+                                            <td class="text-end py-3 text-primary">
                                                 RM {{ number_format($total, 2) }}
                                             </td>
                                         </tr>
@@ -118,9 +126,9 @@
                                 </table>
                             </div>
 
-                            <!-- WhatsApp Chat Button - FIXED & RELIABLE -->
+                            <!-- WhatsApp Button - Modern & Reliable -->
                             <a href="#" id="whatsapp-button"
-                               class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3"
+                               class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3 shadow"
                                target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-whatsapp fa-2x"></i>
                                 <span>Chat with Seller on WhatsApp</span>
@@ -133,28 +141,31 @@
     </div>
     <!--== Page Content Wrapper End ==-->
 
-    <!-- Stripe.js -->
+    <!-- Stripe.js v3 -->
     <script src="https://js.stripe.com/v3/"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // === Stripe Payment Logic (unchanged) ===
+        document.addEventListener('DOMContentLoaded', function () {
+            // =============================================
+            // Stripe Payment Integration
+            // =============================================
             const stripe = Stripe('{{ env('STRIPE_KEY') }}');
             const elements = stripe.elements();
             const cardElement = elements.create('card', {
                 style: {
                     base: {
                         fontSize: '16px',
-                        color: '#424770',
+                        color: '#32325d',
                         '::placeholder': { color: '#aab7c4' },
                     },
-                },
+                }
             });
             cardElement.mount('#card-element');
 
             const paymentForm = document.getElementById('payment-form');
             const cardErrors = document.getElementById('card-errors');
 
+            // Create Payment Intent
             fetch('{{ route('checkout.payment.intent') }}', {
                 method: 'POST',
                 headers: {
@@ -173,22 +184,24 @@
 
                 paymentForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    paymentForm.querySelector('#pay-button').disabled = true;
 
-                    const result = await stripe.confirmCardPayment(clientSecret, {
+                    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
                         payment_method: {
                             card: cardElement,
                             billing_details: {
                                 name: document.getElementById('name').value,
                                 email: document.getElementById('email').value,
                             },
-                        },
+                        }
                     });
 
-                    if (result.error) {
-                        cardErrors.textContent = result.error.message;
-                    } else if (result.paymentIntent.status === 'succeeded') {
+                    if (error) {
+                        cardErrors.textContent = error.message;
+                        paymentForm.querySelector('#pay-button').disabled = false;
+                    } else if (paymentIntent.status === 'succeeded') {
                         const formData = new FormData();
-                        formData.append('payment_intent', result.paymentIntent.id);
+                        formData.append('payment_intent', paymentIntent.id);
                         formData.append('_token', '{{ csrf_token() }}');
 
                         await fetch('{{ route('checkout.process') }}', {
@@ -199,18 +212,21 @@
                         window.location.href = '{{ route('order.success') }}';
                     }
                 });
-            }).catch(err => {
-                cardErrors.textContent = 'Failed to create payment intent. Please try again.';
+            })
+            .catch(() => {
+                cardErrors.textContent = 'Failed to initialize payment. Please try again.';
             });
 
-            // === WhatsApp Button - Modern & Reliable (2025–2026) ===
+            // =============================================
+            // WhatsApp Button - FIXED & MOST RELIABLE 2026
+            // =============================================
             const cartItems = @json($cartItems);
             const total = {{ $total }};
             const shipping = {{ $shipping }};
-            const sellerPhone = '601136655467'; // International format, no + or spaces
+            const sellerPhone = '601136655467'; // International format - no + sign
 
             let message = "Hello! 👋\n";
-            message += "I'd like to place an order from your website:\n\n";
+            message += "I'm interested in placing this order from your website:\n\n";
 
             cartItems.forEach(item => {
                 const itemTotal = (item.product.sale_price * item.quantity).toFixed(2);
@@ -219,24 +235,26 @@
 
             message += `\nSubtotal: RM ${(total - shipping).toFixed(2)}`;
             message += `\nShipping: RM ${shipping.toFixed(2)}`;
-            message += `\n─────────────────`;
-            message += `\n*Total: RM ${total.toFixed(2)}*`;
-            message += `\n\nPlease confirm availability and let me know how to proceed with payment. Thank you! 😊`;
+            message += `\n───────────────────────`;
+            message += `\nTotal: RM ${total.toFixed(2)}`;
+            message += `\n\nKindly confirm availability and guide me on next steps/payment. Thank you! 🙏`;
 
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${sellerPhone}?text=${encodedMessage}`;
 
-            const whatsappButton = document.getElementById('whatsapp-button');
-            whatsappButton.href = whatsappUrl;
+            const whatsappBtn = document.getElementById('whatsapp-button');
+            if (whatsappBtn) {
+                whatsappBtn.href = whatsappUrl;
 
-            // Visual feedback when clicked
-            whatsappButton.addEventListener('click', () => {
-                const originalText = whatsappButton.innerHTML;
-                whatsappButton.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
-                setTimeout(() => {
-                    whatsappButton.innerHTML = originalText;
-                }, 2000);
-            });
+                // Optional: Nice visual feedback
+                whatsappBtn.addEventListener('click', function() {
+                    const original = whatsappBtn.innerHTML;
+                    whatsappBtn.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
+                    setTimeout(() => {
+                        whatsappBtn.innerHTML = original;
+                    }, 1800);
+                });
+            }
         });
     </script>
 @endsection
