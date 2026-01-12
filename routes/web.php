@@ -148,7 +148,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
     // Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 
- // Checkout
+
+    // Checkout routes – now directly under /checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.payment.intent');
     Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
