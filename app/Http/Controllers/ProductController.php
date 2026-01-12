@@ -20,10 +20,10 @@ class ProductController extends Controller
         if ($file && $file->isValid()) {
             $path = $file->store('uploads', 'public');
             return Upload::create([
-                'filename' => $file->getClientOriginalName(),
-                'path' => 'storage/' . $path,
+                'filename'      => $file->getClientOriginalName(),
+                'path'          => 'storage/' . $path,
                 'original_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getClientMimeType(),
+                'mime_type'     => $file->getClientMimeType(),
             ]);
         }
         return null;
@@ -45,12 +45,7 @@ class ProductController extends Controller
         $kt_ecommerce_add_product_options = Variation::all();
 
         return view('product.add', compact(
-            'categories',
-            'tags',
-            'stores',
-            'units',
-            'brands',
-            'kt_ecommerce_add_product_options'
+            'categories', 'tags', 'stores', 'units', 'brands', 'kt_ecommerce_add_product_options'
         ));
     }
 
@@ -86,9 +81,9 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_tag_description' => 'nullable|string',
             'meta_tag_keywords' => 'nullable|string',
-            'thumbnail' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
+            'thumbnail' => 'required|image|mimes:jpg,jpeg,png,gif|max:20480',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:5120',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:20480',
             'kt_ecommerce_add_product_options' => 'nullable|array',
             'kt_ecommerce_add_product_options.*.discounttype' => 'required|in:nodiscount,percentage,fixed',
             'kt_ecommerce_add_product_options.*.percentage' => 'nullable|numeric|min:0|required_if:kt_ecommerce_add_product_options.*.discounttype,percentage',
@@ -163,13 +158,7 @@ class ProductController extends Controller
         $kt_ecommerce_add_product_options = Variation::all();
 
         return view('product.edit', compact(
-            'product',
-            'categories',
-            'tags',
-            'stores',
-            'units',
-            'brands',
-            'kt_ecommerce_add_product_options'
+            'product', 'categories', 'tags', 'stores', 'units', 'brands', 'kt_ecommerce_add_product_options'
         ));
     }
 
@@ -207,9 +196,9 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_tag_description' => 'nullable|string',
             'meta_tag_keywords' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:20480',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:5120',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:20480',
             'kt_ecommerce_add_product_options' => 'nullable|array',
             'kt_ecommerce_add_product_options.*.discounttype' => 'required|in:nodiscount,percentage,fixed',
             'kt_ecommerce_add_product_options.*.percentage' => 'nullable|numeric|min:0|required_if:kt_ecommerce_add_product_options.*.discounttype,percentage',
