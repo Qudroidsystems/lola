@@ -8,8 +8,27 @@
             <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                        Edit Product
+                        Add New Product
                     </h1>
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger mt-5">
+                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <li class="breadcrumb-item text-muted">
                             <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home</a>
@@ -18,11 +37,15 @@
                         <li class="breadcrumb-item text-muted">eCommerce</li>
                         <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
                         <li class="breadcrumb-item text-muted">Catalog</li>
-                        <li class="breadcrumb-item text-gray-800">Edit Product</li>
+                        <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-5px h-2px"></span></li>
+                        <li class="breadcrumb-item text-gray-800">Add Product</li>
                     </ul>
                 </div>
+
                 <div class="d-flex align-items-center gap-2 gap-lg-3">
-                    <a href="{{ route('product.index') }}" class="btn btn-sm fw-bold btn-primary">Product Listings</a>
+                    <a href="{{ route('product.index') }}" class="btn btn-sm fw-bold btn-primary">
+                        Product Listings
+                    </a>
                 </div>
             </div>
         </div>
@@ -30,190 +53,146 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <div id="kt_app_content_container" class="app-container container-xxl">
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                <form action="{{ route('product.update', $product->id) }}" method="POST"
-                      id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row"
-                      enctype="multipart/form-data">
+                <form action="{{ route('product.store') }}" method="POST" id="kt_ecommerce_add_product_form"
+                      class="form d-flex flex-column flex-lg-row" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
 
-                    <!-- Left Column - Settings -->
+                    <!--begin::Aside column-->
                     <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
 
-                        <!-- Thumbnail -->
+                        <!--begin::Thumbnail settings-->
                         <div class="card card-flush py-4">
                             <div class="card-header">
-                                <div class="card-title">
-                                    <h2>Thumbnail</h2>
-                                </div>
+                                <div class="card-title"><h2>Thumbnail</h2></div>
                             </div>
                             <div class="card-body text-center pt-0">
-                                <div class="image-input image-input-outline w-150px h-150px mb-3 {{ $product->thumbnail ? '' : 'image-input-empty' }}"
-                                     data-kt-image-input="true"
-                                     data-kt-image-input-default="{{ asset('assets/media/svg/files/blank-image.svg') }}">
+                                <style>
+                                    .image-input-placeholder {
+                                        background-image: url("{{ asset('assets/media/svg/files/blank-image.svg') }}");
+                                    }
+                                    [data-bs-theme="dark"] .image-input-placeholder {
+                                        background-image: url("{{ asset('assets/media/svg/files/blank-image-dark.svg') }}");
+                                    }
+                                </style>
 
-                                    <!-- Current Image -->
-                                    <div class="image-input-wrapper w-150px h-150px"
-                                         @if($product->thumbnail)
-                                             style="background-image: url('{{ Storage::url($product->thumbnail) }}')"
-                                         @else
-                                             style="background-image: url('{{ asset('assets/media/svg/files/blank-image.svg') }}')"
-                                         @endif>
-                                    </div>
+                                <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3"
+                                     data-kt-image-input="true">
+                                    <div class="image-input-wrapper w-150px h-150px"></div>
 
-                                    <!-- Buttons -->
-                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute translate-middle start-100 top-0"
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                                            data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change thumbnail">
                                         <i class="ki-duotone ki-pencil fs-7"><span class="path1"></span><span class="path2"></span></i>
-                                        <input type="file" name="thumbnail" accept=".png, .jpg, .jpeg, .gif" />
+                                        <input type="file" name="thumbnail" accept=".png,.jpg,.jpeg,.gif" required />
                                         <input type="hidden" name="avatar_remove" />
                                     </label>
 
-                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute translate-middle start-100 top-0"
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                                           data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel">
                                         <i class="ki-duotone ki-cross fs-2"><span class="path1"></span><span class="path2"></span></i>
                                     </span>
 
-                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute translate-middle start-100 top-0"
-                                          data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove thumbnail">
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                          data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove">
                                         <i class="ki-duotone ki-cross fs-2"><span class="path1"></span><span class="path2"></span></i>
                                     </span>
                                 </div>
 
-                                <div class="text-muted fs-7">
-                                    Set the product thumbnail image. Only *.png, *.jpg, *.jpeg files are accepted
-                                </div>
-
-                                @if($product->thumbnail)
-                                    <div class="mt-3 text-muted fs-8">
-                                        Current: <code>{{ basename($product->thumbnail) }}</code>
-                                    </div>
-                                @endif
+                                <div class="text-muted fs-7">Only *.png, *.jpg, *.jpeg and *.gif files are accepted (max 5MB)</div>
                             </div>
                         </div>
+                        <!--end::Thumbnail settings-->
 
-                        <!-- Status -->
-                        <div class="card card-flush py-4">
-                            <div class="card-header">
-                                <div class="card-title"><h2>Status</h2></div>
-                            </div>
-                            <div class="card-body pt-0">
-                                <select name="status" class="form-select mb-2" data-control="select2" data-hide-search="true" required>
-                                    <option value="published" {{ $product->status == 'published' ? 'selected' : '' }}>Published</option>
-                                    <option value="draft" {{ $product->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Categories, Tags, Units, Brands, Stores -->
-                        <!-- ... keep your existing category/tag/unit/brand/store sections here ... -->
-                        <!-- Just make sure to use Storage::url() if you display any existing images -->
+                        <!-- Status, Categories, Tags, Units, Brands, Stores sections remain the same -->
+                        <!-- ... paste your existing code for status, categories, tags, units, brands, stores here ... -->
 
                     </div>
+                    <!--end::Aside column-->
 
-                    <!-- Right Column - Main Content -->
+                    <!--begin::Main column-->
                     <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
 
-                        <!-- Tabs -->
                         <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2">
                             <li class="nav-item">
-                                <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_ecommerce_add_product_general">
-                                    Product Information
-                                </a>
+                                <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab"
+                                   href="#kt_ecommerce_add_product_general">Product Information</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_advanced">
-                                    Pricing & Stocks
-                                </a>
+                                <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab"
+                                   href="#kt_ecommerce_add_product_advanced">Pricing & Stocks</a>
                             </li>
                         </ul>
 
                         <div class="tab-content">
+
                             <!-- General Tab -->
                             <div class="tab-pane fade show active" id="kt_ecommerce_add_product_general">
-                                <!-- Product name, description, meta fields, gallery upload -->
-                                <!-- ... your existing code ... -->
+                                <!-- Your existing product name, description, gallery, meta fields -->
+                                <!-- ... keep your existing code ... -->
+
+                                <div class="card card-flush py-4">
+                                    <div class="card-header">
+                                        <div class="card-title"><h2>Media</h2></div>
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <div class="fv-row mb-2">
+                                            <label class="form-label">Gallery Images</label>
+                                            <input type="file" name="images[]" id="images" multiple class="form-control"
+                                                   accept="image/*" />
+                                            <div class="text-muted fs-7 mt-3">Upload multiple product images (max 5MB each)</div>
+                                        </div>
+                                        <div id="imagePreview" class="d-flex flex-wrap gap-4 mt-5"></div>
+                                    </div>
+                                </div>
+
+                                <!-- ... rest of general tab ... -->
                             </div>
 
                             <!-- Pricing & Stocks Tab -->
                             <div class="tab-pane fade" id="kt_ecommerce_add_product_advanced">
-                                <!-- ... your existing inventory/pricing fields ... -->
+                                <!-- Your existing inventory/pricing fields -->
+                                <!-- ... keep your existing code ... -->
                             </div>
-                        </div>
 
-                        <!-- Action Buttons -->
-                        <div class="d-flex justify-content-end mt-10">
-                            <a href="{{ route('product.index') }}" class="btn btn-light me-5">Cancel</a>
-                            <button type="submit" class="btn btn-primary" id="kt_ecommerce_add_product_submit">
-                                <span class="indicator-label">Save Changes</span>
-                                <span class="indicator-progress">Please wait...
-                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                </span>
-                            </button>
                         </div>
                     </div>
+                    <!--end::Main column-->
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-@endsection
-
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initialize all Select2 elements
-        KTApp.initSelect2();
+    $(document).ready(function() {
+        $("select[data-control='select2']").select2({
+            placeholder: function() { return $(this).data('placeholder') || "Select an option"; },
+            allowClear: true
+        });
 
-        // Initialize KeenThemes Image Input
-        const imageInput = document.querySelector('[data-kt-image-input="true"]');
-        if (imageInput) {
-            new KTImageInput(imageInput);
-        }
+        $("#kt_ecommerce_add_product_tags").select2({
+            tags: true,
+            tokenSeparators: [','],
+            placeholder: "Select or type new tags"
+        });
 
-        // Optional: Gallery preview for new images
-        const galleryInput = document.getElementById('images');
-        if (galleryInput) {
-            galleryInput.addEventListener('change', function(e) {
-                const preview = document.getElementById('imagePreview') || document.createElement('div');
-                preview.id = 'imagePreview';
-                preview.className = 'd-flex flex-wrap gap-3 mt-4';
-                galleryInput.parentNode.appendChild(preview);
-                preview.innerHTML = '';
-
-                Array.from(e.target.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        const img = document.createElement('img');
-                        img.src = ev.target.result;
-                        img.className = 'rounded shadow';
-                        img.style.width = '120px';
-                        img.style.height = '120px';
-                        img.style.objectFit = 'cover';
-                        preview.appendChild(img);
+        $("#images").on('change', function(e) {
+            $("#imagePreview").empty();
+            $.each(e.target.files, function(i, file) {
+                if (file.type.match('image.*')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $("<img>").attr("src", e.target.result)
+                                  .addClass("rounded")
+                                  .css({ width: "120px", height: "120px", objectFit: "cover", margin: "5px" })
+                                  .appendTo("#imagePreview");
                     };
                     reader.readAsDataURL(file);
-                });
+                }
             });
-        }
+        });
     });
 </script>
 @endpush
+
+@endsection

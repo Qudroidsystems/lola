@@ -20,7 +20,7 @@ class ProductController extends Controller
         if ($file && $file->isValid()) {
             $path = $file->store('uploads', 'public');
             return Upload::create([
-                'filename' => $file->getClientOriginalName(), // Add this line
+                'filename' => $file->getClientOriginalName(),
                 'path' => 'storage/' . $path,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $file->getClientMimeType(),
@@ -29,18 +29,12 @@ class ProductController extends Controller
         return null;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $products = Product::with(['categories', 'brands', 'units', 'warehouses', 'tags'])->get();
         return view('product.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $categories = Category::all();
@@ -49,12 +43,17 @@ class ProductController extends Controller
         $units = Unit::all();
         $brands = Brand::all();
         $kt_ecommerce_add_product_options = Variation::all();
-        return view('product.add', compact('categories', 'tags', 'stores', 'units', 'brands', 'kt_ecommerce_add_product_options'));
+
+        return view('product.add', compact(
+            'categories',
+            'tags',
+            'stores',
+            'units',
+            'brands',
+            'kt_ecommerce_add_product_options'
+        ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -87,9 +86,9 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_tag_description' => 'nullable|string',
             'meta_tag_keywords' => 'nullable|string',
-            'thumbnail' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'thumbnail' => 'required|image|mimes:jpg,jpeg,png,gif|max:5120',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:5120',
             'kt_ecommerce_add_product_options' => 'nullable|array',
             'kt_ecommerce_add_product_options.*.discounttype' => 'required|in:nodiscount,percentage,fixed',
             'kt_ecommerce_add_product_options.*.percentage' => 'nullable|numeric|min:0|required_if:kt_ecommerce_add_product_options.*.discounttype,percentage',
@@ -127,6 +126,7 @@ class ProductController extends Controller
         $product->warehouses()->sync(
             array_fill_keys($validatedData['warehouses'], ['quantity' => $validatedData['stock']])
         );
+
         if (!empty($validatedData['selected_tag_ids'])) {
             $product->tags()->sync($validatedData['selected_tag_ids']);
         }
@@ -146,18 +146,12 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Product created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $product = Product::with(['categories', 'tags', 'units', 'brands', 'warehouses', 'images'])->findOrFail($id);
         return view('product.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $product = Product::with(['categories', 'tags', 'units', 'brands', 'warehouses', 'images'])->findOrFail($id);
@@ -168,13 +162,18 @@ class ProductController extends Controller
         $brands = Brand::all();
         $kt_ecommerce_add_product_options = Variation::all();
 
-        return view('product.edit', compact('product', 'categories', 'tags', 'stores', 'units', 'brands', 'kt_ecommerce_add_product_options'));
+        return view('product.edit', compact(
+            'product',
+            'categories',
+            'tags',
+            'stores',
+            'units',
+            'brands',
+            'kt_ecommerce_add_product_options'
+        ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $product = Product::findOrFail($id);
 
@@ -208,9 +207,9 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_tag_description' => 'nullable|string',
             'meta_tag_keywords' => 'nullable|string',
-            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:5120',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:5120',
             'kt_ecommerce_add_product_options' => 'nullable|array',
             'kt_ecommerce_add_product_options.*.discounttype' => 'required|in:nodiscount,percentage,fixed',
             'kt_ecommerce_add_product_options.*.percentage' => 'nullable|numeric|min:0|required_if:kt_ecommerce_add_product_options.*.discounttype,percentage',
@@ -256,6 +255,7 @@ class ProductController extends Controller
         $product->warehouses()->sync(
             array_fill_keys($validatedData['warehouses'], ['quantity' => $validatedData['stock']])
         );
+
         $product->tags()->sync($validatedData['selected_tag_ids'] ?? []);
 
         if ($request->hasFile('images')) {
@@ -274,9 +274,6 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Product updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
