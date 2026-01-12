@@ -50,25 +50,27 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <!-- Billing Details -->
+                    <!-- Billing Details & Payment -->
                     <div class="billing-details-wrapper">
                         <h3>Billing Details</h3>
                         <form id="payment-form">
                             @csrf
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" value="{{ auth()->user()->name ?? '' }}" required>
+                            <div class="form-group mb-3">
+                                <label for="name">Full Name</label>
+                                <input type="text" class="form-control" id="name"
+                                       value="{{ auth()->user()->name ?? old('name') }}" required>
                             </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" value="{{ auth()->user()->email ?? '' }}" required>
+                            <div class="form-group mb-3">
+                                <label for="email">Email Address</label>
+                                <input type="email" class="form-control" id="email"
+                                       value="{{ auth()->user()->email ?? old('email') }}" required>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mb-4">
                                 <label for="card-element">Credit or Debit Card</label>
                                 <div id="card-element" class="form-control p-3"></div>
                                 <div id="card-errors" role="alert" class="text-danger mt-2"></div>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-4 w-100">
+                            <button type="submit" class="btn btn-primary mt-3 w-100 py-3 fw-bold">
                                 Pay RM {{ number_format($total, 2) }}
                             </button>
                         </form>
@@ -82,29 +84,44 @@
                         <div class="cart-calculate-items">
                             <div class="table-responsive">
                                 <table class="table table-bordered">
-                                    @foreach ($cartItems as $item)
+                                    <tbody>
+                                        @foreach ($cartItems as $item)
+                                            <tr>
+                                                <td class="fw-medium">
+                                                    {{ $item->product->name }} × {{ $item->quantity }}
+                                                </td>
+                                                <td class="text-end">
+                                                    RM {{ number_format($item->product->sale_price * $item->quantity, 2) }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
                                         <tr>
-                                            <td>{{ $item->product->name }} × {{ $item->quantity }}</td>
-                                            <td>RM {{ number_format($item->product->sale_price * $item->quantity, 2) }}</td>
+                                            <td><strong>Subtotal</strong></td>
+                                            <td class="text-end">
+                                                RM {{ number_format($total - $shipping, 2) }}
+                                            </td>
                                         </tr>
-                                    @endforeach
-                                    <tr>
-                                        <td><strong>Subtotal</strong></td>
-                                        <td>RM {{ number_format($total - $shipping, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Shipping</td>
-                                        <td>RM {{ number_format($shipping, 2) }}</td>
-                                    </tr>
-                                    <tr class="table-active">
-                                        <td><strong>Total</strong></td>
-                                        <td><strong>RM {{ number_format($total, 2) }}</strong></td>
-                                    </tr>
+                                        <tr>
+                                            <td>Shipping</td>
+                                            <td class="text-end">
+                                                RM {{ number_format($shipping, 2) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="table-active">
+                                            <td><strong>Total</strong></td>
+                                            <td class="text-end fw-bold">
+                                                RM {{ number_format($total, 2) }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
 
-                            <!-- WhatsApp Chat Button -->
-                            <a href="#" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
+                            <!-- WhatsApp Chat Button - FIXED & RELIABLE -->
+                            <a href="#" id="whatsapp-button"
+                               class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3"
+                               target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-whatsapp fa-2x"></i>
                                 <span>Chat with Seller on WhatsApp</span>
                             </a>
@@ -121,7 +138,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // === Stripe Payment Logic ===
+            // === Stripe Payment Logic (unchanged) ===
             const stripe = Stripe('{{ env('STRIPE_KEY') }}');
             const elements = stripe.elements();
             const cardElement = elements.create('card', {
@@ -183,14 +200,14 @@
                     }
                 });
             }).catch(err => {
-                cardErrors.textContent = 'Failed to create payment intent.';
+                cardErrors.textContent = 'Failed to create payment intent. Please try again.';
             });
 
-            // === WhatsApp Button Logic (Perfect Formatting + Reliable on Mobile & Desktop) ===
+            // === WhatsApp Button - Modern & Reliable (2025–2026) ===
             const cartItems = @json($cartItems);
             const total = {{ $total }};
             const shipping = {{ $shipping }};
-            const sellerPhone = '601136655467'; // +60 11-3665 5467 → 601136655467
+            const sellerPhone = '601136655467'; // International format, no + or spaces
 
             let message = "Hello! 👋\n";
             message += "I'd like to place an order from your website:\n\n";
@@ -207,25 +224,19 @@
             message += `\n\nPlease confirm availability and let me know how to proceed with payment. Thank you! 😊`;
 
             const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${sellerPhone}?text=${encodedMessage}`;
 
-            const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+            const whatsappButton = document.getElementById('whatsapp-button');
+            whatsappButton.href = whatsappUrl;
 
-            let whatsappUrl;
-
-            if (isMobile) {
-                // Mobile: Direct app open (most reliable)
-                whatsappUrl = `whatsapp://send?phone=${sellerPhone}&text=${encodedMessage}`;
-            } else {
-                // Desktop/Laptop: WhatsApp Web (will auto-switch to Desktop app if installed & running)
-                whatsappUrl = `https://web.whatsapp.com/send?phone=${sellerPhone}&text=${encodedMessage}`;
-            }
-
-            const button = document.getElementById('whatsapp-button');
-            button.href = whatsappUrl;
-
-            if (!isMobile) {
-                button.target = "_blank"; // Open in new tab on desktop
-            }
+            // Visual feedback when clicked
+            whatsappButton.addEventListener('click', () => {
+                const originalText = whatsappButton.innerHTML;
+                whatsappButton.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
+                setTimeout(() => {
+                    whatsappButton.innerHTML = originalText;
+                }, 2000);
+            });
         });
     </script>
 @endsection
