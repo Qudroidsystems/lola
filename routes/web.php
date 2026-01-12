@@ -148,6 +148,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
     // Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 
+ // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.payment.intent');
+    Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
+    Route::get('/order/success', function () {
+        return view('frontend.order-success');
+    })->name('order.success');
 
 });
 
@@ -180,13 +187,6 @@ Route::get('/debug-session', function () {
     });
 
 
-    // Checkout
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->name('checkout.payment.intent');
-    Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
-    Route::get('/order/success', function () {
-        return view('frontend.order-success');
-    })->name('order.success');
 
 
 
