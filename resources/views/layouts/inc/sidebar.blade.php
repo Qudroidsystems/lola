@@ -136,6 +136,16 @@
                     <!--begin:Menu link--> <span class="menu-link"> <span class="menu-icon"> <i class="ki-duotone ki-element-11 fs-2"> <span class="path1"></span> <span class="path2"></span> <span class="path3"></span> <span class="path4"></span> </i> </span> <span class="menu-title"> Inventory </span> <span class="menu-arrow"></span> </span>
                     <!--end:Menu link-->
                     <!--begin:Menu sub-->
+                     <div class="menu-sub menu-sub-accordion"> {{-- @can('student-list') --}}
+                        <!--begin:Menu item-->
+                        <div class="menu-item">
+                            <!--begin:Menu link--> <a class="menu-link
+                                                     {{ request()->is('orders*')
+                                                        ? ' active' : '' }}" href="{{ route('orders.index') }}"> <span class="menu-bullet"> <span class="bullet bullet-dot"></span> </span> <span class="menu-title"> Orders</span> </a>
+                            <!--end:Menu link-->
+                        </div>
+                        <!--end:Menu item--> {{-- @endcan --}}
+                    </div>
                     <div class="menu-sub menu-sub-accordion"> {{-- @can('student-list') --}}
                         <!--begin:Menu item-->
                         <div class="menu-item">

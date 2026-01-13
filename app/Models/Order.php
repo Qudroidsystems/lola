@@ -8,7 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'total', 'shipping', 'status', 'payment_intent'];
+
+    protected $fillable = [
+        'user_id',
+        'total',
+        'shipping',
+        'status',
+        'name',
+        'email',
+        'phone',
+        'notes',
+        'payment_intent',
+    ];
 
     public function user()
     {
@@ -20,5 +31,17 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    
+    public function getStatusBadgeAttribute()
+    {
+        $badges = [
+            'pending'     => 'warning',
+            'processing'  => 'info',
+            'completed'   => 'success',
+            'cancelled'   => 'danger',
+            'failed'      => 'danger',
+        ];
+
+        $color = $badges[$this->status] ?? 'secondary';
+        return "<span class=\"badge badge-light-$color\">" . ucfirst($this->status) . "</span>";
+    }
 }

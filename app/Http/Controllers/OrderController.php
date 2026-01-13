@@ -2,137 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sale;
 use App\Models\Order;
-use App\Models\Orders;
-use App\Models\Invoice;
-use App\Models\Product;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log; // Import Log Facade
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrdersExport;
 
 class OrderController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of customer orders with filters
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('sales.product')->get();
-        return response()->json($orders);
+        $query = Order::with(['user', 'items.product'])->latest();
 
+        // Filter by status
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by date range
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Filter by customer name or email
+        if ($request->filled('customer')) {
+            $query->where(function ($q) use ($request) {
+                $q->whereHas('user', function ($user) use ($request) {
+                    $user->where('name', 'like', '%' . $request->customer . '%')
+                         ->orWhere('email', 'like', '%' . $request->customer . '%');
+                })
+                ->orWhere('name', 'like', '%' . $request->customer . '%')
+                ->orWhere('email', 'like', '%' . $request->customer . '%');
+            });
+        }
+
+        $orders = $query->paginate(15)->appends($request->query());
+
+        return view('orders.index', compact('orders'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the details of a specific order
      */
-    public function create()
+    public function show(Order $order)
     {
-        //
+        $order->load(['user', 'items.product']);
+
+        return view('orders.show', compact('order'));
     }
 
-
-
-    public function store(Request $request)
+    /**
+     * Update order status
+     */
+    public function updateStatus(Request $request, Order $order)
     {
-
         $request->validate([
-            'total' => 'required|numeric|min:1',
+            'status' => 'required|in:pending,processing,completed,cancelled,failed'
         ]);
 
-        try {
-            $order = Order::create([
-                'user_id' => Auth::id(),
-                'total' => $request->total,
-                'status' => 'pending'
-            ]);
+        $order->update(['status' => $request->status]);
 
-            return redirect()->route('dashboard')->with('success', 'Order placed successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error placing order: ' . $e->getMessage());
-        }
-    
+        Log::info('Order status updated', [
+            'order_id' => $order->id,
+            'new_status' => $request->status,
+            'admin_id' => auth()->id()
+        ]);
 
+        return redirect()->back()->with('success', 'Order status updated successfully!');
     }
-     /**
-      * Calculate the total amount for the order items.
-      *
-      * @param array $items
-      * @return float
-      * @throws \Exception
-      */
-     private function calculateTotalAmount(array $items): float
-     {
-         $total = 0;
 
-         foreach ($items as $item) {
-             $product = Product::find($item['productId']);
-             if (!$product) {
-                 throw new \Exception("Product with ID {$item['productId']} not found.");
-             }
-
-             if (is_null($product->base_price)) {
-                //  Log::error("Product price is null", [
-                //      'product_id' => $item['productId'],
-                //      'product_name' => $product->name ?? 'Unknown',
-                //  ]);
-                //  throw new \Exception("Product with ID {$item['productId']} has no price.");
-             }
-
-             $itemTotal = $product->base_price * $item['quantity'];
-             $total += $itemTotal;
-
-             //Log the details for debugging
-            //  Log::info("Calculating total for item", [
-            //      'product_id' => $item['productId'],
-            //      'price' => $product->base_price,
-            //      'quantity' => $item['quantity'],
-            //      'item_total' => $itemTotal,
-            //  ]);
-         }
-
-         //Log::info("Total amount calculated: {$total}");
-
-         return $total;
-     }
     /**
-     * Show an order.
+     * Export filtered orders to Excel
      */
-    public function show($id)
+    public function export(Request $request)
     {
-        $order = Order::with(['sales.product', 'payment'])->find($id);
+        $query = Order::with(['user', 'items.product'])->latest();
 
-        if (!$order) {
-            return response()->json(['message' => 'Order not found.'], 404);
+        // Apply same filters
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+        if ($request->filled('customer')) {
+            $query->where(function ($q) use ($request) {
+                $q->whereHas('user', function ($user) use ($request) {
+                    $user->where('name', 'like', '%' . $request->customer . '%')
+                         ->orWhere('email', 'like', '%' . $request->customer . '%');
+                })
+                ->orWhere('name', 'like', '%' . $request->customer . '%')
+                ->orWhere('email', 'like', '%' . $request->customer . '%');
+            });
         }
 
-        return response()->json($order, 200);
-    }
+        $orders = $query->get();
 
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return Excel::download(new OrdersExport($orders), 'orders-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

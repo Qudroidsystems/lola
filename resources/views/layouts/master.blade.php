@@ -419,6 +419,10 @@
              @include('layouts.pages-assets.css.users-list-css')
         @endif
 
+        @if (Route::is('orders.*'))
+             @include('layouts.pages-assets.css.users-list-css')
+        @endif
+
 
 
             <!--begin::Body-->
@@ -621,6 +625,9 @@
 
 
         @if (Route::is('customer.*'))
+             @include('layouts.pages-assets.js.pos-list-js')
+        @endif
+        @if (Route::is('orders.*'))
              @include('layouts.pages-assets.js.pos-list-js')
         @endif
 
