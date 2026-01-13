@@ -131,18 +131,15 @@
                             </table>
                         </div>
 
-                        <!-- WhatsApp Button - Final Best Version -->
-                        <a href="#"
-                           id="whatsapp-button"
-                           class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3 shadow-sm">
+                        <!-- WhatsApp Button - FIXED & BEST UX -->
+                        <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
                             <i class="fab fa-whatsapp fa-2x"></i>
                             <span>Chat with Seller on WhatsApp</span>
-                        </a>
+                        </button>
 
                         <div class="text-center mt-3">
                             <small class="text-muted">
-                                <i class="fa fa-info-circle me-1"></i>
-                                Opens in new tab • Tap "Open in WhatsApp" / "Continue to Chat" to launch the app
+                                <strong>Note:</strong> A new tab will open → tap <strong>"Open in WhatsApp"</strong> to continue in the app (mobile) or use WhatsApp Web (desktop).
                             </small>
                         </div>
                     </div>
@@ -157,13 +154,10 @@
 
     <script>
         (function () {
-            // Prevent duplicate runs
             if (window.checkoutScriptInitialized) return;
             window.checkoutScriptInitialized = true;
 
-            // ================================
-            //         Stripe Payment
-            // ================================
+            // Stripe Payment (unchanged)
             const stripe = Stripe('{{ env('STRIPE_KEY') }}');
             const elements = stripe.elements();
             const card = elements.create('card', {
@@ -225,7 +219,7 @@
             });
 
             // ================================
-            //     WhatsApp Button - Perfect & Clear UX
+            //     WhatsApp Button - FIXED & USER-FRIENDLY
             // ================================
             const whatsappBtn = document.getElementById('whatsapp-button');
             if (!whatsappBtn) return;
@@ -247,14 +241,12 @@
             message += `\nShipping: RM ${shipping.toFixed(2)}`;
             message += `\n─────────────────`;
             message += `\n*Total: RM ${total.toFixed(2)}*`;
-            message += `\n\nPlease confirm availability, stock, and payment method. Thank you! 😊`;
+            message += `\n\nPlease confirm availability and payment. Thank you! 😊`;
 
             const encodedMsg = encodeURIComponent(message);
             const waLink = `https://wa.me/${phone}?text=${encodedMsg}`;
 
-            whatsappBtn.addEventListener('click', function (e) {
-                e.preventDefault(); // Prevent default if needed
-
+            whatsappBtn.addEventListener('click', function () {
                 const original = this.innerHTML;
                 this.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
 
@@ -264,13 +256,13 @@
                 // Restore button
                 setTimeout(() => {
                     this.innerHTML = original;
-                }, 1800);
+                }, 3000);
 
-                // SweetAlert instruction (makes it very clear)
+                // SweetAlert instruction (removes confusion)
                 Swal.fire({
                     icon: 'info',
                     title: 'Opening WhatsApp',
-                    html: 'A new tab has opened.<br>Please tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to start messaging the seller.',
+                    html: 'A new tab has opened.<br>Tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to go to the app.<br><small>(This is normal browser behavior)</small>',
                     timer: 6000,
                     showConfirmButton: false,
                     toast: true,
