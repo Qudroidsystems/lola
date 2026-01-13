@@ -125,7 +125,7 @@
                         <div class="mt-4 text-end">
                             <form action="{{ route('wishlist.destroy.all') }}" method="POST" class="delete-form">
                                 @csrf
-                                @method('DELETE')
+                                {{-- @method('DELETE') --}}
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash"></i> Clear Wishlist
                                 </button>
