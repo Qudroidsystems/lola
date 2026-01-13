@@ -54,6 +54,7 @@
                     <div class="billing-details-wrapper bg-white p-4 p-lg-5 rounded shadow-sm border">
                         <h3 class="mb-4">Billing Details</h3>
 
+                        <!-- Simple Form (No Stripe) -->
                         <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
                             @csrf
 
@@ -61,28 +62,42 @@
                                 <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name" name="name"
                                        value="{{ auth()->check() ? auth()->user()->name : old('name') }}" required>
+                                @error('name')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-4">
                                 <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" class="form-control" id="email" name="email"
                                        value="{{ auth()->check() ? auth()->user()->email : old('email') }}" required>
+                                @error('email')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <!-- Add more fields if needed (phone, address, etc.) -->
                             <div class="mb-4">
                                 <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
                                 <input type="tel" class="form-control" id="phone" name="phone"
                                        value="{{ old('phone') }}" required>
+                                @error('phone')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Optional: Add address or note field -->
+                            <div class="mb-4">
+                                <label for="note" class="form-label">Order Notes (optional)</label>
+                                <textarea class="form-control" id="note" name="note" rows="3">{{ old('note') }}</textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3" id="submit-checkout">
-                                Place Order (Contact Seller)
+                                Place Order & Chat with Seller
                             </button>
                         </form>
 
                         <div class="mt-4 text-center text-muted small">
-                            <p>After placing order, you'll be redirected to chat with seller via WhatsApp.</p>
+                            <p>After submitting, you'll be redirected to WhatsApp to confirm payment & delivery.</p>
                         </div>
                     </div>
                 </div>
@@ -136,7 +151,7 @@
                             </table>
                         </div>
 
-                        <!-- WhatsApp Button - Responsive & Reliable -->
+                        <!-- WhatsApp Button - Working & Reliable -->
                         <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
                             <i class="fab fa-whatsapp fa-2x"></i>
                             <span>Chat with Seller on WhatsApp</span>
@@ -144,7 +159,7 @@
 
                         <div class="text-center mt-3">
                             <small class="text-muted">
-                                <strong>Note:</strong> A new tab will open → tap <strong>"Open in WhatsApp"</strong> to continue in the app (mobile) or use WhatsApp Web (desktop).
+                                <strong>Note:</strong> A new tab will open → tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue"</strong> to chat directly.
                             </small>
                         </div>
                     </div>
@@ -187,7 +202,7 @@
             message += `\nShipping: RM ${shipping.toFixed(2)}`;
             message += `\n─────────────────`;
             message += `\n*Total: RM ${total.toFixed(2)}*`;
-            message += `\n\nPlease confirm availability and payment method. Thank you! 😊`;
+            message += `\n\nPlease confirm availability, payment method, and delivery. Thank you! 😊`;
 
             const encodedMsg = encodeURIComponent(message);
             const waLink = `https://wa.me/${phone}?text=${encodedMsg}`;
@@ -196,19 +211,19 @@
                 const originalHTML = this.innerHTML;
                 this.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
 
-                // Open WhatsApp in new tab (this is required by browsers)
+                // Open in new tab (required by modern browsers)
                 window.open(waLink, '_blank');
 
-                // Restore button after delay
+                // Restore button
                 setTimeout(() => {
                     this.innerHTML = originalHTML;
                 }, 3000);
 
-                // SweetAlert instruction to guide user
+                // Clear instruction via SweetAlert
                 Swal.fire({
                     icon: 'info',
                     title: 'Opening WhatsApp',
-                    html: 'A new tab has opened.<br>Please tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to start the conversation.<br><small>(This is normal browser behavior on mobile)</small>',
+                    html: 'A new tab has opened.<br>Please tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to start the conversation.<br><small>(Normal browser behavior on mobile)</small>',
                     timer: 7000,
                     showConfirmButton: false,
                     toast: true,
