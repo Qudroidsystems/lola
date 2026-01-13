@@ -13,21 +13,21 @@ class CheckoutController extends Controller
 {
     public function index()
     {
-        $cartItems = auth()->user()->cartItems()->with('product')->get();
-        if ($cartItems->isEmpty()) {
-            Log::warning('Checkout accessed with empty cart for user: ' . auth()->id());
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
-        }
+        // $cartItems = auth()->user()->cartItems()->with('product')->get();
+        // if ($cartItems->isEmpty()) {
+        //     Log::warning('Checkout accessed with empty cart for user: ' . auth()->id());
+        //     return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+        // }
 
-        $total = $cartItems->sum(function ($item) {
-            return $item->product->sale_price * $item->quantity;
-        });
+        // $total = $cartItems->sum(function ($item) {
+        //     return $item->product->sale_price * $item->quantity;
+        // });
 
-        $shipping = $total > 500 ? 0 : 50;
-        $total += $shipping;
+        // $shipping = $total > 500 ? 0 : 50;
+        // $total += $shipping;
 
-        Log::info('Checkout loaded for user: ' . auth()->id() . ', Total: ' . $total);
-        return view('frontend.checkout', compact('cartItems', 'total', 'shipping'));
+        // Log::info('Checkout loaded for user: ' . auth()->id() . ', Total: ' . $total);
+        // return view('frontend.checkout', compact('cartItems', 'total', 'shipping'));
     }
 
     public function createPaymentIntent(Request $request)
