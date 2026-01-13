@@ -35,4 +35,12 @@ class BioModel extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the user that owns this bio record
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -114,4 +114,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Client::class);
     }
+
+ public function bio()
+    {
+        return $this->hasOne(BioModel::class, 'user_id');
+    }
 }

@@ -34,19 +34,15 @@ class OverviewController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+   public function show(string $id)
     {
+        $user = User::findOrFail($id);
+        $userroles = $user->roles ?? collect();
 
+        // Use the actual relationship name 'staffId'
+        $userbio = $user->staffId;  // ← this is what you defined
 
-
-        $user = User::find($id);
-        $userroles = $user->roles->all();
-        $userbio = $user->bio;
-        return view('users.overview',
-                          compact('user'),
-                      compact('userroles'))
-                           ->with("userbio",$userbio);
-
+        return view('users.overview', compact('user', 'userroles', 'userbio'));
     }
 
     /**
