@@ -19,22 +19,19 @@ class WishlistController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|exists:products,id'
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'product_id' => 'required|exists:products,id'
+    ]);
 
-        try {
-            auth()->user()->wishlistItems()->firstOrCreate([
-                'product_id' => $request->product_id
-            ]);
+    auth()->user()->wishlistItems()->firstOrCreate([
+        'user_id' => auth()->id(),          // ← Add this line if missing
+        'product_id' => $request->product_id
+    ]);
 
-            return redirect()->back()->with('success', 'Added to wishlist!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error adding to wishlist: ' . $e->getMessage());
-        }
-    }
+    return redirect()->back()->with('success', 'Added to wishlist!');
+}
 
     /**
      * Remove the specified resource from storage.
