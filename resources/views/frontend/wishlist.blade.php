@@ -49,7 +49,7 @@
                             @foreach($wishlistItems as $item)
                             <tr>
                                 <td class="pro-thumbnail text-center">
-                                    @if($item->product->cover)
+                                    @if($item->product->cover && $item->product->cover->path)
                                         <img class="img-fluid rounded"
                                              src="{{ Storage::url($item->product->cover->path) }}"
                                              alt="{{ $item->product->name }}"
