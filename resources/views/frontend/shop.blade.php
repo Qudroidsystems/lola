@@ -2,27 +2,26 @@
 
 @section('content')
     @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Whoops!</strong> There were some problems with your input.<br>
-            <ul class="mb-0">
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
+        </div>
+    @endif
+
+    @if (\Session::has('status'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ \Session::get('status') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
-    @if (session('status'))
+    @if (\Session::has('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('status') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
+            {{ \Session::get('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -130,7 +129,7 @@
                                     <li class="box-gird"><i class="fa fa-th"></i></li>
                                     <li class="list"><i class="fa fa-list-ul"></i></li>
                                 </ul>
-                                <span class="show-items">Showing {{ $products->count() }} of {{ $products->total() }} items</span>
+                                <span class="show-items">Items 1 - 9 of {{ $products->total() }}</span>
                             </div>
 
                             <div class="product-sort_by d-flex align-items-center mt-3 mt-md-0">
@@ -155,51 +154,45 @@
                         <div class="shop-page-products-wrap">
                             <div class="products-wrapper">
                                 <div class="row">
-                                    @forelse($products as $product)
+                                    @foreach($products as $product)
                                         <div class="col-lg-4 col-sm-6 mb-4">
-                                            <div class="single-product-item text-center shadow-sm rounded overflow-hidden">
+                                            <div class="single-product-item text-center">
                                                 <!-- Product Image -->
-                                                <figure class="product-thumb mb-0 position-relative">
+                                                <figure class="product-thumb">
                                                     <a href="{{ route('shop.show', $product->id) }}">
                                                         @if($product->thumbnail)
                                                             <img src="{{ asset($product->thumbnail) }}"
                                                                  alt="{{ $product->name }}"
-                                                                 class="img-fluid transition">
+                                                                 class="img-fluid">
                                                         @else
-                                                            <img src="{{ asset('images/placeholder.png') }}"
-                                                                 alt="No image available"
-                                                                 class="img-fluid transition">
+                                                            <div class="img-placeholder"></div>
                                                         @endif
                                                     </a>
-                                                    <!-- Hover Overlay -->
-                                                    <div class="product-overlay">
-                                                        <a href="{{ route('shop.show', $product->id) }}" class="btn btn-sm btn-light">Quick View</a>
-                                                    </div>
                                                 </figure>
 
                                                 <!-- Product Details -->
-                                                <div class="product-details p-3">
-                                                    <h2 class="fs-5 mb-2">
-                                                        <a href="{{ route('shop.show', $product->id) }}" class="text-dark text-decoration-none">
+                                                <div class="product-details">
+                                                    <h2>
+                                                        <a href="{{ route('shop.show', $product->id) }}">
                                                             {{ $product->name }}
                                                         </a>
                                                     </h2>
 
                                                     <!-- Rating -->
-                                                    <div class="rating mb-2">
+                                                    <div class="rating">
                                                         @for($i = 1; $i <= 5; $i++)
                                                             @if($i <= optional($product->rating)->rating)
-                                                                <i class="fa fa-star text-warning"></i>
+                                                                <i class="fa fa-star"></i>
                                                             @else
-                                                                <i class="fa fa-star-o text-muted"></i>
+                                                                <i class="fa fa-star-o"></i>
                                                             @endif
                                                         @endfor
                                                     </div>
 
                                                     <!-- Price -->
-                                                    <span class="price fs-5 fw-bold text-primary">
-                                                        @if($product->on_sale && $product->sale_price)
-                                                            <del class="text-muted small me-2">RM {{ number_format($product->base_price, 2) }}</del>
+                                                    <span class="price">
+                                                        @if($product->on_sale)
+                                                            <del>RM {{ number_format($product->base_price, 2) }}</del>
                                                             RM {{ number_format($product->sale_price, 2) }}
                                                         @else
                                                             RM {{ number_format($product->base_price, 2) }}
@@ -207,39 +200,60 @@
                                                     </span>
 
                                                     <!-- Description -->
-                                                    <p class="products-desc text-muted small mt-2">
-                                                        {{ Str::limit($product->description ?? 'No description available.', 80) }}
+                                                    <p class="products-desc">
+                                                        {{ Str::limit($product->description, 120) }}
                                                     </p>
 
-                                                    <!-- Action Buttons - Improved UI -->
-                                                    <div class="product-actions mt-3 d-flex justify-content-center gap-3">
-                                                        <!-- Add to Cart (AJAX) -->
-                                                        <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form d-inline">
-                                                            @csrf
-                                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                            <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm">
-                                                                <i class="fa fa-cart-plus me-1"></i> Add to Cart
-                                                            </button>
-                                                        </form>
+                                                    <!-- Action Buttons - Original UI restored with AJAX -->
+                                                    <div class="product-actions">
+                                                        @auth
+                                                            <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form d-inline">
+                                                                @csrf
+                                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                                <button type="submit" class="btn btn-add-to-cart">
+                                                                    + Add to Cart
+                                                                </button>
+                                                            </form>
+                                                        @else
+                                                            <div class="guest-notice mt-2">
+                                                                <a href="{{ route('login') }}" class="text-muted">
+                                                                    <i class="fas fa-lock me-1"></i>Login to purchase
+                                                                </a>
+                                                            </div>
+                                                        @endauth
 
-                                                        <!-- Wishlist Icon (AJAX - simple heart, improved hover) -->
-                                                        <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline">
+                                                        <!-- Wishlist - original simple heart icon with AJAX -->
+                                                        <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline ms-2">
                                                             @csrf
                                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-2 wishlist-icon">
+                                                            <button type="submit" class="btn-link">
                                                                 <i class="fa fa-heart-o"></i>
                                                             </button>
                                                         </form>
                                                     </div>
                                                 </div>
+
+                                                <!-- Product Meta -->
+                                                <div class="product-meta">
+                                                    <!-- Quick View -->
+                                                    <button type="button"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#quickView-{{ $product->id }}">
+                                                        <i class="fa fa-compress"></i>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Product Badges -->
+                                                @if($product->is_new)
+                                                    <span class="product-badge new">New</span>
+                                                @endif
+
+                                                @if($product->on_sale)
+                                                    <span class="product-badge sale">Sale</span>
+                                                @endif
                                             </div>
                                         </div>
-                                    @empty
-                                        <div class="col-12 text-center py-5">
-                                            <h4>No products found matching your criteria.</h4>
-                                            <a href="{{ route('shop') }}" class="btn btn-primary mt-3">Browse All Products</a>
-                                        </div>
-                                    @endforelse
+                                    @endforeach
                                 </div>
 
                                 <!-- Pagination -->
@@ -317,8 +331,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = '{{ csrf_token() }}';
 
-    // Common AJAX handler for forms
-    async function handleAjaxForm(form, successTitle, successMessage, icon = 'fa-heart-o') {
+    // Common AJAX handler for Add to Cart and Wishlist
+    async function handleAjaxForm(form, successTitle, successMessage) {
         const button = form.querySelector('button');
         const originalHTML = button.innerHTML;
         button.disabled = true;
@@ -335,7 +349,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON:', await response.text());
+                throw new Error('Server returned invalid response');
+            }
 
             button.disabled = false;
             button.innerHTML = originalHTML;
@@ -350,12 +370,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     toast: true,
                     position: 'top-end'
                 });
-
-                // Visual feedback for wishlist (change to filled heart)
-                if (form.classList.contains('add-to-wishlist-form')) {
-                    button.querySelector('i').classList.remove('fa-heart-o');
-                    button.querySelector('i').classList.add('fa-heart');
-                }
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -383,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // AJAX Add to Wishlist
+    // AJAX Add to Wishlist (heart icon remains simple)
     document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
