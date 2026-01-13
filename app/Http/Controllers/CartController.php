@@ -138,53 +138,74 @@ class CartController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Remove a specific item from the cart (AJAX support).
-     */
-    public function destroy(string $id)
-    {
-        if (!auth()->check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please log in to remove items from cart.'
-            ], 401);
-        }
-
-        $cartItem = CartItem::findOrFail($id);
-
-        if ($cartItem->user_id !== auth()->id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized action.'.$cartItem->user_id.' '. auth()->id()
-            ], 403);
-        }
-
-        try {
-            $cartItem->delete();
-
-            Log::info('Cart item removed', [
-                'cart_item_id' => $id,
-                'user_id' => auth()->id()
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Item removed from cart!',
-                'cart_count' => auth()->user()->cartItems()->count()
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Cart destroy failed', [
-                'cart_item_id' => $id,
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to remove item: ' . $e->getMessage()
-            ], 500);
-        }
+/**
+ * Remove a specific item from the cart (AJAX support).
+ */
+public function destroy(string $id)
+{
+    if (!auth()->check()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Please log in to remove items from cart.'
+        ], 401);
     }
+
+    $cartItem = CartItem::find($id);
+
+    if (!$cartItem) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cart item not found (ID: ' . $id . ')'
+        ], 404);
+    }
+
+    // Debug info - very important
+    $currentUserId = auth()->id();
+    $itemUserId = $cartItem->user_id;
+
+    Log::info('Cart destroy debug', [
+        'cart_item_id' => $id,
+        'item_user_id' => $itemUserId,
+        'current_user_id' => $currentUserId,
+        'types' => gettype($itemUserId) . ' vs ' . gettype($currentUserId),
+        'match' => $itemUserId == $currentUserId ? 'yes' : 'no',
+        'strict_match' => $itemUserId === $currentUserId ? 'yes' : 'no'
+    ]);
+
+    // Allow delete if user_id matches OR is null (for legacy broken items)
+    if ($itemUserId !== null && $itemUserId != $currentUserId) {
+        return response()->json([
+            'success' => false,
+            'message' => "Unauthorized action. Item belongs to user ID {$itemUserId}, but current user is {$currentUserId}"
+        ], 403);
+    }
+
+    try {
+        $cartItem->delete();
+
+        Log::info('Cart item removed successfully', [
+            'cart_item_id' => $id,
+            'user_id' => $currentUserId
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Item removed from cart!',
+            'cart_count' => auth()->user()->cartItems()->count()
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Cart destroy failed', [
+            'cart_item_id' => $id,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to remove item: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
     /**
      * Redirect to checkout (non-AJAX).
