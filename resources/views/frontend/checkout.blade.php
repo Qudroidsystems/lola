@@ -96,7 +96,7 @@
                                                 {{ $item->product->name ?? 'Product' }} × {{ $item->quantity ?? 1 }}
                                             </td>
                                             <td class="text-end py-2 fw-medium">
-                                                RM {{ number_format(($item->product->sale_price ?? 0) * ($item->quantity ?? 1), 2) }}
+                                                RM {{ number_format(($item->product->sale_price ?? $item->product->base_price ?? 0) * ($item->quantity ?? 1), 2) }}
                                             </td>
                                         </tr>
                                     @empty
@@ -131,15 +131,17 @@
                             </table>
                         </div>
 
-                        <!-- WhatsApp Button -->
-                        <a href="#"
-                           id="whatsapp-button"
-                           class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3"
-                           target="_blank"
-                           rel="noopener noreferrer">
+                        <!-- WhatsApp Button - Fixed (no extra tab issue) -->
+                        <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
                             <i class="fab fa-whatsapp fa-2x"></i>
                             <span>Chat with Seller on WhatsApp</span>
-                        </a>
+                        </button>
+
+                        <div class="text-center mt-2">
+                            <small class="text-muted">
+                                Opens WhatsApp directly (mobile) or WhatsApp Web (desktop)
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,10 +150,10 @@
 
     <!-- Stripe.js -->
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        (function() {
-            // Prevent multiple executions
+        (function () {
             if (window.checkoutScriptInitialized) return;
             window.checkoutScriptInitialized = true;
 
@@ -188,8 +190,9 @@
                 form.addEventListener('submit', async e => {
                     e.preventDefault();
                     submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'Processing...';
 
-                    const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
+                    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
                         payment_method: {
                             card: card,
                             billing_details: {
@@ -202,6 +205,7 @@
                     if (error) {
                         errorsDiv.textContent = error.message;
                         submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Pay RM {{ number_format($total ?? 0, 2) }}';
                     } else if (paymentIntent.status === 'succeeded') {
                         const fd = new FormData();
                         fd.append('payment_intent', paymentIntent.id);
@@ -217,42 +221,59 @@
             });
 
             // ================================
-            //     WhatsApp Button - FINAL VERSION
+            //     WhatsApp Button - FIXED & BEST UX (2026)
             // ================================
-            const btn = document.getElementById('whatsapp-button');
-            if (!btn) return;
+            const whatsappBtn = document.getElementById('whatsapp-button');
+            if (!whatsappBtn) return;
 
             const cartItems = @json($cartItems ?? []);
             const total = {{ $total ?? 0 }};
             const shipping = {{ $shipping ?? 0 }};
-            const phone = '601136655467';
+            const phone = '601136655467'; // Your seller number
 
-            let msg = "Hello! 👋\nReady to place this order:\n\n";
+            let message = "Hello! 👋\nI'd like to place this order:\n\n";
 
             cartItems.forEach(item => {
-                const price = Number(item?.product?.sale_price || 0);
+                const price = Number(item?.product?.sale_price || item?.product?.base_price || 0);
                 const qty = Number(item?.quantity || 1);
-                msg += `• ${item?.product?.name || 'Item'} × ${qty} = RM ${(price * qty).toFixed(2)}\n`;
+                message += `• ${item?.product?.name || 'Item'} × ${qty} = RM ${(price * qty).toFixed(2)}\n`;
             });
 
-            msg += `\nSubtotal: RM ${(total - shipping).toFixed(2)}`;
-            msg += `\nShipping:   RM ${shipping.toFixed(2)}`;
-            msg += `\n───────────────`;
-            msg += `\nTOTAL:      RM ${total.toFixed(2)}`;
-            msg += `\n\nPlease confirm stock & payment. Thank you!`;
+            message += `\nSubtotal: RM ${(total - shipping).toFixed(2)}`;
+            message += `\nShipping: RM ${shipping.toFixed(2)}`;
+            message += `\n─────────────────`;
+            message += `\n*Total: RM ${total.toFixed(2)}*`;
+            message += `\n\nPlease confirm availability and payment method. Thank you! 😊`;
 
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+            const encodedMsg = encodeURIComponent(message);
 
-            // Force replace href immediately
-            btn.href = url;
+            // Best method: Use wa.me (works on mobile + desktop)
+            const waLink = `https://wa.me/${phone}?text=${encodedMsg}`;
 
-            // Visual feedback (one time)
-            btn.addEventListener('click', function handler() {
-                const original = btn.innerHTML;
-                btn.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening...</span>';
-                setTimeout(() => btn.innerHTML = original, 1400);
-                this.removeEventListener('click', handler);
-            }, { once: true });
+            whatsappBtn.addEventListener('click', function () {
+                // Change button text
+                const original = this.innerHTML;
+                this.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
+
+                // Open WhatsApp
+                window.open(waLink, '_blank');
+
+                // Restore button after 2 seconds
+                setTimeout(() => {
+                    this.innerHTML = original;
+                }, 2000);
+
+                // Optional SweetAlert toast
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Opening WhatsApp',
+                    text: 'You will be redirected to chat with the seller',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            });
         })();
     </script>
 @endsection
