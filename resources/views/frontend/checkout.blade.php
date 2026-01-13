@@ -131,15 +131,18 @@
                             </table>
                         </div>
 
-                        <!-- WhatsApp Button - Fixed (no extra tab issue) -->
-                        <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
+                        <!-- WhatsApp Button - Final Best Version -->
+                        <a href="#"
+                           id="whatsapp-button"
+                           class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3 shadow-sm">
                             <i class="fab fa-whatsapp fa-2x"></i>
                             <span>Chat with Seller on WhatsApp</span>
-                        </button>
+                        </a>
 
-                        <div class="text-center mt-2">
+                        <div class="text-center mt-3">
                             <small class="text-muted">
-                                Opens WhatsApp directly (mobile) or WhatsApp Web (desktop)
+                                <i class="fa fa-info-circle me-1"></i>
+                                Opens in new tab • Tap "Open in WhatsApp" / "Continue to Chat" to launch the app
                             </small>
                         </div>
                     </div>
@@ -154,6 +157,7 @@
 
     <script>
         (function () {
+            // Prevent duplicate runs
             if (window.checkoutScriptInitialized) return;
             window.checkoutScriptInitialized = true;
 
@@ -221,7 +225,7 @@
             });
 
             // ================================
-            //     WhatsApp Button - FIXED & BEST UX (2026)
+            //     WhatsApp Button - Perfect & Clear UX
             // ================================
             const whatsappBtn = document.getElementById('whatsapp-button');
             if (!whatsappBtn) return;
@@ -229,7 +233,7 @@
             const cartItems = @json($cartItems ?? []);
             const total = {{ $total ?? 0 }};
             const shipping = {{ $shipping ?? 0 }};
-            const phone = '601136655467'; // Your seller number
+            const phone = '601136655467';
 
             let message = "Hello! 👋\nI'd like to place this order:\n\n";
 
@@ -243,35 +247,34 @@
             message += `\nShipping: RM ${shipping.toFixed(2)}`;
             message += `\n─────────────────`;
             message += `\n*Total: RM ${total.toFixed(2)}*`;
-            message += `\n\nPlease confirm availability and payment method. Thank you! 😊`;
+            message += `\n\nPlease confirm availability, stock, and payment method. Thank you! 😊`;
 
             const encodedMsg = encodeURIComponent(message);
-
-            // Best method: Use wa.me (works on mobile + desktop)
             const waLink = `https://wa.me/${phone}?text=${encodedMsg}`;
 
-            whatsappBtn.addEventListener('click', function () {
-                // Change button text
+            whatsappBtn.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent default if needed
+
                 const original = this.innerHTML;
                 this.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
 
-                // Open WhatsApp
+                // Open in new tab (required by browsers)
                 window.open(waLink, '_blank');
 
-                // Restore button after 2 seconds
+                // Restore button
                 setTimeout(() => {
                     this.innerHTML = original;
-                }, 2000);
+                }, 1800);
 
-                // Optional SweetAlert toast
+                // SweetAlert instruction (makes it very clear)
                 Swal.fire({
-                    icon: 'success',
+                    icon: 'info',
                     title: 'Opening WhatsApp',
-                    text: 'You will be redirected to chat with the seller',
-                    timer: 2500,
+                    html: 'A new tab has opened.<br>Please tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to start messaging the seller.',
+                    timer: 6000,
                     showConfirmButton: false,
                     toast: true,
-                    position: 'top-end'
+                    position: 'top'
                 });
             });
         })();
