@@ -49,7 +49,7 @@ class WishlistController extends Controller
         }
 
         // Authorization (uncomment if policy exists)
-        // $this->authorize('delete', $wishlistItem);
+        $this->authorize('delete', $wishlistItem);
 
         try {
             $wishlistItem->delete();
