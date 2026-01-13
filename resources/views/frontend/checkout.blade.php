@@ -152,10 +152,10 @@
                         </div>
 
                         <!-- WhatsApp Button - Working & Reliable -->
-                        <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
+                        {{-- <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
                             <i class="fab fa-whatsapp fa-2x"></i>
                             <span>Chat with Seller on WhatsApp</span>
-                        </button>
+                        </button> --}}
 
                         <div class="text-center mt-3">
                             <small class="text-muted">
