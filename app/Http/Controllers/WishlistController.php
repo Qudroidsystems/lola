@@ -39,25 +39,26 @@ class WishlistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        $wishlistItem = WishlistItem::findOrFail($id);
+   public function destroy(string $id)
+{
+    $wishlistItem = WishlistItem::findOrFail($id);
 
-        // Optional: Check if the item belongs to the user
-        if ($wishlistItem->user_id !== auth()->id()) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
+    // Debug - remove this after testing
+    \Log::info('Wishlist destroy attempt', [
+        'item_id' => $id,
+        'item_user_id' => $wishlistItem->user_id,
+        'current_user_id' => auth()->id(),
+        'is_owner' => $wishlistItem->user_id === auth()->id(),
+    ]);
 
-        // Authorization (uncomment if policy exists)
-        // $this->authorize('delete', $wishlistItem);
-
-        try {
-            $wishlistItem->delete();
-            return redirect()->back()->with('success', 'Removed from wishlist');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error removing item: ' . $e->getMessage());
-        }
+    if ($wishlistItem->user_id !== auth()->id()) {
+        return redirect()->back()->with('error', 'Unauthorized action.');
     }
+
+    $wishlistItem->delete();
+
+    return redirect()->back()->with('success', 'Removed from wishlist');
+}
 
 
     /**
