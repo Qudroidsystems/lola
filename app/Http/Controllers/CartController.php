@@ -210,4 +210,10 @@ class CartController extends Controller
 
         return view('frontend.checkout', compact('cartItems', 'total', 'shipping'));
     }
+
+    public function clear()
+{
+    auth()->user()->cartItems()->delete();
+    return response()->json(['success' => true, 'message' => 'Cart cleared!']);
+}
 }

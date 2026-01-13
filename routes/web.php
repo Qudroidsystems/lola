@@ -147,6 +147,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::put('/{cartItem}', [CartController::class, 'update'])->name('cart.update');
             Route::delete('/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
             // Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+            Route::delete('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 
             // Checkout routes – now directly under /checkout
