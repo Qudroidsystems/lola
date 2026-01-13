@@ -1,25 +1,28 @@
 @extends('frontend.master')
+
 @section('content')
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Whoops!</strong> There were some problems with your input.<br>
+            <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
-        </div>
-    @endif
-
-    @if (\Session::has('status'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ \Session::get('status') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-    @if (\Session::has('success'))
+
+    @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ \Session::get('success') }}
+            {{ session('status') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -60,12 +63,12 @@
                                         <h4>Categories</h4>
                                         <ul class="sidebar-list">
                                             @foreach($categories as $category)
-                                            <li>
-                                                <a href="{{ route('shop', array_merge(request()->query(), ['category' => $category->slug])) }}"
-                                                class="{{ request('category') == $category->slug ? 'active' : '' }}">
-                                                    {{ $category->name }} ({{ $category->products_count }})
-                                                </a>
-                                            </li>
+                                                <li>
+                                                    <a href="{{ route('shop', array_merge(request()->query(), ['category' => $category->slug])) }}"
+                                                       class="{{ request('category') == $category->slug ? 'active' : '' }}">
+                                                        {{ $category->name }} ({{ $category->products_count ?? 0 }})
+                                                    </a>
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -75,12 +78,12 @@
                                         <h4>Brands</h4>
                                         <ul class="sidebar-list">
                                             @foreach($brands as $brand)
-                                            <li>
-                                                <a href="{{ route('shop', array_merge(request()->query(), ['brand' => $brand->slug])) }}"
-                                                class="{{ request('brand') == $brand->slug ? 'active' : '' }}">
-                                                    {{ $brand->name }} ({{ $brand->products_count }})
-                                                </a>
-                                            </li>
+                                                <li>
+                                                    <a href="{{ route('shop', array_merge(request()->query(), ['brand' => $brand->slug])) }}"
+                                                       class="{{ request('brand') == $brand->slug ? 'active' : '' }}">
+                                                        {{ $brand->name }} ({{ $brand->products_count ?? 0 }})
+                                                    </a>
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -90,11 +93,11 @@
                                         <h4>Price</h4>
                                         <ul class="sidebar-list">
                                             <li><a href="{{ route('shop', array_merge(request()->query(), ['price' => '0-210'])) }}"
-                                                class="{{ request('price') == '0-210' ? 'active' : '' }}">RM 0 - RM 210</a></li>
+                                                   class="{{ request('price') == '0-210' ? 'active' : '' }}">RM 0 - RM 210</a></li>
                                             <li><a href="{{ route('shop', array_merge(request()->query(), ['price' => '210-420'])) }}"
-                                                class="{{ request('price') == '210-420' ? 'active' : '' }}">RM 210 - RM 420</a></li>
+                                                   class="{{ request('price') == '210-420' ? 'active' : '' }}">RM 210 - RM 420</a></li>
                                             <li><a href="{{ route('shop', array_merge(request()->query(), ['price' => '420-840'])) }}"
-                                                class="{{ request('price') == '420-840' ? 'active' : '' }}">RM 420 - RM 840</a></li>
+                                                   class="{{ request('price') == '420-840' ? 'active' : '' }}">RM 420 - RM 840</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -119,6 +122,7 @@
                                 </form>
                             </div>
                         </div>
+
                         <div class="products-settings-option d-block d-md-flex">
                             <div class="product-cong-left d-flex align-items-center">
                                 <ul class="product-view d-flex align-items-center">
@@ -126,7 +130,7 @@
                                     <li class="box-gird"><i class="fa fa-th"></i></li>
                                     <li class="list"><i class="fa fa-list-ul"></i></li>
                                 </ul>
-                                <span class="show-items">Items 1 - 9 of {{ $products->total() }}</span>
+                                <span class="show-items">Items 1 - {{ $products->count() }} of {{ $products->total() }}</span>
                             </div>
 
                             <div class="product-sort_by d-flex align-items-center mt-3 mt-md-0">
@@ -151,104 +155,104 @@
                         <div class="shop-page-products-wrap">
                             <div class="products-wrapper">
                                 <div class="row">
-                                    @foreach($products as $product)
-                                    <div class="col-lg-4 col-sm-6 mb-4">
-                                        <div class="single-product-item text-center">
-                                            <!-- Product Image -->
-                                            <figure class="product-thumb">
-                                                <a href="{{ route('shop.show', $product->id) }}">
-                                                    @if($product->thumbnail)
-                                                        <img src="{{ asset($product->thumbnail) }}"
-                                                             alt="{{ $product->name }}"
-                                                             class="img-fluid">
-                                                    @else
-                                                        <div class="img-placeholder"></div>
-                                                    @endif
-                                                </a>
-                                            </figure>
-
-                                            <!-- Product Details -->
-                                            <div class="product-details">
-                                                <h2>
+                                    @forelse($products as $product)
+                                        <div class="col-lg-4 col-sm-6 mb-4">
+                                            <div class="single-product-item text-center">
+                                                <!-- Product Image -->
+                                                <figure class="product-thumb">
                                                     <a href="{{ route('shop.show', $product->id) }}">
-                                                        {{ $product->name }}
-                                                    </a>
-                                                </h2>
-
-                                                <!-- Rating -->
-                                                <div class="rating">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        @if($i <= optional($product->rating)->rating)
-                                                            <i class="fa fa-star"></i>
+                                                        @if($product->thumbnail)
+                                                            <img src="{{ asset($product->thumbnail) }}"
+                                                                 alt="{{ $product->name }}"
+                                                                 class="img-fluid">
                                                         @else
-                                                            <i class="fa fa-star-o"></i>
+                                                            <img src="{{ asset('images/placeholder.png') }}"
+                                                                 alt="No image available"
+                                                                 class="img-fluid">
                                                         @endif
-                                                    @endfor
+                                                    </a>
+                                                </figure>
+
+                                                <!-- Product Details -->
+                                                <div class="product-details">
+                                                    <h2>
+                                                        <a href="{{ route('shop.show', $product->id) }}">
+                                                            {{ $product->name }}
+                                                        </a>
+                                                    </h2>
+
+                                                    <!-- Rating -->
+                                                    <div class="rating">
+                                                        @for($i = 1; $i <= 5; $i++)
+                                                            @if($i <= optional($product->rating)->rating)
+                                                                <i class="fa fa-star"></i>
+                                                            @else
+                                                                <i class="fa fa-star-o"></i>
+                                                            @endif
+                                                        @endfor
+                                                    </div>
+
+                                                    <!-- Price -->
+                                                    <span class="price">
+                                                        @if($product->on_sale && $product->sale_price)
+                                                            <del>RM {{ number_format($product->base_price, 2) }}</del>
+                                                            RM {{ number_format($product->sale_price, 2) }}
+                                                        @else
+                                                            RM {{ number_format($product->base_price, 2) }}
+                                                        @endif
+                                                    </span>
+
+                                                    <!-- Description -->
+                                                    <p class="products-desc">
+                                                        {{ Str::limit($product->description ?? 'No description', 120) }}
+                                                    </p>
+
+                                                    <!-- Action Buttons -->
+                                                    <div class="product-actions">
+                                                        <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form d-inline">
+                                                            @csrf
+                                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                            <button type="submit" class="btn btn-add-to-cart">
+                                                                + Add to Cart
+                                                            </button>
+                                                        </form>
+
+                                                        <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline ms-2">
+                                                            @csrf
+                                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                            <button type="submit" class="btn btn-link text-danger">
+                                                                <i class="fa fa-heart-o"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
 
-                                                <!-- Price -->
-                                                <span class="price">
-                                                    @if($product->on_sale)
-                                                        <del>RM {{ number_format($product->base_price, 2) }}</del>
-                                                        RM {{ number_format($product->sale_price, 2) }}
-                                                    @else
-                                                        RM {{ number_format($product->base_price, 2) }}
-                                                    @endif
-                                                </span>
-
-                                                <!-- Description -->
-                                                <p class="products-desc">
-                                                    {{ Str::limit($product->description, 120) }}
-                                                </p>
-
-                                                <!-- Action Buttons -->
-                                                <div class="product-actions">
-                                                    @auth
-                                                            <form action="{{ route('cart.store') }}" method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                                <button type="submit" class="btn btn-add-to-cart">+ Add to Cart</button>
-                                                            </form>
-                                                    @else
-                                                            <div class="guest-notice mt-2">
-                                                                <a href="{{ route('login') }}" class="text-muted">
-                                                                    <i class="fas fa-lock me-1"></i>Login to purchase
-                                                                </a>
-                                                            </div>
-                                                    @endauth
-                                                </div>
-                                            </div>
-
-                                            <!-- Product Meta -->
-                                            <div class="product-meta">
-                                                <!-- Quick View -->
-                                                <button type="button"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#quickView-{{ $product->id }}">
-                                                    <i class="fa fa-compress"></i>
-                                                </button>
-
-                                                <!-- Wishlist -->
-                                                <form action="{{ route('wishlist.store') }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                    <button type="submit" class="btn-link">
-                                                        <i class="fa fa-heart-o"></i>
+                                                <!-- Product Meta -->
+                                                <div class="product-meta">
+                                                    <!-- Quick View -->
+                                                    <button type="button"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#quickView-{{ $product->id }}">
+                                                        <i class="fa fa-compress"></i>
                                                     </button>
-                                                </form>
+                                                </div>
+
+                                                <!-- Product Badges -->
+                                                @if($product->is_new)
+                                                    <span class="product-badge new">New</span>
+                                                @endif
+
+                                                @if($product->on_sale)
+                                                    <span class="product-badge sale">Sale</span>
+                                                @endif
                                             </div>
-
-                                            <!-- Product Badges -->
-                                            @if($product->is_new)
-                                                <span class="product-badge new">New</span>
-                                            @endif
-
-                                            @if($product->on_sale)
-                                                <span class="product-badge sale">Sale</span>
-                                            @endif
                                         </div>
-                                    </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="col-12 text-center py-5">
+                                            <h4>No products found.</h4>
+                                            <a href="{{ route('shop') }}" class="btn btn-primary mt-3">Browse All Products</a>
+                                        </div>
+                                    @endforelse
                                 </div>
 
                                 <!-- Pagination -->
@@ -284,41 +288,145 @@
 
     <!-- Quick View Modals -->
     @foreach($products as $product)
-    <div class="modal fade" id="quickView-{{ $product->id }}" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    <div class="row">
-                        <div class="col-md-6">
-                            @if($product->thumbnail)
-                            <img src="{{ asset($product->thumbnail) }}"
-                                 class="img-fluid"
-                                 alt="{{ $product->name }}">
-                            @else
-                                <img src="{{ asset('images/placeholder.png') }}"
-                                     class="img-fluid"
-                                     alt="No image available">
-                            @endif
-                        </div>
-                        <div class="col-md-6">
-                            <h3>{{ $product->name }}</h3>
-                            <div class="price">
-                                RM {{ number_format($product->base_price, 2) }}
-                                @if($product->on_sale)
-                                    <span class="text-danger">RM {{ number_format($product->sale_price, 2) }}</span>
+        <div class="modal fade" id="quickView-{{ $product->id }}" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <div class="row">
+                            <div class="col-md-6">
+                                @if($product->thumbnail)
+                                    <img src="{{ asset($product->thumbnail) }}"
+                                         class="img-fluid"
+                                         alt="{{ $product->name }}">
+                                @else
+                                    <img src="{{ asset('images/placeholder.png') }}"
+                                         class="img-fluid"
+                                         alt="No image available">
                                 @endif
                             </div>
-                            <p>{{ $product->description }}</p>
-                            <!-- Add more product details as needed -->
+                            <div class="col-md-6">
+                                <h3>{{ $product->name }}</h3>
+                                <div class="price">
+                                    RM {{ number_format($product->base_price, 2) }}
+                                    @if($product->on_sale)
+                                        <span class="text-danger">RM {{ number_format($product->sale_price, 2) }}</span>
+                                    @endif
+                                </div>
+                                <p>{{ $product->description }}</p>
+                                <!-- Add more product details as needed -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     @endforeach
-    <!--== New Products Area End ==-->
-</div>
-<!--== Page Content Wrapper End ==-->
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // AJAX Add to Cart
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const button = form.querySelector('button');
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = 'Adding...';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                button.disabled = false;
+                button.innerHTML = originalText;
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added!',
+                        text: data.message || 'Item added to cart',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+
+                    // Optional: Update cart count in header (if you have one)
+                    if (data.cart_count !== undefined) {
+                        document.querySelector('.cart-count')?.textContent = data.cart_count;
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message || 'Failed to add to cart'
+                    });
+                }
+            })
+            .catch(() => {
+                button.disabled = false;
+                button.innerHTML = originalText;
+                Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+            });
+        });
+    });
+
+    // AJAX Add to Wishlist
+    document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const button = form.querySelector('button');
+            button.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                button.disabled = false;
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added!',
+                        text: data.message || 'Added to wishlist',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message || 'Failed to add to wishlist'
+                    });
+                }
+            })
+            .catch(() => {
+                button.disabled = false;
+                Swal.fire('Error', 'Something went wrong.', 'error');
+            });
+        });
+    });
+});
+</script>
+
 @endsection
