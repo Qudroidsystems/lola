@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 class CartController extends Controller
 {
     /**
-     * Display the user's cart.
+     * Display the user's cart (non-AJAX).
      */
     public function index()
     {
@@ -27,7 +27,8 @@ class CartController extends Controller
         $cartItems = auth()->user()->cartItems()->with('product')->get();
 
         $total = $cartItems->sum(function ($item) {
-            return ($item->product->sale_price ?? $item->product->base_price) * $item->quantity;
+            $price = $item->product->sale_price ?? $item->product->base_price ?? 0;
+            return $price * $item->quantity;
         });
 
         return view('frontend.cart', compact('cartItems', 'total'));
@@ -40,7 +41,7 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'sometimes|integer|min:1'
+            'quantity'   => 'sometimes|integer|min:1'
         ]);
 
         if (!auth()->check()) {
@@ -59,24 +60,24 @@ class CartController extends Controller
             );
 
             Log::info('Product added to cart', [
-                'user_id' => auth()->id(),
-                'email' => auth()->user()->email,
-                'product_id' => $request->product_id,
-                'quantity_added' => $quantity,
-                'new_total_quantity' => $cartItem->quantity
+                'user_id'           => auth()->id(),
+                'email'             => auth()->user()->email,
+                'product_id'        => $request->product_id,
+                'quantity_added'    => $quantity,
+                'new_total_quantity'=> $cartItem->quantity
             ]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Product added to cart successfully!',
-                'cart_count' => auth()->user()->cartItems()->count(), // For header update
-                'cart_item' => $cartItem->load('product') // Optional: full item data
+                'success'    => true,
+                'message'    => 'Product added to cart successfully!',
+                'cart_count' => auth()->user()->cartItems()->count(),
+                'cart_item'  => $cartItem->load('product') // Optional
             ]);
         } catch (\Exception $e) {
             Log::error('Cart store failed', [
                 'user_id' => auth()->id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error'   => $e->getMessage(),
+                'trace'   => $e->getTraceAsString()
             ]);
 
             return response()->json([
@@ -104,8 +105,8 @@ class CartController extends Controller
 
         $cartItem = CartItem::findOrFail($id);
 
-        // Security: Only allow owner to update
-        if ($cartItem->user_id !== auth()->id()) {
+        // Safe type-tolerant ownership check
+        if ($cartItem->user_id != auth()->id()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized action.'
@@ -117,19 +118,19 @@ class CartController extends Controller
 
             Log::info('Cart item updated', [
                 'cart_item_id' => $id,
-                'user_id' => auth()->id(),
+                'user_id'      => auth()->id(),
                 'new_quantity' => $request->quantity
             ]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Cart updated successfully!',
+                'success'    => true,
+                'message'    => 'Cart updated successfully!',
                 'cart_count' => auth()->user()->cartItems()->count()
             ]);
         } catch (\Exception $e) {
             Log::error('Cart update failed', [
                 'cart_item_id' => $id,
-                'error' => $e->getMessage()
+                'error'        => $e->getMessage()
             ]);
 
             return response()->json([
@@ -138,74 +139,99 @@ class CartController extends Controller
             ], 500);
         }
     }
-/**
- * Remove a specific item from the cart (AJAX support).
- */
-public function destroy(string $id)
-{
-    if (!auth()->check()) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Please log in to remove items from cart.'
-        ], 401);
+
+    /**
+     * Remove a specific item from the cart (AJAX support).
+     */
+    public function destroy(string $id)
+    {
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please log in to remove items from cart.'
+            ], 401);
+        }
+
+        $cartItem = CartItem::find($id);
+
+        if (!$cartItem) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart item not found (ID: ' . $id . ')'
+            ], 404);
+        }
+
+        // Safe type-tolerant ownership check (handles string vs int)
+        if ($cartItem->user_id != auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => "Unauthorized action. Item belongs to user ID {$cartItem->user_id}, current user is " . auth()->id()
+            ], 403);
+        }
+
+        try {
+            $cartItem->delete();
+
+            Log::info('Cart item removed successfully', [
+                'cart_item_id' => $id,
+                'user_id'      => auth()->id()
+            ]);
+
+            return response()->json([
+                'success'    => true,
+                'message'    => 'Item removed from cart!',
+                'cart_count' => auth()->user()->cartItems()->count()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Cart destroy failed', [
+                'cart_item_id' => $id,
+                'error'        => $e->getMessage(),
+                'trace'        => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove item: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    $cartItem = CartItem::find($id);
+    /**
+     * Clear all items from the authenticated user's cart (AJAX support).
+     */
+    public function clear()
+    {
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please log in to clear your cart.'
+            ], 401);
+        }
 
-    if (!$cartItem) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Cart item not found (ID: ' . $id . ')'
-        ], 404);
+        try {
+            auth()->user()->cartItems()->delete();
+
+            Log::info('Cart cleared successfully', [
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart cleared successfully!',
+                'cart_count' => 0
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Cart clear failed', [
+                'user_id' => auth()->id(),
+                'error'   => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to clear cart: ' . $e->getMessage()
+            ], 500);
+        }
     }
-
-    // Debug info - very important
-    $currentUserId = auth()->id();
-    $itemUserId = $cartItem->user_id;
-
-    Log::info('Cart destroy debug', [
-        'cart_item_id' => $id,
-        'item_user_id' => $itemUserId,
-        'current_user_id' => $currentUserId,
-        'types' => gettype($itemUserId) . ' vs ' . gettype($currentUserId),
-        'match' => $itemUserId == $currentUserId ? 'yes' : 'no',
-        'strict_match' => $itemUserId === $currentUserId ? 'yes' : 'no'
-    ]);
-
-    // Allow delete if user_id matches OR is null (for legacy broken items)
-    if ($itemUserId !== null && $itemUserId != $currentUserId) {
-        return response()->json([
-            'success' => false,
-            'message' => "Unauthorized action. Item belongs to user ID {$itemUserId}, but current user is {$currentUserId}"
-        ], 403);
-    }
-
-    try {
-        $cartItem->delete();
-
-        Log::info('Cart item removed successfully', [
-            'cart_item_id' => $id,
-            'user_id' => $currentUserId
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Item removed from cart!',
-            'cart_count' => auth()->user()->cartItems()->count()
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Cart destroy failed', [
-            'cart_item_id' => $id,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to remove item: ' . $e->getMessage()
-        ], 500);
-    }
-}
 
     /**
      * Redirect to checkout (non-AJAX).
@@ -223,7 +249,7 @@ public function destroy(string $id)
         }
 
         $total = $cartItems->sum(function ($item) {
-            return ($item->product->sale_price ?? $item->product->base_price) * $item->quantity;
+            return ($item->product->sale_price ?? $item->product->base_price ?? 0) * $item->quantity;
         });
 
         $shipping = $total > 500 ? 0 : 50;
@@ -231,10 +257,4 @@ public function destroy(string $id)
 
         return view('frontend.checkout', compact('cartItems', 'total', 'shipping'));
     }
-
-    public function clear()
-{
-    auth()->user()->cartItems()->delete();
-    return response()->json(['success' => true, 'message' => 'Cart cleared!']);
-}
 }
