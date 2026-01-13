@@ -218,7 +218,8 @@
                             </figure>
                             <div class="callto-info">
                                 <h2>24/7 CUSTOMER SERVICE</h2>
-                                <p>Call us 24/7 or Direct WhatsApp at +60 11-3665 5467 </p>
+                                <p>Call us 24/7 or Direct WhatsApp  </p>
+                                <p> +60 11-3665 5467 </p>
                             </div>
                         </div>
                         <!-- Single Call-to Action End -->
