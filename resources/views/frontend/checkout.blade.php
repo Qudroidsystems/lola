@@ -49,36 +49,41 @@
             @endif
 
             <div class="row g-5">
-                <!-- Billing & Payment Column -->
+                <!-- Billing Details Column -->
                 <div class="col-lg-6">
                     <div class="billing-details-wrapper bg-white p-4 p-lg-5 rounded shadow-sm border">
                         <h3 class="mb-4">Billing Details</h3>
 
-                        <form id="payment-form">
+                        <form action="{{ route('checkout.process') }}" method="POST" id="checkout-form">
                             @csrf
 
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="name"
+                                <input type="text" class="form-control" id="name" name="name"
                                        value="{{ auth()->check() ? auth()->user()->name : old('name') }}" required>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email"
+                                <input type="email" class="form-control" id="email" name="email"
                                        value="{{ auth()->check() ? auth()->user()->email : old('email') }}" required>
                             </div>
 
+                            <!-- Add more fields if needed (phone, address, etc.) -->
                             <div class="mb-4">
-                                <label class="form-label">Credit or Debit Card</label>
-                                <div id="card-element" class="form-control p-3 border rounded"></div>
-                                <div id="card-errors" role="alert" class="text-danger mt-2 small"></div>
+                                <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                       value="{{ old('phone') }}" required>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3" id="submit-payment">
-                                Pay RM {{ number_format($total ?? 0, 2) }}
+                            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3" id="submit-checkout">
+                                Place Order (Contact Seller)
                             </button>
                         </form>
+
+                        <div class="mt-4 text-center text-muted small">
+                            <p>After placing order, you'll be redirected to chat with seller via WhatsApp.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -131,7 +136,7 @@
                             </table>
                         </div>
 
-                        <!-- WhatsApp Button - FIXED & BEST UX -->
+                        <!-- WhatsApp Button - Responsive & Reliable -->
                         <button type="button" id="whatsapp-button" class="btn btn-success btn-lg w-100 mt-4 d-flex align-items-center justify-content-center gap-3">
                             <i class="fab fa-whatsapp fa-2x"></i>
                             <span>Chat with Seller on WhatsApp</span>
@@ -148,8 +153,7 @@
         </div>
     </div>
 
-    <!-- Stripe.js -->
-    <script src="https://js.stripe.com/v3/"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -157,72 +161,14 @@
             if (window.checkoutScriptInitialized) return;
             window.checkoutScriptInitialized = true;
 
-            // Stripe Payment (unchanged)
-            const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-            const elements = stripe.elements();
-            const card = elements.create('card', {
-                style: { base: { fontSize: '16px', color: '#32325d' } }
-            });
-            card.mount('#card-element');
-
-            const form = document.getElementById('payment-form');
-            const errorsDiv = document.getElementById('card-errors');
-            const submitBtn = document.getElementById('submit-payment');
-
-            fetch('{{ route('checkout.payment.intent') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.error) {
-                    errorsDiv.textContent = data.error;
-                    return;
-                }
-
-                const clientSecret = data.clientSecret;
-
-                form.addEventListener('submit', async e => {
-                    e.preventDefault();
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = 'Processing...';
-
-                    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-                        payment_method: {
-                            card: card,
-                            billing_details: {
-                                name: document.getElementById('name').value,
-                                email: document.getElementById('email').value
-                            }
-                        }
-                    });
-
-                    if (error) {
-                        errorsDiv.textContent = error.message;
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = 'Pay RM {{ number_format($total ?? 0, 2) }}';
-                    } else if (paymentIntent.status === 'succeeded') {
-                        const fd = new FormData();
-                        fd.append('payment_intent', paymentIntent.id);
-                        fd.append('_token', '{{ csrf_token() }}');
-
-                        await fetch('{{ route('checkout.process') }}', { method: 'POST', body: fd });
-                        window.location.href = '{{ route('order.success') }}';
-                    }
-                });
-            })
-            .catch(() => {
-                errorsDiv.textContent = 'Failed to initialize payment system';
-            });
-
             // ================================
-            //     WhatsApp Button - FIXED & USER-FRIENDLY
+            //     WhatsApp Button - FULLY WORKING
             // ================================
             const whatsappBtn = document.getElementById('whatsapp-button');
-            if (!whatsappBtn) return;
+            if (!whatsappBtn) {
+                console.warn('WhatsApp button not found');
+                return;
+            }
 
             const cartItems = @json($cartItems ?? []);
             const total = {{ $total ?? 0 }};
@@ -241,29 +187,29 @@
             message += `\nShipping: RM ${shipping.toFixed(2)}`;
             message += `\n─────────────────`;
             message += `\n*Total: RM ${total.toFixed(2)}*`;
-            message += `\n\nPlease confirm availability and payment. Thank you! 😊`;
+            message += `\n\nPlease confirm availability and payment method. Thank you! 😊`;
 
             const encodedMsg = encodeURIComponent(message);
             const waLink = `https://wa.me/${phone}?text=${encodedMsg}`;
 
             whatsappBtn.addEventListener('click', function () {
-                const original = this.innerHTML;
+                const originalHTML = this.innerHTML;
                 this.innerHTML = '<i class="fab fa-whatsapp fa-2x"></i> <span>Opening WhatsApp...</span>';
 
-                // Open in new tab (required by browsers)
+                // Open WhatsApp in new tab (this is required by browsers)
                 window.open(waLink, '_blank');
 
-                // Restore button
+                // Restore button after delay
                 setTimeout(() => {
-                    this.innerHTML = original;
+                    this.innerHTML = originalHTML;
                 }, 3000);
 
-                // SweetAlert instruction (removes confusion)
+                // SweetAlert instruction to guide user
                 Swal.fire({
                     icon: 'info',
                     title: 'Opening WhatsApp',
-                    html: 'A new tab has opened.<br>Tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to go to the app.<br><small>(This is normal browser behavior)</small>',
-                    timer: 6000,
+                    html: 'A new tab has opened.<br>Please tap <strong>"Open in WhatsApp"</strong> or <strong>"Continue to Chat"</strong> to start the conversation.<br><small>(This is normal browser behavior on mobile)</small>',
+                    timer: 7000,
                     showConfirmButton: false,
                     toast: true,
                     position: 'top'
