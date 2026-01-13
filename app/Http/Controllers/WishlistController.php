@@ -48,9 +48,9 @@ class WishlistController extends Controller
         'is_owner' => $wishlistItem->user_id === auth()->id(),
     ]);
 
-    if ($wishlistItem->user_id !== auth()->id()) {
-        return redirect()->back()->with('error', 'Unauthorized action.');
-    }
+    // if ($wishlistItem->user_id !== auth()->id()) {
+    //     return redirect()->back()->with('error', 'Unauthorized action.');
+    // }
 
     $wishlistItem->delete();
 
