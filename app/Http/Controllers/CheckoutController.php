@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Stripe\PaymentIntent;
 use App\Models\Order;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\DB;
@@ -11,132 +10,104 @@ use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
+    /**
+     * Show checkout page (cart summary + simple form)
+     */
     public function index()
     {
         $cartItems = auth()->user()->cartItems()->with('product')->get();
+
         if ($cartItems->isEmpty()) {
             Log::warning('Checkout accessed with empty cart for user: ' . auth()->id());
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
         $total = $cartItems->sum(function ($item) {
-            return $item->product->sale_price * $item->quantity;
+            return ($item->product->sale_price ?? $item->product->base_price ?? 0) * $item->quantity;
         });
 
         $shipping = $total > 500 ? 0 : 50;
         $total += $shipping;
 
         Log::info('Checkout loaded for user: ' . auth()->id() . ', Total: ' . $total);
+
         return view('frontend.checkout', compact('cartItems', 'total', 'shipping'));
     }
 
-    public function createPaymentIntent(Request $request)
-    {
-        $cartItems = auth()->user()->cartItems()->with('product')->get();
-        if ($cartItems->isEmpty()) {
-            Log::warning('Payment intent requested with empty cart for user: ' . auth()->id());
-            return response()->json(['error' => 'Cart is empty.'], 400);
-        }
-
-        $total = $cartItems->sum(function ($item) {
-            return $item->product->sale_price * $item->quantity;
-        });
-
-        $shipping = $total > 500 ? 0 : 50;
-        $total += $shipping;
-
-        try {
-            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
-
-            $paymentIntent = PaymentIntent::create([
-                'amount' => round($total * 100),
-                'currency' => 'usd',
-                'payment_method_types' => ['card'],
-                'metadata' => ['user_id' => auth()->id()],
-            ]);
-
-            Log::info('Payment intent created for user: ' . auth()->id() . ', Intent ID: ' . $paymentIntent->id);
-            return response()->json([
-                'clientSecret' => $paymentIntent->client_secret,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Payment Intent Creation Failed for user: ' . auth()->id() . ', Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to create payment intent.'], 500);
-        }
-    }
-
+    /**
+     * Process the checkout form (no payment intent / Stripe anymore)
+     */
     public function processPayment(Request $request)
     {
-        Log::info('Processing payment for user: ' . auth()->id() . ', Payment Intent: ' . $request->input('payment_intent'));
-
         $request->validate([
-            'payment_intent' => 'required|string',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:50',           // added as example
+            // Add more fields if needed (address, notes…)
         ]);
+
+        Log::info('Manual checkout processing started for user: ' . auth()->id());
 
         DB::beginTransaction();
 
         try {
             $cartItems = auth()->user()->cartItems()->with('product')->get();
+
             if ($cartItems->isEmpty()) {
-                Log::error('Cart is empty during payment processing for user: ' . auth()->id());
+                Log::warning('Cart became empty during processing for user: ' . auth()->id());
                 throw new \Exception('Cart is empty.');
             }
 
             $total = $cartItems->sum(function ($item) {
-                return $item->product->sale_price * $item->quantity;
+                return ($item->product->sale_price ?? $item->product->base_price ?? 0) * $item->quantity;
             });
 
             $shipping = $total > 500 ? 0 : 50;
             $total += $shipping;
 
-            Log::info('Calculated total for user: ' . auth()->id() . ', Total: ' . $total . ', Shipping: ' . $shipping);
-
-            // Verify payment intent status
-            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
-            $paymentIntent = PaymentIntent::retrieve($request->payment_intent);
-            if ($paymentIntent->status !== 'succeeded') {
-                Log::error('Payment intent not succeeded for user: ' . auth()->id() . ', Status: ' . $paymentIntent->status);
-                throw new \Exception('Payment not completed.');
-            }
-
+            // Create the order (status = pending/manual)
             $order = Order::create([
-                'user_id' => auth()->id(),
-                'total' => $total,
-                'shipping' => $shipping,
-                'status' => 'completed',
-                'payment_intent' => $request->payment_intent,
+                'user_id'      => auth()->id(),
+                'total'        => $total,
+                'shipping'     => $shipping,
+                'status'       => 'pending',                    // ← important: not completed yet
+                'name'         => $request->name,
+                'email'        => $request->email,
+                'phone'        => $request->phone,
+                'notes'        => $request->notes ?? null,      // optional
+                // payment_intent = null (no Stripe)
             ]);
 
-            Log::info('Order created for user: ' . auth()->id() . ', Order ID: ' . $order->id);
+            Log::info('Manual order created', ['order_id' => $order->id, 'user_id' => auth()->id()]);
 
+            // Attach cart items to order
             foreach ($cartItems as $item) {
                 $order->items()->create([
                     'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->product->sale_price,
+                    'quantity'   => $item->quantity,
+                    'price'      => $item->product->sale_price ?? $item->product->base_price ?? 0,
                 ]);
             }
 
-            Log::info('Order items created for order: ' . $order->id);
-
+            // Clear the cart
             auth()->user()->cartItems()->delete();
-            Log::info('Cart cleared for user: ' . auth()->id());
 
             DB::commit();
-            Log::info('Transaction committed for order: ' . $order->id);
+
+            Log::info('Manual checkout completed successfully', ['order_id' => $order->id]);
 
             return redirect()->route('order.success')
-                             ->with('success', 'Payment successful! Your order has been placed.');
-        } catch (\Stripe\Exception\ApiErrorException $e) {
-            DB::rollBack();
-            Log::error('Stripe API Error for user: ' . auth()->id() . ', Error: ' . $e->getMessage());
-            return redirect()->route('cart.index')
-                             ->with('error', 'Payment failed: ' . $e->getMessage());
+                             ->with('success', 'Order placed successfully! Please chat with seller on WhatsApp to confirm payment & delivery.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Payment Processing Failed for user: ' . auth()->id() . ', Error: ' . $e->getMessage());
-            return redirect()->route('cart.index')
-                             ->with('error', 'Payment failed: ' . $e->getMessage());
+            Log::error('Manual checkout failed', [
+                'user_id' => auth()->id(),
+                'error'   => $e->getMessage(),
+                'trace'   => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                             ->with('error', 'Failed to place order: ' . $e->getMessage());
         }
     }
 }
