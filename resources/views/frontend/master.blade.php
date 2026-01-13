@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
-<!-- Mirrored from htmldemo.net/ruby/ruby/index6.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 24 Dec 2024 23:52:41 GMT -->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -219,7 +218,7 @@
                             </figure>
                             <div class="callto-info">
                                 <h2>24/7 CUSTOMER SERVICE</h2>
-                                <p>Call us 24/7 at 000 - 123 - 456k</p>
+                                <p>Call us 24/7 or Direct WhatsApp at +60 11-3665 5467 </p>
                             </div>
                         </div>
                         <!-- Single Call-to Action End -->
@@ -274,7 +273,7 @@
                                 <a href="https://www.facebook.com/share/16tzffW7Qw/"><i class="fa fa-facebook"></i></a>
                                 {{-- <a href="#"><i class="fa fa-twitter"></i></a> --}}
                                 <a href="https://www.instagram.com/lorlahtate"><i class="fa fa-instagram"></i></a>
-                            
+
                             </div>
 
                             <!-- <a href="#"><img src="{{ asset('ruby/ruby/assets/img/payment.png')}}" alt="Payment Method"/></a> -->
