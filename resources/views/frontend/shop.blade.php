@@ -218,11 +218,11 @@
                                                             </button>
                                                         </form>
 
-                                                        <!-- Add to Wishlist (AJAX) -->
+                                                        <!-- Wishlist Icon (AJAX - exactly as before) -->
                                                         <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline ms-2">
                                                             @csrf
                                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                            <button type="submit" class="btn btn-link text-danger">
+                                                            <button type="submit" class="btn-link text-danger">
                                                                 <i class="fa fa-heart-o"></i>
                                                             </button>
                                                         </form>
@@ -288,7 +288,7 @@
         </div>
     </div>
 
-    <!-- Quick View Modals (unchanged) -->
+    <!-- Quick View Modals -->
     @foreach($products as $product)
         <div class="modal fade" id="quickView-{{ $product->id }}" tabindex="-1">
             <div class="modal-dialog modal-lg">
@@ -330,116 +330,84 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // AJAX Add to Cart
-    document.querySelectorAll('.add-to-cart-form').forEach(form => {
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
+    // Common AJAX handler for Add to Cart and Wishlist
+    async function handleAjaxForm(form, successTitle, successMessage) {
+        const button = form.querySelector('button');
+        const originalHTML = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = 'Processing...';
 
-            const button = form.querySelector('button');
-            const originalText = button.innerHTML;
-            button.disabled = true;
-            button.innerHTML = 'Adding...';
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest' // Helps Laravel recognize AJAX
+                }
+            });
 
+            let data;
             try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', await response.text());
+                throw new Error('Server returned invalid response');
+            }
+
+            button.disabled = false;
+            button.innerHTML = originalHTML;
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: successTitle,
+                    text: data.message || successMessage,
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
                 });
 
-                const data = await response.json();
-
-                button.disabled = false;
-                button.innerHTML = originalText;
-
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Cart!',
-                        text: data.message || 'Item added successfully',
-                        timer: 2000,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-
-                    // Optional: Update cart count in header (if you have a cart icon with count)
-                    const cartCountEl = document.querySelector('.cart-count');
-                    if (cartCountEl && data.cart_count !== undefined) {
-                        cartCountEl.textContent = data.cart_count;
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: data.message || 'Failed to add to cart'
-                    });
+                // Optional: Update cart count in header if you have a cart icon
+                if (data.cart_count !== undefined && document.querySelector('.cart-count')) {
+                    document.querySelector('.cart-count').textContent = data.cart_count;
                 }
-            } catch (error) {
-                button.disabled = false;
-                button.innerHTML = originalText;
+            } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: 'Something went wrong. Please try again.'
+                    title: 'Oops...',
+                    text: data.message || 'Failed to process request'
                 });
             }
+        } catch (error) {
+            console.error('AJAX Error:', error);
+            button.disabled = false;
+            button.innerHTML = originalHTML;
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong. Please try again or refresh the page.'
+            });
+        }
+    }
+
+    // AJAX Add to Cart
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            handleAjaxForm(form, 'Added to Cart!', 'Item added successfully');
         });
     });
 
-    // AJAX Add to Wishlist
+    // AJAX Add to Wishlist (heart icon stays exactly as before)
     document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
-        form.addEventListener('submit', async function (e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
-
-            const button = form.querySelector('button');
-            button.disabled = true;
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                button.disabled = false;
-
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Wishlist!',
-                        text: data.message || 'Item saved for later',
-                        timer: 2000,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: data.message || 'Failed to add to wishlist'
-                    });
-                }
-            } catch (error) {
-                button.disabled = false;
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Something went wrong. Please try again.'
-                });
-            }
+            handleAjaxForm(form, 'Added to Wishlist!', 'Item saved for later');
         });
     });
 });
 </script>
-
 @endsection

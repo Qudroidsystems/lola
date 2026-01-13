@@ -4,31 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\CartItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the user's cart.
      */
     public function index()
     {
         if (!auth()->check()) {
             Log::info('Cart Index: No authenticated user');
-            return redirect()->route('login')->with('error', 'Please log in to view cart.');
+            return redirect()->route('login')->with('error', 'Please log in to view your cart.');
         }
-        Log::info('Cart Index: User ID = ' . auth()->id() . ', Email = ' . auth()->user()->email);
+
+        Log::info('Cart Index accessed', [
+            'user_id' => auth()->id(),
+            'email' => auth()->user()->email
+        ]);
+
         $cartItems = auth()->user()->cartItems()->with('product')->get();
+
         $total = $cartItems->sum(function ($item) {
-            return $item->product->sale_price * $item->quantity;
+            return ($item->product->sale_price ?? $item->product->base_price) * $item->quantity;
         });
 
         return view('frontend.cart', compact('cartItems', 'total'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Add a product to the cart (AJAX support).
      */
     public function store(Request $request)
     {
@@ -38,130 +44,165 @@ class CartController extends Controller
         ]);
 
         if (!auth()->check()) {
-            Log::error('Cart Store: No authenticated user');
-            return redirect()->route('login')->with('error', 'Please log in to add items to cart.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Please log in to add items to cart.'
+            ], 401);
         }
 
         try {
+            $quantity = $request->quantity ?? 1;
+
             $cartItem = auth()->user()->cartItems()->updateOrCreate(
-                ['product_id' => $request->product_id, 'user_id' => auth()->id()],
-                ['quantity' => DB::raw('quantity + ' . ($request->quantity ?? 1))]
+                ['product_id' => $request->product_id],
+                ['quantity' => DB::raw("quantity + {$quantity}")]
             );
 
-            Log::info('Cart Item Stored: User ID = ' . auth()->id() . ', Email = ' . auth()->user()->email . ', Product ID = ' . $request->product_id . ', CartItem ID = ' . $cartItem->id);
+            Log::info('Product added to cart', [
+                'user_id' => auth()->id(),
+                'email' => auth()->user()->email,
+                'product_id' => $request->product_id,
+                'quantity_added' => $quantity,
+                'new_total_quantity' => $cartItem->quantity
+            ]);
 
-            return redirect()->back()->with('success', 'Product added to cart!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart successfully!',
+                'cart_count' => auth()->user()->cartItems()->count(), // For header update
+                'cart_item' => $cartItem->load('product') // Optional: full item data
+            ]);
         } catch (\Exception $e) {
-            if (strpos($e->getMessage(), 'SQLSTATE[HY000]: General error: 1615') !== false) {
-                Log::warning('SQL 1615 Error in store, retrying...');
-                try {
-                    $cartItem = auth()->user()->cartItems()->updateOrCreate(
-                        ['product_id' => $request->product_id, 'user_id' => auth()->id()],
-                        ['quantity' => DB::raw('quantity + ' . ($request->quantity ?? 1))]
-                    );
-                    return redirect()->back()->with('success', 'Product added to cart!');
-                } catch (\Exception $e2) {
-                    Log::error('Cart Store Retry Error: ' . $e2->getMessage());
-                    return redirect()->back()->with('error', 'Error adding to cart: ' . $e2->getMessage());
-                }
-            }
-            Log::error('Cart Store Error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error adding to cart: ' . $e->getMessage());
+            Log::error('Cart store failed', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add to cart: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update cart item quantity (AJAX support).
      */
     public function update(Request $request, string $id)
     {
         if (!auth()->check()) {
-            Log::error('Cart Update: No authenticated user');
-            return redirect()->route('login')->with('error', 'Please log in to update cart.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Please log in to update your cart.'
+            ], 401);
         }
-
-        $cartItem = CartItem::findOrFail($id);
-
-        Log::info('Update Attempt: User ID = ' . auth()->id() . ', Email = ' . auth()->user()->email . ', CartItem User ID = ' . $cartItem->user_id . ', CartItem ID = ' . $id);
-
-        // Temporarily bypass for debugging (REMOVE AFTER TESTING)
-        // $this->authorize('update', $cartItem);
 
         $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);
 
+        $cartItem = CartItem::findOrFail($id);
+
+        // Security: Only allow owner to update
+        if ($cartItem->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized action.'
+            ], 403);
+        }
+
         try {
             $cartItem->update(['quantity' => $request->quantity]);
-            return redirect()->route('cart.index')->with('success', 'Cart updated!');
+
+            Log::info('Cart item updated', [
+                'cart_item_id' => $id,
+                'user_id' => auth()->id(),
+                'new_quantity' => $request->quantity
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart updated successfully!',
+                'cart_count' => auth()->user()->cartItems()->count()
+            ]);
         } catch (\Exception $e) {
-            if (strpos($e->getMessage(), 'SQLSTATE[HY000]: General error: 1615') !== false) {
-                Log::warning('SQL 1615 Error in update, retrying...');
-                try {
-                    $cartItem->update(['quantity' => $request->quantity]);
-                    return redirect()->route('cart.index')->with('success', 'Cart updated!');
-                } catch (\Exception $e2) {
-                    Log::error('Cart Update Retry Error: ' . $e2->getMessage());
-                    return redirect()->back()->with('error', 'Error updating cart: ' . $e2->getMessage());
-                }
-            }
-            Log::error('Cart Update Error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error updating cart: ' . $e->getMessage());
+            Log::error('Cart update failed', [
+                'cart_item_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update cart: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove a specific item from the cart (AJAX support).
      */
     public function destroy(string $id)
     {
         if (!auth()->check()) {
-            Log::error('Cart Destroy: No authenticated user');
-            return redirect()->route('login')->with('error', 'Please log in to remove items from cart.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Please log in to remove items from cart.'
+            ], 401);
         }
 
         $cartItem = CartItem::findOrFail($id);
 
-        Log::info('Delete Attempt: User ID = ' . auth()->id() . ', Email = ' . auth()->user()->email . ', CartItem User ID = ' . $cartItem->user_id . ', CartItem ID = ' . $id);
-
-        $this->authorize('delete', $cartItem);
+        if ($cartItem->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized action.'
+            ], 403);
+        }
 
         try {
             $cartItem->delete();
-            return redirect()->route('cart.index')->with('success', 'Item removed from cart');
+
+            Log::info('Cart item removed', [
+                'cart_item_id' => $id,
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart!',
+                'cart_count' => auth()->user()->cartItems()->count()
+            ]);
         } catch (\Exception $e) {
-            if (strpos($e->getMessage(), 'SQLSTATE[HY000]: General error: 1615') !== false) {
-                Log::warning('SQL 1615 Error in destroy, retrying...');
-                try {
-                    $cartItem->delete();
-                    return redirect()->route('cart.index')->with('success', 'Item removed from cart');
-                } catch (\Exception $e2) {
-                    Log::error('Cart Delete Retry Error: ' . $e2->getMessage());
-                    return redirect()->back()->with('error', 'Error deleting item: ' . $e2->getMessage());
-                }
-            }
-            Log::error('Cart Delete Error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error deleting item: ' . $e->getMessage());
+            Log::error('Cart destroy failed', [
+                'cart_item_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove item: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     /**
-     * Redirect to checkout.
+     * Redirect to checkout (non-AJAX).
      */
     public function checkout()
     {
         if (!auth()->check()) {
-            Log::error('Cart Checkout: No authenticated user');
             return redirect()->route('login')->with('error', 'Please log in to proceed to checkout.');
         }
 
         $cartItems = auth()->user()->cartItems()->with('product')->get();
+
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
 
         $total = $cartItems->sum(function ($item) {
-            return $item->product->sale_price * $item->quantity;
+            return ($item->product->sale_price ?? $item->product->base_price) * $item->quantity;
         });
 
         $shipping = $total > 500 ? 0 : 50;
