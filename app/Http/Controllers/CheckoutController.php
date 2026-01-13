@@ -10,13 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
-    /**
-     * Show checkout page (cart summary + simple form)
-     */
     public function index()
     {
         $cartItems = auth()->user()->cartItems()->with('product')->get();
-
         if ($cartItems->isEmpty()) {
             Log::warning('Checkout accessed with empty cart for user: ' . auth()->id());
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
@@ -35,14 +31,14 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Process the checkout form (no payment intent / Stripe anymore)
+     * Process checkout and redirect to WhatsApp for confirmation
      */
     public function processPayment(Request $request)
     {
         $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:50',           // added as example
+            'phone' => 'required|string|max:50',
             // Add more fields if needed (address, notes…)
         ]);
 
@@ -54,7 +50,6 @@ class CheckoutController extends Controller
             $cartItems = auth()->user()->cartItems()->with('product')->get();
 
             if ($cartItems->isEmpty()) {
-                Log::warning('Cart became empty during processing for user: ' . auth()->id());
                 throw new \Exception('Cart is empty.');
             }
 
@@ -65,22 +60,19 @@ class CheckoutController extends Controller
             $shipping = $total > 500 ? 0 : 50;
             $total += $shipping;
 
-            // Create the order (status = pending/manual)
+            // Create order (pending status)
             $order = Order::create([
-                'user_id'      => auth()->id(),
-                'total'        => $total,
-                'shipping'     => $shipping,
-                'status'       => 'pending',                    // ← important: not completed yet
-                'name'         => $request->name,
-                'email'        => $request->email,
-                'phone'        => $request->phone,
-                'notes'        => $request->notes ?? null,      // optional
-                // payment_intent = null (no Stripe)
+                'user_id'  => auth()->id(),
+                'total'    => $total,
+                'shipping' => $shipping,
+                'status'   => 'pending',
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'phone'    => $request->phone,
+                'notes'    => $request->notes ?? null,
             ]);
 
-            Log::info('Manual order created', ['order_id' => $order->id, 'user_id' => auth()->id()]);
-
-            // Attach cart items to order
+            // Attach items
             foreach ($cartItems as $item) {
                 $order->items()->create([
                     'product_id' => $item->product_id,
@@ -89,21 +81,41 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // Clear the cart
+            // Clear cart
             auth()->user()->cartItems()->delete();
 
             DB::commit();
 
-            Log::info('Manual checkout completed successfully', ['order_id' => $order->id]);
+            Log::info('Manual order placed successfully', ['order_id' => $order->id]);
 
+            // Prepare WhatsApp message
+            $message = "Hello! 👋\nNew order just placed!\n\nOrder ID: #{$order->id}\nCustomer: {$request->name}\nPhone: {$request->phone}\nEmail: {$request->email}\n\nItems:\n";
+
+            foreach ($cartItems as $item) {
+                $price = $item->product->sale_price ?? $item->product->base_price ?? 0;
+                $message .= "• {$item->product->name} × {$item->quantity} = RM " . number_format($price * $item->quantity, 2) . "\n";
+            }
+
+            $message .= "\nSubtotal: RM " . number_format($total - $shipping, 2);
+            $message .= "\nShipping: RM " . number_format($shipping, 2);
+            $message .= "\n─────────────────";
+            $message .= "\n*Total: RM " . number_format($total, 2) . "*";
+            $message .= "\n\nPlease confirm stock, payment method & delivery. Thank you!";
+
+            $phone = '601136655467'; // Seller phone
+            $encoded = urlencode($message);
+            $whatsappUrl = "https://wa.me/{$phone}?text={$encoded}";
+
+            // Redirect to success page with WhatsApp URL
             return redirect()->route('order.success')
-                             ->with('success', 'Order placed successfully! Please chat with seller on WhatsApp to confirm payment & delivery.');
+                             ->with('success', 'Order placed successfully! Redirecting to WhatsApp...')
+                             ->with('whatsapp_url', $whatsappUrl);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Manual checkout failed', [
+            Log::error('Checkout failed', [
                 'user_id' => auth()->id(),
-                'error'   => $e->getMessage(),
-                'trace'   => $e->getTraceAsString()
+                'error'   => $e->getMessage()
             ]);
 
             return redirect()->back()
