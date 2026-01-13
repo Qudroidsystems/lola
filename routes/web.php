@@ -176,7 +176,7 @@ Route::get('/debug-session', function () {
         Route::delete('/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
         // New route: Clear entire wishlist
-        Route::delete('/clear-all', [WishlistController::class, 'clearAll'])->name('wishlist.destroy.all');
+        Route::post('/clear-all', [WishlistController::class, 'clearAll'])->name('wishlist.destroy.all');
     });
 
     // Compare routes
