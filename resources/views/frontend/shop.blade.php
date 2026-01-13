@@ -130,7 +130,7 @@
                                     <li class="box-gird"><i class="fa fa-th"></i></li>
                                     <li class="list"><i class="fa fa-list-ul"></i></li>
                                 </ul>
-                                <span class="show-items">Items 1 - {{ $products->count() }} of {{ $products->total() }}</span>
+                                <span class="show-items">Showing {{ $products->count() }} of {{ $products->total() }} items</span>
                             </div>
 
                             <div class="product-sort_by d-flex align-items-center mt-3 mt-md-0">
@@ -204,11 +204,12 @@
 
                                                     <!-- Description -->
                                                     <p class="products-desc">
-                                                        {{ Str::limit($product->description ?? 'No description', 120) }}
+                                                        {{ Str::limit($product->description ?? 'No description available.', 120) }}
                                                     </p>
 
                                                     <!-- Action Buttons -->
                                                     <div class="product-actions">
+                                                        <!-- Add to Cart (AJAX) -->
                                                         <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form d-inline">
                                                             @csrf
                                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -217,6 +218,7 @@
                                                             </button>
                                                         </form>
 
+                                                        <!-- Add to Wishlist (AJAX) -->
                                                         <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline ms-2">
                                                             @csrf
                                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -249,7 +251,7 @@
                                         </div>
                                     @empty
                                         <div class="col-12 text-center py-5">
-                                            <h4>No products found.</h4>
+                                            <h4>No products found matching your criteria.</h4>
                                             <a href="{{ route('shop') }}" class="btn btn-primary mt-3">Browse All Products</a>
                                         </div>
                                     @endforelse
@@ -271,7 +273,7 @@
 
                             <div class="product-per-page d-flex align-items-center mt-3 mt-md-0">
                                 <label for="show-per-page">Show Per Page</label>
-                                <select name="show-per-page" id="show-per-page" onchange="this.form.submit()">
+                                <select name="show-per-page" id="show-per-page" onchange="document.getElementById('sort-form').submit()">
                                     <option value="9" {{ request('show-per-page') == '9' ? 'selected' : '' }}>9</option>
                                     <option value="15" {{ request('show-per-page') == '15' ? 'selected' : '' }}>15</option>
                                     <option value="21" {{ request('show-per-page') == '21' ? 'selected' : '' }}>21</option>
@@ -286,7 +288,7 @@
         </div>
     </div>
 
-    <!-- Quick View Modals -->
+    <!-- Quick View Modals (unchanged) -->
     @foreach($products as $product)
         <div class="modal fade" id="quickView-{{ $product->id }}" tabindex="-1">
             <div class="modal-dialog modal-lg">
@@ -330,7 +332,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     // AJAX Add to Cart
     document.querySelectorAll('.add-to-cart-form').forEach(form => {
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const button = form.querySelector('button');
@@ -338,33 +340,36 @@ document.addEventListener('DOMContentLoaded', function () {
             button.disabled = true;
             button.innerHTML = 'Adding...';
 
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
                 button.disabled = false;
                 button.innerHTML = originalText;
 
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Added!',
-                        text: data.message || 'Item added to cart',
+                        title: 'Added to Cart!',
+                        text: data.message || 'Item added successfully',
                         timer: 2000,
                         showConfirmButton: false,
                         toast: true,
                         position: 'top-end'
                     });
 
-                    // Optional: Update cart count in header (if you have one)
-                    if (data.cart_count !== undefined) {
-                        document.querySelector('.cart-count')?.textContent = data.cart_count;
+                    // Optional: Update cart count in header (if you have a cart icon with count)
+                    const cartCountEl = document.querySelector('.cart-count');
+                    if (cartCountEl && data.cart_count !== undefined) {
+                        cartCountEl.textContent = data.cart_count;
                     }
                 } else {
                     Swal.fire({
@@ -373,40 +378,45 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.message || 'Failed to add to cart'
                     });
                 }
-            })
-            .catch(() => {
+            } catch (error) {
                 button.disabled = false;
                 button.innerHTML = originalText;
-                Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
-            });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong. Please try again.'
+                });
+            }
         });
     });
 
     // AJAX Add to Wishlist
     document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const button = form.querySelector('button');
             button.disabled = true;
 
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
                 button.disabled = false;
 
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Added!',
-                        text: data.message || 'Added to wishlist',
+                        title: 'Added to Wishlist!',
+                        text: data.message || 'Item saved for later',
                         timer: 2000,
                         showConfirmButton: false,
                         toast: true,
@@ -419,11 +429,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: data.message || 'Failed to add to wishlist'
                     });
                 }
-            })
-            .catch(() => {
+            } catch (error) {
                 button.disabled = false;
-                Swal.fire('Error', 'Something went wrong.', 'error');
-            });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong. Please try again.'
+                });
+            }
         });
     });
 });
