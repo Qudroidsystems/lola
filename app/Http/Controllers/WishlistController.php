@@ -63,16 +63,11 @@ class WishlistController extends Controller
     /**
  * Clear all wishlist items for the authenticated user
  */
-public function clearAll(Request $request)
+public function clearAll()
 {
-    try {
-        auth()->user()->wishlistItems()->delete();
+    auth()->user()->wishlistItems()->delete();
 
-        return redirect()->route('wishlist.index')
-            ->with('success', 'Wishlist cleared successfully!');
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->with('error', 'Failed to clear wishlist: ' . $e->getMessage());
-    }
+    return redirect()->route('wishlist.index')
+        ->with('success', 'Your wishlist has been cleared!');
 }
 }

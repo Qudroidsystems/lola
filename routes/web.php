@@ -170,14 +170,14 @@ Route::get('/debug-session', function () {
 });
 
    // Wishlist routes
-Route::prefix('wishlist')->group(function () {
-    Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/', [WishlistController::class, 'store'])->name('wishlist.store');
-    Route::delete('/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::prefix('wishlist')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
+        Route::post('/', [WishlistController::class, 'store'])->name('wishlist.store');
+        Route::delete('/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
-    // New route: Clear entire wishlist
-    Route::delete('/clear-all', [WishlistController::class, 'clearAll'])->name('wishlist.destroy.all');
-});
+        // New route: Clear entire wishlist
+        Route::delete('/clear-all', [WishlistController::class, 'clearAll'])->name('wishlist.destroy.all');
+    });
 
     // Compare routes
     Route::post('/compare/{product}', [CompareController::class, 'add'])->name('compare.add');

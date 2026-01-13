@@ -1,7 +1,8 @@
 @extends('frontend.master')
+
 @section('content')
 
-<!-- Page Title -->
+<!--== Page Title Area Start ==-->
 <div id="page-title-area">
     <div class="container">
         <div class="row">
@@ -18,10 +19,12 @@
         </div>
     </div>
 </div>
+<!--== Page Title Area End ==-->
 
-<!-- Page Content -->
+<!--== Page Content Wrapper Start ==-->
 <div id="page-content-wrapper" class="p-9">
     <div class="container">
+        <!-- Wishlist Page Content Start -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="cart-table table-responsive">
@@ -46,17 +49,19 @@
                             @foreach($wishlistItems as $item)
                                 <tr>
                                     <td class="pro-thumbnail text-center">
-                                        @if($item->product->thumbnail)
-                                            <img class="img-fluid rounded"
-                                                 src="{{ asset($item->product->thumbnail) }}"
-                                                 alt="{{ $item->product->name }}"
-                                                 style="max-height: 100px; object-fit: contain;">
-                                        @else
-                                            <img src="{{ asset('images/placeholder-product.jpg') }}"
-                                                 alt="No image"
-                                                 class="img-fluid rounded"
-                                                 style="max-height: 100px; object-fit: contain;">
-                                        @endif
+                                        <a href="{{ route('shop.show', $item->product->id) }}">
+                                            @if($item->product->thumbnail)
+                                                <img class="img-fluid rounded"
+                                                     src="{{ asset($item->product->thumbnail) }}"
+                                                     alt="{{ $item->product->name }}"
+                                                     style="max-height: 100px; object-fit: contain;">
+                                            @else
+                                                <img src="{{ asset('images/placeholder-product.jpg') }}"
+                                                     alt="No image available"
+                                                     class="img-fluid rounded"
+                                                     style="max-height: 100px; object-fit: contain;">
+                                            @endif
+                                        </a>
                                     </td>
 
                                     <td class="pro-title align-middle">
@@ -103,7 +108,7 @@
                                     </td>
 
                                     <td class="pro-remove align-middle">
-                                        <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST">
+                                        <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST" class="delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-link text-danger p-0 border-0 bg-transparent">
@@ -118,11 +123,10 @@
 
                         <!-- Clear All Wishlist -->
                         <div class="mt-4 text-end">
-                            <form action="{{ route('wishlist.destroy.all') }}" method="POST">
+                            <form action="{{ route('wishlist.destroy.all') }}" method="POST" class="delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger btn-sm"
-                                        onclick="return confirm('Are you sure you want to clear your entire wishlist? This cannot be undone.')">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash"></i> Clear Wishlist
                                 </button>
                             </form>
@@ -131,6 +135,65 @@
                 </div>
             </div>
         </div>
+        <!-- Wishlist Page Content End -->
     </div>
 </div>
+<!--== Page Content Wrapper End ==-->
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Handle all delete forms with SweetAlert
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const isClearAll = this.action.includes('clear-all');
+
+            Swal.fire({
+                title: isClearAll ? 'Clear Entire Wishlist?' : 'Remove Item?',
+                text: isClearAll
+                    ? "This will remove all items from your wishlist. You won't be able to undo this!"
+                    : "This item will be removed from your wishlist.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: isClearAll ? 'Yes, Clear All' : 'Yes, Remove',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // Show success/error messages from session (Laravel flash)
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: false,
+            position: 'top-end',
+            toast: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+        });
+    @endif
+});
+</script>
 @endsection
