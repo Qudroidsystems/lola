@@ -157,45 +157,49 @@
                                 <div class="row">
                                     @forelse($products as $product)
                                         <div class="col-lg-4 col-sm-6 mb-4">
-                                            <div class="single-product-item text-center">
+                                            <div class="single-product-item text-center shadow-sm rounded overflow-hidden">
                                                 <!-- Product Image -->
-                                                <figure class="product-thumb">
+                                                <figure class="product-thumb mb-0 position-relative">
                                                     <a href="{{ route('shop.show', $product->id) }}">
                                                         @if($product->thumbnail)
                                                             <img src="{{ asset($product->thumbnail) }}"
                                                                  alt="{{ $product->name }}"
-                                                                 class="img-fluid">
+                                                                 class="img-fluid transition">
                                                         @else
                                                             <img src="{{ asset('images/placeholder.png') }}"
                                                                  alt="No image available"
-                                                                 class="img-fluid">
+                                                                 class="img-fluid transition">
                                                         @endif
                                                     </a>
+                                                    <!-- Hover Overlay -->
+                                                    <div class="product-overlay">
+                                                        <a href="{{ route('shop.show', $product->id) }}" class="btn btn-sm btn-light">Quick View</a>
+                                                    </div>
                                                 </figure>
 
                                                 <!-- Product Details -->
-                                                <div class="product-details">
-                                                    <h2>
-                                                        <a href="{{ route('shop.show', $product->id) }}">
+                                                <div class="product-details p-3">
+                                                    <h2 class="fs-5 mb-2">
+                                                        <a href="{{ route('shop.show', $product->id) }}" class="text-dark text-decoration-none">
                                                             {{ $product->name }}
                                                         </a>
                                                     </h2>
 
                                                     <!-- Rating -->
-                                                    <div class="rating">
+                                                    <div class="rating mb-2">
                                                         @for($i = 1; $i <= 5; $i++)
                                                             @if($i <= optional($product->rating)->rating)
-                                                                <i class="fa fa-star"></i>
+                                                                <i class="fa fa-star text-warning"></i>
                                                             @else
-                                                                <i class="fa fa-star-o"></i>
+                                                                <i class="fa fa-star-o text-muted"></i>
                                                             @endif
                                                         @endfor
                                                     </div>
 
                                                     <!-- Price -->
-                                                    <span class="price">
+                                                    <span class="price fs-5 fw-bold text-primary">
                                                         @if($product->on_sale && $product->sale_price)
-                                                            <del>RM {{ number_format($product->base_price, 2) }}</del>
+                                                            <del class="text-muted small me-2">RM {{ number_format($product->base_price, 2) }}</del>
                                                             RM {{ number_format($product->sale_price, 2) }}
                                                         @else
                                                             RM {{ number_format($product->base_price, 2) }}
@@ -203,50 +207,31 @@
                                                     </span>
 
                                                     <!-- Description -->
-                                                    <p class="products-desc">
-                                                        {{ Str::limit($product->description ?? 'No description available.', 120) }}
+                                                    <p class="products-desc text-muted small mt-2">
+                                                        {{ Str::limit($product->description ?? 'No description available.', 80) }}
                                                     </p>
 
-                                                    <!-- Action Buttons -->
-                                                    <div class="product-actions">
+                                                    <!-- Action Buttons - Improved UI -->
+                                                    <div class="product-actions mt-3 d-flex justify-content-center gap-3">
                                                         <!-- Add to Cart (AJAX) -->
                                                         <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form d-inline">
                                                             @csrf
                                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                            <button type="submit" class="btn btn-add-to-cart">
-                                                                + Add to Cart
+                                                            <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4 shadow-sm">
+                                                                <i class="fa fa-cart-plus me-1"></i> Add to Cart
                                                             </button>
                                                         </form>
 
-                                                        <!-- Wishlist Icon (AJAX - exactly as before) -->
-                                                        <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline ms-2">
+                                                        <!-- Wishlist Icon (AJAX - simple heart, improved hover) -->
+                                                        <form action="{{ route('wishlist.store') }}" method="POST" class="add-to-wishlist-form d-inline">
                                                             @csrf
                                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                            <button type="submit" class="btn-link text-danger">
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-2 wishlist-icon">
                                                                 <i class="fa fa-heart-o"></i>
                                                             </button>
                                                         </form>
                                                     </div>
                                                 </div>
-
-                                                <!-- Product Meta -->
-                                                <div class="product-meta">
-                                                    <!-- Quick View -->
-                                                    <button type="button"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#quickView-{{ $product->id }}">
-                                                        <i class="fa fa-compress"></i>
-                                                    </button>
-                                                </div>
-
-                                                <!-- Product Badges -->
-                                                @if($product->is_new)
-                                                    <span class="product-badge new">New</span>
-                                                @endif
-
-                                                @if($product->on_sale)
-                                                    <span class="product-badge sale">Sale</span>
-                                                @endif
                                             </div>
                                         </div>
                                     @empty
@@ -330,31 +315,27 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Common AJAX handler for Add to Cart and Wishlist
-    async function handleAjaxForm(form, successTitle, successMessage) {
+    const csrfToken = '{{ csrf_token() }}';
+
+    // Common AJAX handler for forms
+    async function handleAjaxForm(form, successTitle, successMessage, icon = 'fa-heart-o') {
         const button = form.querySelector('button');
         const originalHTML = button.innerHTML;
         button.disabled = true;
-        button.innerHTML = 'Processing...';
+        button.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
 
         try {
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest' // Helps Laravel recognize AJAX
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             });
 
-            let data;
-            try {
-                data = await response.json();
-            } catch (jsonError) {
-                console.error('Invalid JSON response:', await response.text());
-                throw new Error('Server returned invalid response');
-            }
+            const data = await response.json();
 
             button.disabled = false;
             button.innerHTML = originalHTML;
@@ -370,9 +351,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     position: 'top-end'
                 });
 
-                // Optional: Update cart count in header if you have a cart icon
-                if (data.cart_count !== undefined && document.querySelector('.cart-count')) {
-                    document.querySelector('.cart-count').textContent = data.cart_count;
+                // Visual feedback for wishlist (change to filled heart)
+                if (form.classList.contains('add-to-wishlist-form')) {
+                    button.querySelector('i').classList.remove('fa-heart-o');
+                    button.querySelector('i').classList.add('fa-heart');
                 }
             } else {
                 Swal.fire({
@@ -388,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Something went wrong. Please try again or refresh the page.'
+                text: 'Something went wrong. Please try again.'
             });
         }
     }
@@ -401,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // AJAX Add to Wishlist (heart icon stays exactly as before)
+    // AJAX Add to Wishlist
     document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
