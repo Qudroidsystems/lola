@@ -1,7 +1,7 @@
 @extends('frontend.master')
 @section('content')
 
-<!--== Page Title Area Start ==-->
+<!-- Page Title -->
 <div id="page-title-area">
     <div class="container">
         <div class="row">
@@ -18,15 +18,12 @@
         </div>
     </div>
 </div>
-<!--== Page Title Area End ==-->
 
-<!--== Page Content Wrapper Start ==-->
+<!-- Page Content -->
 <div id="page-content-wrapper" class="p-9">
     <div class="container">
-        <!-- Wishlist Page Content Start -->
         <div class="row">
             <div class="col-lg-12">
-                <!-- Wishlist Table Area -->
                 <div class="cart-table table-responsive">
                     @if($wishlistItems->isEmpty())
                         <div class="alert alert-info text-center py-5">
@@ -56,7 +53,7 @@
                                                  style="max-height: 100px; object-fit: contain;">
                                         @else
                                             <img src="{{ asset('images/placeholder-product.jpg') }}"
-                                                 alt="No image available"
+                                                 alt="No image"
                                                  class="img-fluid rounded"
                                                  style="max-height: 100px; object-fit: contain;">
                                         @endif
@@ -119,14 +116,14 @@
                             </tbody>
                         </table>
 
-                        <!-- Optional: Clear Wishlist Button -->
+                        <!-- Clear All Wishlist -->
                         <div class="mt-4 text-end">
                             <form action="{{ route('wishlist.destroy.all') }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-outline-danger btn-sm"
-                                        onclick="return confirm('Are you sure you want to clear your entire wishlist?')">
-                                    Clear Wishlist
+                                        onclick="return confirm('Are you sure you want to clear your entire wishlist? This cannot be undone.')">
+                                    <i class="fa fa-trash"></i> Clear Wishlist
                                 </button>
                             </form>
                         </div>
@@ -134,8 +131,6 @@
                 </div>
             </div>
         </div>
-        <!-- Wishlist Page Content End -->
     </div>
 </div>
-<!--== Page Content Wrapper End ==-->
 @endsection
