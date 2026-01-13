@@ -141,7 +141,7 @@ Route::group(['middleware' => ['auth']], function () {
     //Route::resource('orders', OrderController::class);
     Route::post('/saveorders', [OrderController::class, 'store'])->name('orders.saveorders');
 
-    Route::prefix('cart')->middleware(['auth', 'debug.auth'])->group(function () {
+    Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
     Route::post('/', [CartController::class, 'store'])->name('cart.store');
     Route::put('/{cartItem}', [CartController::class, 'update'])->name('cart.update');
