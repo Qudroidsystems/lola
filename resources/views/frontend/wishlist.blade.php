@@ -63,12 +63,15 @@
                                     </td>
 
                                     <td class="pro-title align-middle">
-                                        {{ $item->product->name }}
+                                        <a href="{{ route('shop.show', $item->product->id) }}"
+                                           class="text-dark text-decoration-none hover-underline">
+                                            {{ $item->product->name }}
+                                        </a>
                                     </td>
 
                                     <td class="pro-price align-middle">
                                         <span>
-                                            @if($item->product->on_sale)
+                                            @if($item->product->on_sale && $item->product->sale_price)
                                                 <del class="text-muted">RM {{ number_format($item->product->base_price, 2) }}</del>
                                                 <br>
                                                 <strong class="text-danger">RM {{ number_format($item->product->sale_price, 2) }}</strong>
@@ -106,7 +109,7 @@
                                         <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-link text-danger p-0">
+                                            <button type="submit" class="btn btn-link text-danger p-0 border-0 bg-transparent">
                                                 <i class="fa fa-trash-o fa-lg"></i>
                                             </button>
                                         </form>
@@ -115,6 +118,18 @@
                             @endforeach
                             </tbody>
                         </table>
+
+                        <!-- Optional: Clear Wishlist Button -->
+                        <div class="mt-4 text-end">
+                            <form action="{{ route('wishlist.destroy.all') }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to clear your entire wishlist?')">
+                                    Clear Wishlist
+                                </button>
+                            </form>
+                        </div>
                     @endif
                 </div>
             </div>
