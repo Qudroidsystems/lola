@@ -391,7 +391,7 @@
 
                             <!-- Wishlist Button -->
                             <div class="product-actions">
-                                <form action="{{ route('wishlist.store', $product->id) }}" method="POST">
+                                <form method="POST">
                                     @csrf
                                     <button type="submit" class="wishlist-btn" title="Add to Wishlist">
                                         <i class="far fa-heart"></i>
@@ -402,7 +402,7 @@
 
                         <div class="product-info">
                             <h5 class="product-name">
-                                <a href="{{ route('product.show', $product->id) }}" class="text-decoration-none text-dark">
+                                <a href="#" class="text-decoration-none text-dark">
                                     {{ $product->name }}
                                 </a>
                             </h5>
@@ -430,7 +430,7 @@
                                 {{ Str::limit($product->description ?? 'No description available.', 120) }}
                             </p>
 
-                            <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                            <form method="POST">
                                 @csrf
                                 <button type="submit" class="add-to-cart-btn">
                                     <i class="fas fa-shopping-cart"></i>
@@ -444,7 +444,7 @@
                 <div class="col-12">
                     <div class="alert alert-info text-center">
                         <h5>No products found matching your criteria.</h5>
-                        <a href="{{ route('shop') }}" class="btn btn-primary mt-3">Browse All Products</a>
+                        <a href="#" class="btn btn-primary mt-3">Browse All Products</a>
                     </div>
                 </div>
                 @endforelse
