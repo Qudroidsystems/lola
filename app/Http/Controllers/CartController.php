@@ -108,7 +108,7 @@ class CartController extends Controller
         if ($cartItem->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized action.'.$cartItem->user_id
+                'message' => 'Unauthorized action.'
             ], 403);
         }
 
