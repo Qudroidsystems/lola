@@ -36,82 +36,82 @@
                     @else
                         <table class="table table-bordered">
                             <thead>
-                            <tr>
-                                <th class="pro-thumbnail">Thumbnail</th>
-                                <th class="pro-title">Product</th>
-                                <th class="pro-price">Price</th>
-                                <th class="pro-quantity">Stock Status</th>
-                                <th class="pro-subtotal">Add to Cart</th>
-                                <th class="pro-remove">Remove</th>
-                            </tr>
+                                <tr>
+                                    <th class="pro-thumbnail">Thumbnail</th>
+                                    <th class="pro-title">Product</th>
+                                    <th class="pro-price">Price</th>
+                                    <th class="pro-quantity">Stock Status</th>
+                                    <th class="pro-subtotal">Add to Cart</th>
+                                    <th class="pro-remove">Remove</th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($wishlistItems as $item)
-                            <tr>
-                                <td class="pro-thumbnail text-center">
-                                    @if($item->product->cover && $item->product->cover->path)
-                                        <img class="img-fluid rounded"
-                                             src="{{ Storage::url($item->product->cover->path) }}"
-                                             alt="{{ $item->product->name }}"
-                                             style="max-height: 100px; object-fit: contain;">
-                                    @else
-                                        <img src="{{ asset('images/placeholder-product.jpg') }}"
-                                             alt="No image available"
-                                             class="img-fluid rounded"
-                                             style="max-height: 100px; object-fit: contain;">
-                                    @endif
-                                </td>
-
-                                <td class="pro-title align-middle">
-                                    {{ $item->product->name }}
-                                </td>
-
-                                <td class="pro-price align-middle">
-                                    <span>
-                                        @if($item->product->on_sale)
-                                            <del class="text-muted">RM {{ number_format($item->product->base_price, 2) }}</del>
-                                            <br>
-                                            <strong class="text-danger">RM {{ number_format($item->product->sale_price, 2) }}</strong>
+                                <tr>
+                                    <td class="pro-thumbnail text-center">
+                                        @if($item->product->thumbnail)
+                                            <img class="img-fluid rounded"
+                                                 src="{{ asset($item->product->thumbnail) }}"
+                                                 alt="{{ $item->product->name }}"
+                                                 style="max-height: 100px; object-fit: contain;">
                                         @else
-                                            RM {{ number_format($item->product->base_price, 2) }}
+                                            <img src="{{ asset('images/placeholder-product.jpg') }}"
+                                                 alt="No image available"
+                                                 class="img-fluid rounded"
+                                                 style="max-height: 100px; object-fit: contain;">
                                         @endif
-                                    </span>
-                                </td>
+                                    </td>
 
-                                <td class="pro-quantity align-middle">
-                                    @if($item->product->stock > 0)
-                                        <span class="badge bg-success">In Stock</span>
-                                    @else
-                                        <span class="badge bg-danger">Out of Stock</span>
-                                    @endif
-                                </td>
+                                    <td class="pro-title align-middle">
+                                        {{ $item->product->name }}
+                                    </td>
 
-                                <td class="pro-subtotal align-middle">
-                                    @if($item->product->stock > 0)
-                                        <form action="{{ route('cart.store') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $item->product->id }}">
-                                            <button type="submit" class="btn btn-sm btn-primary">
+                                    <td class="pro-price align-middle">
+                                        <span>
+                                            @if($item->product->on_sale)
+                                                <del class="text-muted">RM {{ number_format($item->product->base_price, 2) }}</del>
+                                                <br>
+                                                <strong class="text-danger">RM {{ number_format($item->product->sale_price, 2) }}</strong>
+                                            @else
+                                                RM {{ number_format($item->product->base_price, 2) }}
+                                            @endif
+                                        </span>
+                                    </td>
+
+                                    <td class="pro-quantity align-middle">
+                                        @if($item->product->stock > 0)
+                                            <span class="badge bg-success">In Stock</span>
+                                        @else
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="pro-subtotal align-middle">
+                                        @if($item->product->stock > 0)
+                                            <form action="{{ route('cart.store') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    Add to Cart
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button class="btn btn-sm btn-secondary" disabled>
                                                 Add to Cart
                                             </button>
-                                        </form>
-                                    @else
-                                        <button class="btn btn-sm btn-secondary" disabled>
-                                            Add to Cart
-                                        </button>
-                                    @endif
-                                </td>
+                                        @endif
+                                    </td>
 
-                                <td class="pro-remove align-middle">
-                                    <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-link text-danger">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                                    <td class="pro-remove align-middle">
+                                        <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-link text-danger p-0">
+                                                <i class="fa fa-trash-o fa-lg"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                             @endforeach
                             </tbody>
                         </table>
