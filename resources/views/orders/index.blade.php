@@ -36,59 +36,16 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <div id="kt_app_content_container" class="app-container container-xxl">
 
-                <!--begin::Filter Card-->
-                <div class="card card-flush mb-5">
-                    <div class="card-header">
-                        <h3 class="card-title">Filter Orders</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="GET" action="{{ route('orders.index') }}">
-                            <div class="row g-4">
-                                <div class="col-md-3">
-                                    <label class="form-label">Status</label>
-                                    <select name="status" class="form-select">
-                                        <option value="all" {{ request('status', 'all') == 'all' ? 'selected' : '' }}>All</option>
-                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing</option>
-                                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                        <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
-                                    </select>
-                                </div>
+                <!-- Filters (keep your existing filter card if you have one) -->
 
-                                <div class="col-md-3">
-                                    <label class="form-label">Customer</label>
-                                    <input type="text" name="customer" class="form-control" placeholder="Name or Email"
-                                           value="{{ request('customer') }}">
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label class="form-label">From Date</label>
-                                    <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label class="form-label">To Date</label>
-                                    <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
-                                </div>
-                            </div>
-
-                            <div class="mt-4 text-end">
-                                <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                <a href="{{ route('orders.index') }}" class="btn btn-light">Reset</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!--begin::Orders Table-->
+                <!-- Orders Table -->
                 <div class="card card-flush">
                     <div class="card-header">
                         <h3 class="card-title">Orders List</h3>
                     </div>
 
                     <div class="card-body pt-0">
-                        <table class="table align-middle table-row-dashed fs-6 gy-5">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_orders_table">
                             <thead>
                                 <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                                     <th>Order ID</th>
@@ -102,7 +59,7 @@
                             </thead>
                             <tbody class="fw-semibold text-gray-600">
                                 @forelse($orders as $order)
-                                    <tr>
+                                    <tr data-order-id="{{ $order->id }}">
                                         <td>
                                             <a href="{{ route('orders.show', $order->id) }}" class="text-gray-800 fw-bold">
                                                 #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}
@@ -116,7 +73,9 @@
                                         </td>
                                         <td>RM {{ number_format($order->total, 2) }}</td>
                                         <td>{{ $order->items->count() }}</td>
-                                        <td>{!! $order->status_badge !!}</td>
+                                        <td class="status-cell" data-current-status="{{ $order->status }}">
+                                            {!! $order->status_badge !!}
+                                        </td>
                                         <td>{{ $order->created_at->format('d M Y H:i') }}</td>
                                         <td>
                                             <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-light-primary">
@@ -144,4 +103,73 @@
     </div>
 </div>
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = '{{ csrf_token() }}';
+
+    // Handle status change
+    document.querySelectorAll('.status-dropdown').forEach(select => {
+        select.addEventListener('change', async function () {
+            const orderId = this.dataset.orderId;
+            const newStatus = this.value;
+            const cell = this.closest('.status-cell');
+
+            // Show loading state
+            cell.innerHTML = '<span class="badge badge-light-secondary">Updating...</span>';
+
+            try {
+                const response = await fetch(`/orders/${orderId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update badge in table
+                    cell.innerHTML = getStatusBadge(newStatus);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: 'Order status changed to ' + newStatus,
+                        timer: 2000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                } else {
+                    cell.innerHTML = getStatusBadge(this.dataset.currentStatus); // Revert
+                    Swal.fire('Error', data.message || 'Failed to update status', 'error');
+                }
+            } catch (error) {
+                cell.innerHTML = getStatusBadge(this.dataset.currentStatus);
+                Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+            }
+        });
+    });
+
+    // Helper to generate status badge HTML
+    function getStatusBadge(status) {
+        const badges = {
+            pending: 'warning',
+            processing: 'info',
+            completed: 'success',
+            cancelled: 'danger',
+            failed: 'danger'
+        };
+        const color = badges[status] || 'secondary';
+        return `<span class="badge badge-light-${color}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+    }
+});
+</script>
 @endsection

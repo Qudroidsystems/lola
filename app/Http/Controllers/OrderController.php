@@ -60,7 +60,7 @@ class OrderController extends Controller
     /**
      * Update order status
      */
-    public function updateStatus(Request $request, Order $order)
+  public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
             'status' => 'required|in:pending,processing,completed,cancelled,failed'
@@ -68,13 +68,16 @@ class OrderController extends Controller
 
         $order->update(['status' => $request->status]);
 
-        Log::info('Order status updated', [
+        Log::info('Order status updated via AJAX', [
             'order_id' => $order->id,
             'new_status' => $request->status,
             'admin_id' => auth()->id()
         ]);
 
-        return redirect()->back()->with('success', 'Order status updated successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated to ' . $request->status
+        ]);
     }
 
     /**
