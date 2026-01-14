@@ -214,7 +214,7 @@
                                                         </form>
                                                     @else
                                                         <div class="guest-notice mt-2">
-                                                            <a href="{{ route('login') }}" class="text-muted">
+                                                            <a href="{{ route('userlogin') }}" class="text-muted">
                                                                 <i class="fas fa-lock me-1"></i>Login to purchase
                                                             </a>
                                                         </div>
