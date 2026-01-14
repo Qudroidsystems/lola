@@ -36,7 +36,49 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <div id="kt_app_content_container" class="app-container container-xxl">
 
-                <!-- Filters (keep your existing filter card if you have one) -->
+               <div class="card card-flush mb-5">
+                    <div class="card-header">
+                        <h3 class="card-title">Filter Orders</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" action="{{ route('orders.index') }}">
+                            <div class="row g-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">Status</label>
+                                    <select name="status" class="form-select">
+                                        <option value="all" {{ request('status', 'all') == 'all' ? 'selected' : '' }}>All</option>
+                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing</option>
+                                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                        <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Customer</label>
+                                    <input type="text" name="customer" class="form-control" placeholder="Name or Email"
+                                           value="{{ request('customer') }}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">From Date</label>
+                                    <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">To Date</label>
+                                    <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-end">
+                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                <a href="{{ route('orders.index') }}" class="btn btn-light">Reset</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- Orders Table -->
                 <div class="card card-flush">
@@ -102,6 +144,7 @@
         </div>
     </div>
 </div>
+
 
 
 
