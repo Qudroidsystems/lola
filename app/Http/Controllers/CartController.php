@@ -239,7 +239,7 @@ class CartController extends Controller
     public function checkout()
     {
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Please log in to proceed to checkout.');
+            return redirect()->route('userlogin')->with('error', 'Please log in to proceed to checkout.');
         }
 
         $cartItems = auth()->user()->cartItems()->with('product')->get();
