@@ -16,7 +16,7 @@ class CartController extends Controller
     {
         if (!auth()->check()) {
             Log::info('Cart Index: No authenticated user');
-            return redirect()->route('login')->with('error', 'Please log in to view your cart.');
+            return redirect()->route('userlogin')->with('error', 'Please log in to view your cart.');
         }
 
         Log::info('Cart Index accessed', [
@@ -239,7 +239,7 @@ class CartController extends Controller
     public function checkout()
     {
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Please log in to proceed to checkout.');
+            return redirect()->route('userlogin')->with('error', 'Please log in to proceed to checkout.');
         }
 
         $cartItems = auth()->user()->cartItems()->with('product')->get();
