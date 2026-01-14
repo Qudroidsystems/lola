@@ -6,15 +6,19 @@ use Illuminate\Support\Facades\Auth;
 
 class UserDashboardController extends Controller
 {
-    public function dashboard()
-    {
-        $user = Auth::user();
-        $orders = $user->orders()->latest()->get();
-        $billingAddress = $user->billingAddress()->first();
-
-      //  \Log::info('Dashboard accessed for user: ' . $user->id . ', Orders found: ' . $orders->count());
-        return view('frontend.user-dashboard', compact('user', 'orders', 'billingAddress'));
+  public function dashboard()
+{
+    if (!Auth::check()) {
+        return redirect()->route('userlogin');
     }
+
+    $user = Auth::user();
+    $orders = $user->orders()->latest()->get();
+    $billingAddress = $user->billingAddress()->first();
+
+    return view('frontend.user-dashboard', compact('user', 'orders', 'billingAddress'));
+}
+
 
     public function update(Request $request)
     {
